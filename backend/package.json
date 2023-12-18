@@ -1,38 +1,23 @@
 {
-    "name": "backend",
-    "version": "1.0.0",
-    "description": "backend is the ultimate backend solution",
-    "main": "src/server.js",
-    "scripts": {
-        "setup": "npm install && npm update",
-        "start": "node src/server.js"
-    },
-    "keywords": [
-        "express",
-        "backend",
-        "backend"
-    ],
-    "license": "UNLICENSE",
-    "dependencies": {
-        "cookie-parser": "^1.4.4",
-        "cors": "^2.8.5",
-        "express": "^4.17.1",
-        "express-custom-error": "^1.8.4",
-        "has-keys": "^0.1.0",
-        "helmet": "^3.21.2",
-        "http-status": "^1.3.2",
-        "mandatoryenv": "^1.1.1",
-        "module-alias": "^2.2.2",
-        "mongodb": "^3.3.3",
-        "morgan": "^1.9.1",
-        "rotating-file-stream": "^1.4.6",
-        "yarn": "^1.22.21"
-    },
-    "_moduleAliases": {
-        "@root": "src",
-        "@controllers": "src/controllers",
-        "@models": "src/models",
-        "@util": "src/util",
-        "@routes": "src/routes"
-    }
+  "name": "backend",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^8.0.3",
+    "yarn": "^1.22.21"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
 }
