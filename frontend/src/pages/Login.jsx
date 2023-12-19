@@ -2,17 +2,62 @@ import PrimaryButton from '../components/PrimaryButton';
 import { LoginImage } from '../assets'
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useLoginMutation } from '../slices/userApiSlice';
 
 const Login = () => {
+  const [login, {isLoading}] = useLoginMutation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailStatus, setEmailStatus] = useState("");
+  const [passwordStatus, setPasswordStatus] = useState("");
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
   };
+
   const handleChangePassword = (e) => {
     setPassword(e.target.value);
-  }
+  };
+
+  const handleSubmit = async () => {
+    const isEmail = checkEmail(email);
+
+    if(isEmail < 0) {
+      setEmailStatus("Email is reurired");
+      return;
+    } else {
+      if(isEmail == 0) {
+        setEmailStatus("Email is not valid");
+        return;
+      }
+      setEmailStatus("");
+    }
+
+    const isPassword = checkPassword(password);
+    if(isPassword < 0) {
+      setPasswordStatus("Password must be at least 6 characters");
+      return;
+    }
+    setPasswordStatus("");
+    
+    const res = await login({ email, password }).unwrap();
+    console.log(res);
+  };
+
+  const checkEmail = (emailForCheck) => {
+    if(!emailForCheck) {
+      return -1;
+    }
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(emailForCheck) ? 1 : 0;
+  };
+
+  const checkPassword = (passwordForCheck) => {
+    if(passwordForCheck.length < 6) {
+      return -1;
+    }
+    return 1;
+  };
 
   return(
     <>
@@ -35,8 +80,10 @@ const Login = () => {
           <div className="w-[80%] flex flex-col justify-center">
             <p className="ml-4 text-left text-[40px] text-blue font-bold">Welcome Back</p>
             <p className="mb-5 ml-4 text-left text-[20px] text-slate-500">Login to continue</p>
-            <input className="w-full p-3 m-4 mt-7 border-2 bg-slate-100 border-primary rounded-xl focus:ring-2 outline-none" type='email' placeholder='stevejin88@gmail.com' value={email}  onChange={handleChangeEmail} />
-            <input className="w-full p-3 m-4 border-2 bg-slate-100 border-primary rounded-xl focus:ring-2 outline-none" type="password" placeholder='******' value={password} onChange={handleChangePassword}/>
+            <label className="text-left ml-5 mt-7">Email: {emailStatus}</label>
+            <input className={`w-full p-3 m-4 mt-1 border-2 bg-slate-100 ${emailStatus==="" ? "border-primary":"border-lightRed"} rounded-xl focus:ring-2 outline-none`} type='email' placeholder='stevejin88@gmail.com' value={email}  onChange={handleChangeEmail} />
+            <label className='text-left ml-5'>Password: {passwordStatus}</label>
+            <input className={`w-full p-3 m-4 mt-1 border-2 bg-slate-100 ${passwordStatus==="" ? "border-primary":"border-lightRed"} rounded-xl focus:ring-2 outline-none`} type="password" placeholder='******' value={password} onChange={handleChangePassword}/>
             <div className="mb-5 ml-1 inline-flex items-center relative">
               <label
                 className="relative flex cursor-pointer items-center rounded-full p-3"
@@ -71,7 +118,9 @@ const Login = () => {
               </div>
             </div>
             <div className="mt-10 flex flex-col align-center justify-center items-center">
-              <PrimaryButton text="Sign In"/>
+              <button onClick={handleSubmit}>
+                <PrimaryButton  text="Login" />
+              </button>
               <p className="p-5 text-xl text-blue">New User?&nbsp;&nbsp;<Link to={"/register"} className="underline underline-offset-8">Sign Up</Link></p>
             </div>
           </div>

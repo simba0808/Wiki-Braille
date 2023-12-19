@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import bCrypt from 'bcrypt';
-import { func } from "prop-types";
 
 const userSchema = mongoose.Schema(
   {
@@ -19,7 +18,6 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: Number,
-      required: true,
       default: 0
     }
   },
@@ -32,7 +30,7 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bCrypt.compare(enteredPassword, this.password);
 };
 
-userSchema.pre("save", async (next) => {
+userSchema.pre("save", async function (next) {
   if(!this.isModified('password')) {
     next();
   }

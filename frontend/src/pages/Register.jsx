@@ -1,19 +1,29 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios';
+import { useDispatch, useSelector } from "react-redux";
 import { LoginImage } from "../assets";
 import PrimaryButton from "../components/PrimaryButton";
-import axios from 'axios';
+import { useRegisterMutation } from "../slices/userApiSlice";
 
 const Register = () => {
+  const [register, {isLoading}] = useRegisterMutation();
+  
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [nameStatus, setNameStatus] = useState("");
   const [emailStatus, setEmailStatus] = useState("");
   const [passwordStatus, setPasswordStatus] = useState("");
   
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
     setEmailStatus("");
+  };
+  const handleChangeName = (e) => {
+    setName(e.target.value);
+    setNameStatus("");
   };
   const handleChangePassword = (e) => {
     setPassword(e.target.value);
@@ -25,9 +35,14 @@ const Register = () => {
   };
 
   const handleSubmit = async () => {
+    const isName = checkName(name);
+    if(isName === 0) {
+      setNameStatus("Name is required");
+      return;
+    }  
     const isEmail = checkEmail(email);
     if(isEmail < 0) {
-      setEmailStatus("Email is empty");
+      setEmailStatus("Email is reurired");
       return;
     } else {
       if(isEmail == 0) {
@@ -48,6 +63,16 @@ const Register = () => {
       setPasswordStatus("");
     }
 
+    const res = await register({ name, email, password }).unwrap();
+    console.log(res);
+
+  };
+
+  const checkName = (name) => {
+    if(name === "") {
+      return 0;
+    }
+    return 1;
   };
 
   const checkEmail = ( emailForCheck ) => {
@@ -89,6 +114,8 @@ const Register = () => {
           <div className="w-[80%] flex flex-col justify-center">
             <p className="ml-4 text-left text-[40px] text-blue font-bold">Welcome Back</p>
             <p className="mb-5 ml-4 text-left text-[20px] text-slate-500">SignUp to continue</p>
+            <label className="text-left ml-5">Name: {nameStatus}</label>
+            <input className={`w-full p-3 m-4 mt-1 border-2 bg-slate-100 ${nameStatus === "" ? "border-primary":"border-lightRed"} rounded-xl focus:ring-2 outline-none`} type='text' placeholder='Steve Jin' value={name} onChange={handleChangeName} />
             <label className="text-left ml-5">Email: {emailStatus}</label>
             <input className={`w-full p-3 m-4 mt-1 border-2 bg-slate-100 ${emailStatus === "" ? "border-primary":"border-lightRed"} rounded-xl focus:ring-2 outline-none`} type='email' placeholder='stevejin88@gmail.com' value={email} onChange={handleChangeEmail} />
             <label className="text-left ml-5">Password: {passwordStatus}</label>
