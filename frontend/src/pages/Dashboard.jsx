@@ -138,7 +138,7 @@ const Dashboard = () => {
           Dashboard
         </h2>
 
-        <div className="h-[40px] relative my-2 text-gray-500 focus-within:text-purple-600">
+          <div className="h-[40px] relative my-2 text-gray-500 focus-within:text-purple-600">
             <input
               className="block w-full h-[100%] pl-14 pr-20 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
               placeholder="apple"
@@ -190,7 +190,7 @@ const Dashboard = () => {
               <option value="General">General</option>
               <option value="Braille">Braille</option>
             </select>
-        </div>
+          </div>
 
         {modalShow && selectedIndex !== -1 ? <DetailModal descData = {{...result[selectedIndex], "image":`${selectedIndex}`}} handleClick={setModalShow} />: ""}
         
@@ -251,7 +251,7 @@ const Dashboard = () => {
             </ul>
           </div>
         </div>
-        <div className="bg-white p-2">{searchResult}</div>
+        <div className="bg-white p-2 pt-0">{searchResult}</div>
       </div>
       
     </main>
