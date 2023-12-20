@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { ToastContainer, toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { LoginImage } from "../assets";
 import PrimaryButton from "../components/PrimaryButton";
 import { useRegisterMutation } from "../slices/userApiSlice";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [register, {isLoading}] = useRegisterMutation();
   
   const [name, setName] = useState("");
@@ -62,9 +64,15 @@ const Register = () => {
       }
       setPasswordStatus("");
     }
-
-    const res = await register({ name, email, password }).unwrap();
-    console.log(res);
+    try {
+      const res = await register({ name, email, password }).unwrap();
+      console.log(res);
+      toast.success('Logged in Successfully!', {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+      //navigate("/");
+    } catch (err) {
+			toast.error(err?.data?.message || err.error, {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+    }
+    
 
   };
 
@@ -108,7 +116,7 @@ const Register = () => {
               <p className="text-left text-blue text-lg">Copyright Reserved &copy; 2023</p>
             </div>
           </div>
-          
+          <ToastContainer />
         </div>
         <div className="w-[50%] flex align-center justify-center">
           <div className="w-[80%] flex flex-col justify-center">

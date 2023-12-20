@@ -5,7 +5,7 @@ dotenv.config();
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { notFoundHandler, errorHandler } from './middleware/errorCatchMiddleware.js';
-//import 'express-async-errors'
+import 'express-async-errors'
 import connectDB from './config/database.js';
 //Router
 import userRouter from './routers/userRouter.js';
