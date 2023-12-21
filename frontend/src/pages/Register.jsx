@@ -125,7 +125,7 @@ const Register = () => {
             <label className="text-left ml-5">Name: {nameStatus}</label>
             <input className={`w-full p-3 m-4 mt-1 border-2 bg-slate-100 ${nameStatus === "" ? "border-primary":"border-lightRed"} rounded-xl focus:ring-2 outline-none`} type='text' placeholder='Steve Jin' value={name} onChange={handleChangeName} />
             <label className="text-left ml-5">Email: {emailStatus}</label>
-            <input className={`w-full p-3 m-4 mt-1 border-2 bg-slate-100 ${emailStatus === "" ? "border-primary":"border-lightRed"} rounded-xl focus:ring-2 outline-none`} type='email' placeholder='stevejin88@gmail.com' value={email} onChange={handleChangeEmail} />
+            <input className={`w-full p-3 m-4 mt-1 border-2 bg-slate-100 ${emailStatus === "" ? "border-primary":"border-lightRed"} rounded-xl focus:ring-2 outline-none`} type='email' placeholder='simba00000@gmail.com' value={email} onChange={handleChangeEmail} />
             <label className="text-left ml-5">Password: {passwordStatus}</label>
             <input className={`w-full p-3 m-4 mt-1 border-2 bg-slate-100 ${passwordStatus === "" ? "border-primary":"border-lightRed"} rounded-xl focus:ring-2 outline-none`} type="password" placeholder='******' value={password} onChange={handleChangePassword}/>
             <label className="text-left ml-5">Confirm: </label>
