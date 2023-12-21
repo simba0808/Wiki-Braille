@@ -9,7 +9,7 @@ const Sidebar = () => {
       <aside className="z-20 hidden w-[15%] overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0">
         <div className="py-4 text-gray-500 dark:text-gray-400">
           <Link
-            to={"/adminDashboard"}
+            to={"/dashboard"}
             className="ml-6 text-lg font-bold text-gray-800 dark:text-gray-200"
           >
             Wiki-Braille
@@ -25,7 +25,7 @@ const Sidebar = () => {
                 <></>
               )}
               <Link
-                to={"/adminDashboard"}
+                to={"/dashboard"}
                 className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400 dark:hover:text-gray-200 dark:text-gray-100"
                 onClick={() => setSlideShow(0)}
               >
@@ -46,35 +46,6 @@ const Sidebar = () => {
             </li>
           </ul>
           <ul>
-          <li className="relative px-6 py-3">
-              { slideShow === 1 ? (
-                <span
-                  className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
-                  aria-hidden="true"
-                ></span>
-              ) : (
-                <></>
-              )}
-              <Link
-                to={"/adminAddData"}
-                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400 dark:hover:text-gray-200 dark:text-gray-100"
-                onClick={() => setSlideShow(1)}
-              >
-                <svg
-                    className="w-5 h-5"
-                    aria-hidden="true"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                    ></path>
-                  </svg>
-                <span className="ml-4">Add Data</span>
-              </Link>
-            </li>
-          </ul>
-          <ul>
             <li className="relative px-6 py-3">
               {slideShow === 2 ? (
                 <span
@@ -85,7 +56,7 @@ const Sidebar = () => {
                 <></>
               )}
               <Link
-                to={"/adminSetting"}
+                to={"/setting"}
                 className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400 dark:hover:text-gray-200"
                 onClick={() => setSlideShow(2)}
               >

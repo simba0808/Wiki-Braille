@@ -3,11 +3,14 @@ import { LoginImage } from '../assets'
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../slices/userApiSlice';
+import { useDispatch } from'react-redux';
+import { setCredentials } from '../slices/authSlice';
 import { ToastContainer, toast } from "react-toastify";
 
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [login, {isLoading}] = useLoginMutation();
   const [email, setEmail] = useState("");
@@ -47,13 +50,14 @@ const Login = () => {
     try {
       const res = await login({ email, password }).unwrap();
       toast.success('Logged in Successfully!', {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+      dispatch(setCredentials({...res}));
       const { role } = res;
-      if(role === 1) {
+      if (role === 1) {
         navigate("/adminDashboard");
-      } else {
+      }
+      else if (role === 0) {
         navigate("/dashboard");
       }
-      
     } catch (err) {
       setPassword("");
 			toast.error(err?.data?.message || err.error, {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});

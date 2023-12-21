@@ -1,6 +1,12 @@
 import User from "../models/user.js";
 import generateToken from "../utils/generateToken.js";
 
+
+const getUserInfo = async (req, res) => {
+  //console.log(req);
+  const { userId } = req.decoded;
+};
+
 const authWithToken = async (req, res) => {
 
 };
@@ -58,6 +64,7 @@ const registerUser = async (req, res) => {
 };
 
 export {
+  getUserInfo,
   registerUser,
   authUser,
 };

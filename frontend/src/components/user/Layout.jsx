@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import { useEffect } from "react";
-const AdminLayout = () => {
+const UserLayout = () => {
   useEffect(() => {
   }, []);
   return (
@@ -18,4 +18,4 @@ const AdminLayout = () => {
   );
 };
 
-export default AdminLayout;
+export default UserLayout;
