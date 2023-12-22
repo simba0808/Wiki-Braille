@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 
 const authUserMiddleware = async (req, res, next) => {
   let token = req.headers['authorization'];
+  
   if(token) {
     const isValid = token.match(/^Bearer\s+/) ? true: false;
     if (!isValid) {

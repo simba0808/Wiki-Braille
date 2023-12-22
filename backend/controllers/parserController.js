@@ -1,14 +1,54 @@
-import mammoth from "mammoth";
-import Docxtemplater from "docxtemplater";
-import fs from 'fs';
-import ImageModule from "docxtemplater-image-module";
-import JSZip from 'jszip';
-import PizZip from "pizzip";
+import { parse } from "node-html-parser";
+import fs from "fs";
+import iconv from "iconv-lite";
 
 const extractDataFromWord = async (req, res) => {
   
   const path = req.body.filePath;
-  console.log(path)
+  const type = req.body.type;
+  console.log(path);
+  
+  const buffer = fs.readFileSync(path);
+
+  const decodedData = iconv.decode(buffer, "iso-8859-1");
+  const root = parse(decodedData).text;
+  //const root = parse(data).text;
+    //console.log(root);
+    const titleMatch = root.match(/Título: (.+)/g);
+    if(titleMatch) {
+      const titles = titleMatch.map((title) => 
+        title.replace("Título: ", "")
+      );
+      const title = titles.map((item) => item.match(/<\/span><\/h\d>/g) ? item.replace(/<\/span><\/h\d>/g, ""): item);
+      // const result = titles.match(/<\/span><\/h\d>/g);
+      // if(result) {
+      //   const title = result.map((item) => item.replace(/<\/span><\/h\d>/g, ""));
+      //   console.log(title)
+      // }
+      console.log(title)
+    }
+    
+    const catagoryMatch = root.match(/Categoria: (.+)/g);
+    if(catagoryMatch) {
+      const tempCatagories = catagoryMatch.map((catagory) => catagory.replace("Categoria: ", ""));
+      const catagories = tempCatagories.map((catagory) => catagory.match(/<\/span><\/h\d>/g) ? catagory.replace(/<\/span><\/h\d>/g, ""): catagory);
+      console.log(catagories);
+    }
+
+    if(type === "text") {
+      const descriptionMatch = root.match(/_y[0-9][0-9]: (.+)/g);
+      if(descriptionMatch) {
+        const descriptions = descriptionMatch.map((description) => description.replace(/_y[0-9][0-9]: /,""));
+        console.log(descriptions)
+      }
+    } else if(type === "braille") {
+      console.log("enter")
+      const descriptionMatch = root.match(/<f->([\s\S]+?)<f\+>/);
+      if(descriptionMatch) {
+        console.log("FFFFF")
+        console.log(descriptionMatch, descriptionMatch.length);
+      }
+    }
   // fs.readFile(path, (err, data) => {
   //   if(err) throw err;
   //   const zip = new PizZip();

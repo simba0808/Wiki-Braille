@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import DetailModal from "../components/detailModal";
+import axios from "axios";
+import { setCredentials } from "../slices/authSlice";
 
 const Dashboard = () => {
   const [modalShow, setModalShow] = useState(false);
@@ -9,6 +13,28 @@ const Dashboard = () => {
   const [showResults, setShowResults] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
   const [searchWord, setSearchWord] = useState("");
+  
+  const {userInfo} = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if(!userInfo) {
+        navigate("/");
+      } else {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
+        try {
+          const res = await axios.get("/api/user/");
+          dispatch(setCredentials({...res.data}));
+        } catch (err) {
+          console.log(err.message);
+          navigate("/");
+        }
+      }
+    };
+    fetchData();
+  }, []);
   
   useEffect(() => {
     getSearchResults();
@@ -114,7 +140,7 @@ const Dashboard = () => {
 
   const getSearchResults = () => {
     const temp = result.filter((item) => item.title.toLowerCase().includes(searchWord.toLowerCase()));
-    console.log(searchWord)
+    console.log(">>>",searchWord)
     setSearchResults(temp);
     setCurrentPageIndex(1);
     setSelectedIndex(-1);

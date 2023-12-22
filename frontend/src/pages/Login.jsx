@@ -7,7 +7,6 @@ import { useDispatch } from'react-redux';
 import { setCredentials } from '../slices/authSlice';
 import { ToastContainer, toast } from "react-toastify";
 
-
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -20,17 +19,26 @@ const Login = () => {
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
+    setEmailStatus("");
   };
 
   const handleChangePassword = (e) => {
     setPassword(e.target.value);
+    setPasswordStatus("");
+  };
+
+  const handleKeyDown = (e) => {
+    if(e.keyCode === 13) {
+      console.log("ccc")
+      handleSubmit();
+    }
   };
 
   const handleSubmit = async () => {
     const isEmail = checkEmail(email);
 
     if(isEmail < 0) {
-      setEmailStatus("Email is reurired");
+      setEmailStatus("Email is requrired");
       return;
     } else {
       if(isEmail == 0) {
@@ -82,71 +90,78 @@ const Login = () => {
 
   return(
     <>
-      <div className="w-[85%] h-[100vh] mx-auto p-0 m-0 flex flex-row">
-        <div className="w-[50%] h-[100%] flex flex-col align-center justify-center">
-          <div className="h-[80%] flex flex-col">
-            <div className="flex-1">
-              <p className="text-left text-[50px] text-blue font-bold">Logo</p>
-            </div>
-            <div className="flxe-3 flex">
-              <img className="w-[90%]" src={LoginImage} alt="login-image"/>
-            </div>
-            <div className="flex-1 flex items-end justify-center">
-              <p className="text-left text-blue text-lg">Copyright Reserved &copy; 2023</p>
-            </div>
+      <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
+      <div
+        className="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800"
+      >
+        <div className="flex flex-col overflow-y-auto md:flex-row">
+          <div className="h-32 md:h-auto md:w-1/2">
+            <img
+              aria-hidden="true"
+              className="object-cover w-full h-full dark:hidden"
+              src={LoginImage}
+              alt="Office"
+            />
+            <ToastContainer  />
           </div>
-          <ToastContainer  />
-        </div>
-        <div className="w-[50%] flex align-center justify-center">
-          <div className="w-[80%] flex flex-col justify-center">
-            <p className="ml-4 text-left text-[40px] text-blue font-bold">Welcome Back</p>
-            <p className="mb-5 ml-4 text-left text-[20px] text-slate-500">Login to continue</p>
-            <label className="text-left ml-5 mt-7">Email: {emailStatus}</label>
-            <input className={`w-full p-3 m-4 mt-1 border-2 bg-slate-100 ${emailStatus==="" ? "border-primary":"border-lightRed"} rounded-xl focus:ring-2 outline-none`} type='email' placeholder='simba00000@gmail.com' value={email}  onChange={handleChangeEmail} />
-            <label className='text-left ml-5'>Password: {passwordStatus}</label>
-            <input className={`w-full p-3 m-4 mt-1 border-2 bg-slate-100 ${passwordStatus==="" ? "border-primary":"border-lightRed"} rounded-xl focus:ring-2 outline-none`} type="password" placeholder='******' value={password} onChange={handleChangePassword}/>
-            <div className="mb-5 ml-1 inline-flex items-center relative">
-              <label
-                className="relative flex cursor-pointer items-center rounded-full p-3"
-                htmlFor="checkbox"
-                data-ripple-dark="true"
+          <div className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
+            <div className="w-full text-left">
+              <h1
+                className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200"
               >
+                Login
+              </h1>
+              <label className="block mt-4 text-sm">
+                <span className="text-gray-700 dark:text-gray-400">Email: {emailStatus}</span>
                 <input
-                  type="checkbox"
-                  className="before:content[''] peer relative h-6 w-6 cursor-pointer appearance-none rounded-md border border-blue-gray-500 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-primary checked:bg-primary checked:before:bg-primary hover:before:opacity-10"
-                  id="checkbox"
+                  className={`block w-full mt-1 text-sm border p-2 rounded-md focus:ring-2 focus:ring-purple-200 focus:border-purple-600 focus:outline-none focus:shadow-outline-purple form-input ${emailStatus === "" ? "border-grey-200":"border-red-400 ring-2 ring-red-100"}`}
+                  placeholder="example@email.com"
+                  value={email}
+                  onChange={handleChangeEmail}
                 />
-                <div className="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-3.5 w-3.5"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeWidth="1"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    ></path>
-                  </svg>
-                </div>
               </label>
-              <span className="text-blue">Remember Me</span>
-              <div className="absolute right-0">
-                <a className="text-blue" href="#">Forget Password?</a>
-              </div>
-            </div>
-            <div className="mt-10 flex flex-col align-center justify-center items-center">
-              <button onClick={handleSubmit}>
-                <PrimaryButton  text="Login" />
+              <label className="block mt-4 text-sm">
+                <span className="text-gray-700 dark:text-gray-400">Password: {passwordStatus}</span>
+                <input
+                  className={`block w-full mt-1 p-2 text-sm border rounded-md focus:border-purple-600  focus:ring-2 focus:ring-purple-200 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input ${passwordStatus === "" ? "border-grey-200":"border-lightRed"}`}
+                  placeholder="***************"
+                  type="password"
+                  value={password}
+                  onChange={handleChangePassword}
+                  onKeyDown={handleKeyDown}
+                />
+              </label>
+
+              <button
+                className="block w-full px-4 py-2 mt-12 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                onClick={handleSubmit}
+              >
+                Log In
               </button>
-              <p className="p-5 text-xl text-blue">New User?&nbsp;&nbsp;<Link to={"/register"} className="underline underline-offset-8">Sign Up</Link></p>
+
+              <hr className="my-8" />
+
+              <p className="mt-4">
+                <a
+                  className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                  href="./forgot-password.html"
+                >
+                  Forgot your password?
+                </a>
+              </p>
+              <p className="mt-1">
+                <Link
+                  className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                  to={"/register"}
+                >
+                  Create account
+                </Link>
+              </p>
             </div>
           </div>
         </div>
       </div>
+    </div>
     </>
   );
 };

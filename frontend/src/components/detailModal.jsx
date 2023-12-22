@@ -1,11 +1,14 @@
+import { useSelector } from "react-redux";
+
 const detailModal = ( {descData, handleClick} ) => {
+
   const {title, description, image } = descData;
-  console.log(descData)
+  const { userInfo } = useSelector((state) => state.auth);
+
   const handleCloseClick = () => {
     handleClick(false);
-  }
-
-
+  };
+  
   return (
     <>
     <div
@@ -34,16 +37,19 @@ const detailModal = ( {descData, handleClick} ) => {
                   {description}
               </p>
             </div>
-            
-            
-            <div className="flex justify-end pt-2">
-              <button className="w-[90px] focus:outline-none modal-close px-4 bg-gray-400 p-3 rounded-lg text-black hover:bg-gray-300">
-                Edit
-              </button>
-              <button className="w-[90px] focus:outline-none px-4 bg-teal-500 p-3 ml-3 rounded-lg text-white hover:bg-teal-400">
-                Confirm
-              </button>
-            </div>
+          
+            { 
+              userInfo.role === 1 ? (
+                <div className="flex justify-end pt-2">
+                  <button className="w-[90px] focus:outline-none modal-close px-4 p-3 rounded-lg text-black border border-purple-700 hover:bg-purple-300 active:bg-purple-600 active:text-white">
+                    Edit
+                  </button>
+                  <button className="w-[90px] focus:outline-none px-4 bg-purple-800 p-3 ml-3 rounded-lg text-white  hover:bg-purple-400 active:border active:border-purple-700 active:bg-white active:text-purple-900">
+                    Confirm
+                  </button>
+                </div>
+              ) : <></>
+            }
           </div>
         </div>
       </div>

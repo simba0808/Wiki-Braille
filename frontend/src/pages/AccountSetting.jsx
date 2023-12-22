@@ -1,4 +1,32 @@
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { setCredentials } from "../slices/authSlice";
+
 const AccountSetting = () => {
+  const {userInfo} = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if(!userInfo) {
+        navigate("/");
+      } else {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
+        try {
+          const res = await axios.get("/api/user/");
+          dispatch(setCredentials({...res.data}));
+        } catch (err) {
+          console.log(err.message);
+          navigate("/");
+        }
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <main className="h-full">
       <div className="container px-6 mx-auto grid">
