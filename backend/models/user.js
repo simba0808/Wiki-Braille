@@ -18,8 +18,16 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: Number,
-      default: 0
-    }
+      default: -1,
+    }, 
+    avatar: {
+      type: String,
+      default: "",
+    },
+    verifyCode: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,

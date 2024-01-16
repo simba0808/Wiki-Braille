@@ -1,4 +1,3 @@
-import PrimaryButton from '../components/PrimaryButton';
 import { LoginImage } from '../assets'
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -29,48 +28,8 @@ const Login = () => {
 
   const handleKeyDown = (e) => {
     if(e.keyCode === 13) {
-      console.log("ccc")
       handleSubmit();
     }
-  };
-
-  const handleSubmit = async () => {
-    const isEmail = checkEmail(email);
-
-    if(isEmail < 0) {
-      setEmailStatus("Email is requrired");
-      return;
-    } else {
-      if(isEmail == 0) {
-        setEmailStatus("Email is not valid");
-        return;
-      }
-      setEmailStatus("");
-    }
-
-    const isPassword = checkPassword(password);
-    if(isPassword < 0) {
-      setPasswordStatus("Password must be at least 6 characters");
-      return;
-    }
-    setPasswordStatus("");
-    
-    try {
-      const res = await login({ email, password }).unwrap();
-      toast.success('Logged in Successfully!', {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
-      dispatch(setCredentials({...res}));
-      const { role } = res;
-      if (role === 1) {
-        navigate("/adminDashboard");
-      }
-      else if (role === 0) {
-        navigate("/dashboard");
-      }
-    } catch (err) {
-      setPassword("");
-			toast.error(err?.data?.message || err.error, {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
-    }
-    
   };
 
   const checkEmail = (emailForCheck) => {
@@ -86,6 +45,49 @@ const Login = () => {
       return -1;
     }
     return 1;
+  };
+
+  const handleSubmit = async () => {
+    const isEmail = checkEmail(email);
+
+    if(isEmail < 0) {
+      setEmailStatus("É necessário ter um e-mail");
+      return;
+    } else {
+      if(isEmail == 0) {
+        setEmailStatus("O e-mail não é válido");
+        return;
+      }
+      setEmailStatus("");
+    }
+
+    const isPassword = checkPassword(password);
+    if(isPassword < 0) {
+      setPasswordStatus("A senha deve ter pelo menos 6 caracteres");
+      return;
+    }
+    setPasswordStatus("");
+    
+    try {
+      const res = await login({ email, password }).unwrap();
+      toast.success('Logado com sucesso!', {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+      dispatch(setCredentials({...res}));
+      const { role } = res;
+      if (role === 2) {
+        navigate("/adminDashboard");
+      } else if(role === 1){
+        navigate("/editorDashboard");
+      } else if (role === 0) {
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      setPassword("");
+      if(err.data.message === "inactive") {
+        toast.error("O usuário não está ativo", {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+      } else {
+        toast.error("Credencial inválida", {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+      }
+    }
   };
 
   return(
@@ -109,19 +111,20 @@ const Login = () => {
               <h1
                 className="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200"
               >
-                Login
+                Conecte-se
               </h1>
               <label className="block mt-4 text-sm">
-                <span className="text-gray-700 dark:text-gray-400">Email: {emailStatus}</span>
+                <span className="text-gray-700 dark:text-gray-400">E-mail: {emailStatus}</span>
                 <input
                   className={`block w-full mt-1 text-sm border p-2 rounded-md focus:ring-2 focus:ring-purple-200 focus:border-purple-600 focus:outline-none focus:shadow-outline-purple form-input ${emailStatus === "" ? "border-grey-200":"border-red-400 ring-2 ring-red-100"}`}
                   placeholder="example@email.com"
+                  autoFocus={true}
                   value={email}
                   onChange={handleChangeEmail}
                 />
               </label>
               <label className="block mt-4 text-sm">
-                <span className="text-gray-700 dark:text-gray-400">Password: {passwordStatus}</span>
+                <span className="text-gray-700 dark:text-gray-400">Senha: {passwordStatus}</span>
                 <input
                   className={`block w-full mt-1 p-2 text-sm border rounded-md focus:border-purple-600  focus:ring-2 focus:ring-purple-200 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input ${passwordStatus === "" ? "border-grey-200":"border-lightRed"}`}
                   placeholder="***************"
@@ -136,25 +139,25 @@ const Login = () => {
                 className="block w-full px-4 py-2 mt-12 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                 onClick={handleSubmit}
               >
-                Log In
+                Conecte-se
               </button>
 
               <hr className="my-8" />
 
               <p className="mt-4">
-                <a
+                <Link
                   className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
-                  href="./forgot-password.html"
+                  to={"/resetPassword"}
                 >
-                  Forgot your password?
-                </a>
+                  Esqueceu sua senha?
+                </Link>
               </p>
               <p className="mt-1">
                 <Link
                   className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
                   to={"/register"}
                 >
-                  Create account
+                  Criar uma conta
                 </Link>
               </p>
             </div>

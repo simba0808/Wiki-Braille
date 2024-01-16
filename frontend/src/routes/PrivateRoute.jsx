@@ -11,7 +11,7 @@ const PrivateRoute = () =>{
   }
   if(userInfo.role === 0) {
     return <Outlet />;
-  } else if(userInfo.role === 1) {
+  } else if(userInfo.role === 2) {
     return <Navigate to={"/adminDashboard"} />
   }
 };

@@ -1,23 +1,43 @@
+import Loading from "../components/Loading";
+import DetailModal from "../components/detailModal";
+import { emptyImage } from "../assets";
+import { NotExistIcon } from "../assets";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import DetailModal from "../components/detailModal";
-import axios from "axios";
 import { setCredentials } from "../slices/authSlice";
+import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
+import Box from '@mui/material/Box';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
+import { useTheme, useMediaQuery } from "@mui/material";
 
 const Dashboard = () => {
+  const theme = useTheme();
+  const screenSize = {
+    isSmall: useMediaQuery(theme.breakpoints.down("md")),
+    isMedium: useMediaQuery(theme.breakpoints.between("md", "xl")),
+    isLarge: useMediaQuery(theme.breakpoints.up("xl")),
+  };
+
   const [modalShow, setModalShow] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [startPageIndex, setStartPageIndex] = useState(1);
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
-  const [showResults, setShowResults] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
+  const [numberPerPage, setNumberPerPage] = useState(screenSize.isMedium?4:6);
   const [searchWord, setSearchWord] = useState("");
-  
+  const [searchWordGroup, setSearchWordGroup] = useState({word: "", advance: "Descrição", searchin: 0, pageIndex: 1});
+  const [filteredCount, setFilteredCount] = useState(0);
+  const [filteredData, setFilteredData] = useState([]);
+  const [viewMode, setViewMode] = useState(0);
+  const [updateDescription, setUpdateDescription] = useState("");
+  const [isLoading, setLoading] = useState(false);
+
   const {userInfo} = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  
   useEffect(() => {
     const fetchData = async () => {
       if(!userInfo) {
@@ -28,90 +48,58 @@ const Dashboard = () => {
           const res = await axios.get("/api/user/");
           dispatch(setCredentials({...res.data}));
         } catch (err) {
-          console.log(err.message);
+          toast.error("Falha ao buscar dados", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: 'dark' });
           navigate("/");
         }
       }
     };
     fetchData();
   }, []);
-  
-  useEffect(() => {
-    getSearchResults();
-  }, []);
 
   useEffect(() => {
-    const res = [...searchResults].slice(5*(currentPageIndex-1), (currentPageIndex-1)*5+5);
-    setShowResults(res);
-  }, [currentPageIndex, searchResults]);
+    const getTotalNumbers = async () => {
+      setNumberPerPage(screenSize.isMedium ? 4: 6);
+      try {
+        const response = await axios.post("/api/data/totalnumber", searchWordGroup);
+        setFilteredCount(response.data.filteredCount);
+        setCurrentPageIndex(1);
+        setSelectedIndex(-1);
+        setStartPageIndex(1);
 
-  const result = [
-    {
-      title: "câmera fotográfica",
-      description: "_y3: _`[Colagem. Mulher com uma câmera fotográfica no lugar da cabeça. Do topo da câmera saem duas antenas. A mulher usa um vestido branco com detalhes rosa, por cima uma blusa preta de manga comprida e apenas um botão fechado e, no bolso, carrega alguns lápis. No ombro esquerdo, usa uma bolsa a tiracolo, com alguns papéis escritos à mostra, saindo do acessório. Com a mão direita, segura um *tablet* com a imagem de um homem, que é Carlos Drummond de Andrade._`]",
-    },
-    {
-      title: "Novas histórias da bruxa  Onilda",
-      description: "_y12: _`[Capa de livro. Imagem com o fundo e bordas em tons de cores alaranjadas. Já no centro, há a ilustração de uma mulher usando um vestido longo de cor preta, um lenço vermelho ao redor do ombro e da cintura e um chapéu preto pontiagudo. A mulher está em  cima de um bloco verde, e ao lado dos seus pés há uma pequena coruja. Em ambos os lados da mulher, há alguns vasos de plantas verdes e compridas. No topo da imagem, está escrita na cor roxa a frase “Novas histórias da bruxa  Onilda”. Por fim, logo abaixo, há o título do livro “Bruxa Onilda é uma grande estrela”. Na parte inferior da imagem, no centro, está escrito “editora scipione”._`]",
-    },
-    {
-      title: "Apple",
-      description: 
-        "_y19: LAERTE. Piratas do Tietê. *Folha de São Paulo*, 5 jun. 2011 _`[Tirinha composta por quatro quadros, de Laerte. Q1: Imagem de um menino pequeno ao lado de uma mulher, que veste um avental de cozinha amarelo e roupa verde de bolinhas brancas, e está em frente a uma bancada enquanto corta cenouras. O menino diz: “Mãe, qual é a diferença entre ser normal e ser clichê?” A mulher olha na direção do filho e responde: “Não sei, pergunte ao seu pai.”; Q2: O menino está em frente a um homem que usa bigode e está sentado em uma poltrona enquanto segura um jornal. O menino, então, pergunta: “Pai, qual é a diferença entre ser normal e ser clichê?”. O pai responde: “Não sei, pergunte aos sábios do templo.”; Q3: O menino está em uma pequena escadaria, enquanto dois homens com longas barbas estão um pouco à frente dele. O menino mais uma vez pergunta: “Sábios do templo, qual é a diferença entre ser normal e ser clichê?”. Um dos homens responde: “Suma da nossa frente, garoto idiota!”; Q4: O garoto está sentado na escadaria, enquanto apoia os cotovelos nos joelhos e o rosto nas mãos._`]",
-    },
-    {
-      title: "Apple",
-      description: "This is delicious and fresh apple.",
-    },
-    {
-      title: "Apple",
-      description: "This is delicious and fresh apple.",
-    },
-    {
-      title: "caneta tinteiro",
-      description:"_y38: _`[Fotografia. Imagem de um pequeno recipiente com líquido de cor preta. Ao lado, uma caneta com detalhes cobre em que uma de suas extremidades é pontiaguda._ `]"
-    },
-    {
-      title: "Chaves, colchetes, setas...",
-      description: "!:÷!:÷!:÷   !:::::ÿ!::::ÿ!:::ÿ h:jh:jh:j   h:::::jh:::jh:::j"
-    },
-    {
-      title: "Malha",
-      description: ""
-    },
-    {
-      title: "",
-      description:""
-    },
-    {
-      title: "",
-      description:""
-    },
-    {
-      title: "",
-      description:""
-    },
-  ];
+        fetchFilteredData();
+      } catch (err) {
+        toast.error("Falha ao buscar dados", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: 'dark' })
+      }
+    }
+    getTotalNumbers();
+  }, [searchWordGroup.word, searchWordGroup.advance, searchWordGroup.searchin]);
 
-  const totalNumbers = searchResults.length;
+  useEffect(() => {
+    fetchFilteredData();
+  }, [searchWordGroup.pageIndex]);
 
-  const searchResult = showResults.map((item, index) => {
-    return (
-      <div className="w-full h-[100px] flex bg-slate-100 p-2 my-1 rounded-md hover:cursor-pointer" onClick={() => handleClick((currentPageIndex-1)*5+index)} key={index}>
-        <div className="h-[100%] aspect-w-1">
-          <img
-            className="w-[100%] h-[100%]"
-            src={`/src/assets/img/${(currentPageIndex-1)*5+index+1}.jpg`}
-            alt=""
-          />
-        </div>
-        <div className="w-full">
-          <h2 className="p-0 pl-3 pb-1 text-lg text-left font-semibold">{item.title}</h2>
-          <p className="px-2 text-sm text-left">{item.description.length>200 ? item.description.substring(0, 200)+"...":item.description}</p>
-        </div>
-      </div>
-    );
-  });
+  useEffect(() => {
+    setSearchWordGroup({...searchWordGroup, pageIndex:currentPageIndex});
+  }, [currentPageIndex]);
+
+  useEffect(() => {
+    if(updateDescription !== undefined && updateDescription !== "") {
+      filteredData[selectedIndex].description = updateDescription;
+    }
+  }, [updateDescription]);
+
+  const fetchFilteredData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post("/api/data/getdata", { searchWordGroup, numberPerPage });
+      //setShowResults(response.data);
+      setFilteredData(response.data);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      toast.error("Falha ao buscar dados", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: 'dark' })
+    }
+  }; 
 
   const handleClick = (index) => {
     setSelectedIndex(index);
@@ -129,7 +117,7 @@ const Dashboard = () => {
   };
 
   const forwardButtonHandle = () => {
-    if(currentPageIndex > totalNumbers/5) {
+    if(currentPageIndex > filteredCount/numberPerPage) {
       return;
     }
     if(currentPageIndex === startPageIndex+4) {
@@ -138,36 +126,58 @@ const Dashboard = () => {
     setCurrentPageIndex(currentPageIndex+1);
   };
 
-  const getSearchResults = () => {
-    const temp = result.filter((item) => item.title.toLowerCase().includes(searchWord.toLowerCase()));
-    console.log(">>>",searchWord)
-    setSearchResults(temp);
-    setCurrentPageIndex(1);
-    setSelectedIndex(-1);
-    setStartPageIndex(1);
-  };
-
   const handleSearchInput = (e) => {
     setSearchWord(e.target.value);
   };
 
   const handleSearchEntered = (e) => {
     if(e.keyCode === 13) {
-      getSearchResults();
+      setSearchWordGroup({...searchWordGroup, word:searchWord});
     }
   };
 
-  return (
-    <main className="h-full">
-      <div className="container px-6 mx-auto grid">
-        <h2 className="my-6 text-2xl text-left font-semibold text-gray-700 dark:text-gray-200">
-          Dashboard
-        </h2>
+  const searchResult = filteredData.map((item, index) => {
+    return (
+      <div className="relative h-[190px] col-span-1 flex flex-col items-start bg-slate-100 p-2 rounded-md hover:cursor-pointer" onClick={() => handleClick(index)} key={index}>
+        <span className="absolute right-2 xs:w-20 xs:px-4 py-1 px-2 rounded-xl xs:text-md text-sm bg-purple-200 text-purple-600">{item.title_id}</span>
+        <h2 className="p-0 pl-2 my-0 lg:text-[22px] md:text-lg sm:text-[22px] text-[18px] font-semibold">{item.title}</h2>
+        <div className="flex w-full items-center justify-center flex-1">
+          <div className="w-full h-full flex flex-col justify-center justify-between pl-2 pt-4">
+            {
+              item.tag !== "" ? <p className="lg:text-lg text-sm text-left font-semibold">{`Tag: ${item.tag}`}</p>:<></>
+            }
+            <div className="flex-1 flex items-center">           
+              <p className="pt-2 text-md text-left 2xl:block hidden">{item.description.length>150 ? item.description.substring(0, 150)+"...":item.description}</p>
+              <p className="pt-2 text-md text-left xl:block 2xl:hidden hidden">{item.description.length>150 ? item.description.substring(0, 130)+"...":item.description}</p>
+              <p className="pt-2 text-md text-left lg:block xl:hidden hidden">{item.description.length>150 ? item.description.substring(0, 80)+"...":item.description}</p>
+              <p className="pt-2 text-sm text-left md:block lg:hidden hidden">{item.description.length>120 ? item.description.substring(0, 120)+"...":item.description}</p>
+              <p className="pt-2 text-md text-left sm:block md:hidden hidden">{item.description.length>120 ? item.description.substring(0, 120)+"...":item.description}</p>
+              <p className=" pt-2 text-sm text-left sm:hidden block">{item.description.length>150 ? item.description.substring(0, 100)+"...":item.description}</p>
+            </div>
+          </div>
+          <img
+            className="max-h-[140px] max-w-[50%]"
+            src={item.image?item.image:NotExistIcon}
+            alt=""
+          />
+        </div>
+      </div>
+    );
+  });
 
+  return (
+    <main className="min-h-[90vh] w-full flex">
+      {isLoading && <Loading />}
+      <div className="container grow px-6 mx-auto">
+        <h2 className="my-6 text-2xl text-left font-semibold text-gray-700 dark:text-gray-200">
+          Painel de controle
+        </h2>
+        <ToastContainer />
           <div className="h-[40px] relative my-2 text-gray-500 focus-within:text-purple-600">
             <input
               className="block w-full h-[100%] pl-14 pr-20 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
               placeholder="apple"
+              autoFocus
               onKeyDown={handleSearchEntered}
               onChange={handleSearchInput}
             />
@@ -186,100 +196,149 @@ const Dashboard = () => {
               </svg>
             </div>
             <button 
-              className="absolute inset-y-0 right-0 px-4 my-0 text-sm font-medium leading5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-              onClick={getSearchResults}
+              className="absolute inset-y-0 right-0 xs:px-4 px-2 my-0 text-sm font-medium leading5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+              onClick={() => setSearchWordGroup({...searchWordGroup, word: searchWord})}
             >
-              To look for
+              Para procurar
             </button>
           </div>
-          <div className="h-[40px] relative my-2 text-gray-500 focus-within:text-purple-600">
-            <input
-              className="block w-full h-[100%] pl-40 pr-20 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
-              placeholder="apple"
-            />
-            <div className="absolute px-3 border-r-2 inset-y-0 flex items-center">
-              Advanced Search:
+          <div className="md:flex md:justify-between">
+            <div className="md:w-[48%] w-full relative my-2 px-2 text-gray-500 flex bg-white rounded-md border-2 border-slate-200">
+              <label className="block px-2 xs:pr-4 border-r-2 md:text-md text-sm flex items-center">
+                Pesquisa avançada:
+              </label>
+              <select
+                data-te-select-init
+                className="grow py-2 pl-2 focus:outline-none focus:border-none text-slate-900"
+                onChange={(e) => setSearchWordGroup({...searchWordGroup, advance: e.target.value})}
+              >
+                <option value="Descrição">Descrição</option>
+                <option value="Desenhos em braille">Desenhos em braille</option>
+              </select>
             </div>
-            <button className="absolute inset-y-0 right-0 px-4 text-sm font-medium leading5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple">
-              To look for
-            </button>
+            <div className="md:w-[48%] w-full relative my-2 px-2 text-gray-500 flex bg-white rounded-md border-2 border-slate-200">
+              <label className="block px-2 pr-4 border-r-2 md:text-md text-sm flex items-center">
+                Pesquisar em
+              </label>
+              <select
+                data-te-select-init
+                className="grow py-2 pl-2 focus:outline-none focus:border-none text-slate-900"
+                onChange={(e) => setSearchWordGroup({...searchWordGroup, searchin:e.target.value})}
+              >
+                <option value="0">Tudo</option>
+                <option value="1">Pesquisar por título</option>
+                <option value="2">Pesquisar por tag</option>
+              </select>
+            </div>
           </div>
-          <div className="relative my-2 px-2 text-gray-500 flex bg-white rounded-md border-2 border-slate-200">
-            <label className="block px-2 pr-4 border-r-2 text-md flex items-center">
-              Search in
-            </label>
-            <select
-              data-te-select-init
-              className="grow py-2 pl-2 focus:outline-none focus:border-none text-slate-900"
-            >
-              <option value="All">All</option>
-              <option value="General">General</option>
-              <option value="Braille">Braille</option>
-            </select>
-          </div>
-
-        {modalShow && selectedIndex !== -1 ? <DetailModal descData = {{...result[selectedIndex], "image":`${selectedIndex}`}} handleClick={setModalShow} />: ""}
+          
+      {modalShow && selectedIndex !== -1 ? <DetailModal descData = {{...filteredData[selectedIndex]}} handleClick={setModalShow} updateHandle={setUpdateDescription} />: ""}
         
-        <div className="p-4 px-12 bg-white">
-          <div>
-            <ul className="inline-flex items-center float-right">
-              <li>
-                <button
-                  className="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple"
-                  aria-label="Previous"
-                  onClick={backButtonHandle}
-                >
-                  <svg
-                    aria-hidden="true"
-                    className="w-4 h-4 fill-current"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                      fillRule="evenodd"
-                    ></path>
-                  </svg>
+        <div className="px-4 py-2 sm:px-12 px-4 bg-white">
+          <div className="sm:flex sm:justify-between ">
+            <div className="flex items-center">
+              <p><span className="text-md font-semibold p-1">{filteredCount}</span>registros pesquisados</p>
+            </div>
+            <div className="sm:flex sm:p-1 sm:flex-row flex flex-col gap-4 justify-end items-end">
+              <div className="bg-gray-200 text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">
+                <button className={`inline-flex items-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full px-4 py-2 ${!viewMode?"active":""}`} id="list" onClick={() => setViewMode(false)}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="fill-current w-4 h-4 mr-2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                  <span>Lista</span>
                 </button>
-              </li>
-              {
-                [1,2,3,4,5].map((item, index) => {
-                  return <li key={index} className="mx-1">
-                          <button 
-                            className={`px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple border border-purple-600 focus:outline-none focus:shadow-outline-purple ${currentPageIndex === startPageIndex+index ? "bg-purple-600":""} ${(startPageIndex+index)>(totalNumbers/5+1)?"opacity-50 cursor-not-allowed":""}`}
-                            onClick={() => setCurrentPageIndex(startPageIndex+index)}
-                            disabled={(startPageIndex+index)>(totalNumbers/5+1)?true:false}
-                          >
-                            {startPageIndex+index}
-                          </button>
-                        </li>
-                })
-              }
-              <li>
-                <button
-                  className="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
-                  aria-label="Next"
-                  onClick={forwardButtonHandle}
-                >
-                  <svg
-                    className="w-4 h-4 fill-current"
-                    aria-hidden="true"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                      fillRule="evenodd"
-                    ></path>
-                  </svg>
+                <button className={`inline-flex items-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-l-full px-4 py-2 ${viewMode?"active":""}`} id="grid" onClick={() => setViewMode(true)}>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="fill-current w-4 h-4 mr-2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                  <span>Grade</span>
                 </button>
-              </li>
-            </ul>
+              </div>
+              <ul className="inline-flex sm:items-center">
+                <li className="flex items-center">
+                  <button
+                    aria-label="Previous"
+                    onClick={backButtonHandle}
+                  >
+                    <svg
+                      aria-hidden="true"
+                      className="w-4 h-4 fill-current"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                        fillRule="evenodd"
+                      ></path>
+                    </svg>
+                  </button>
+                </li>
+                {
+                  [1,2,3,4,5].map((item, index) => {
+                    return <li key={index} className="mx-1">
+                            <button 
+                              className={`px-3 py-1 rounded-md text-purple-600 focus:outline-none focus:shadow-outline-purple border border-purple-600 focus:outline-none focus:shadow-outline-purple ${currentPageIndex === startPageIndex+index ? "bg-purple-600 text-white":""} ${(startPageIndex+index)>(filteredCount%numberPerPage?filteredCount/numberPerPage+1:filteredCount/numberPerPage)?"opacity-50 cursor-not-allowed":""}`}
+                              onClick={() => setCurrentPageIndex(startPageIndex+index)}
+                              disabled={(startPageIndex+index)>(filteredCount%numberPerPage?filteredCount/numberPerPage+1:filteredCount/numberPerPage)?true:false}
+                            >
+                              {startPageIndex+index}
+                            </button>
+                          </li>
+                  })
+                }
+                <li className="flex items-center">
+                  <button
+                    aria-label="Next"
+                    onClick={forwardButtonHandle}
+                    disabled={(currentPageIndex)>=(filteredCount%numberPerPage?filteredCount/numberPerPage+1:filteredCount/numberPerPage)?true:false}
+                  >
+                    <svg
+                      className="w-4 h-4 fill-current"
+                      aria-hidden="true"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                        fillRule="evenodd"
+                      ></path>
+                    </svg>
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-        <div className="bg-white p-2 pt-0">{searchResult}</div>
-      </div>
-      
+        {
+          viewMode ? 
+              <Box sx={{ width: "100%", overflowY: 'none', py: 2}}>
+                <ImageList variant={screenSize.isSmall?"masonry":""} cols={screenSize.isSmall?2:4} gap={10}>
+                  {
+                    filteredData.map((item, index) => {
+                      return (
+                      <div className="sm:h-[260px] h-auto relative flex flex-col justify-center shadow-md bg-white rounded-lg my-2 hover:cursor-pointer" key={item.image} onClick={() => handleClick(index)}>
+                        <span className="absolute xs:right-2 xs:top-2 right-1 top-1 xs:w-20 xs:px-4 py-1 px-2 rounded-xl text-xs md:text-sm bg-purple-200 text-purple-600">{item.title_id}</span>
+                        <div key={item.image} className="p-2 pt-8 mx-auto">
+                          <img 
+                            srcSet={`${item.image}?w=248&fit=crop&auto=format&dpr=2 2x`}
+                            src={`${item.image ? item.image:emptyImage}?w=248&fit=crop&auto=format`}
+                            className="sm:max-h-[200px]"
+                            alt={item.title}
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="px-2 py-2">
+                          <p className="absolute bottom-0 w-[90%] text-center overflow-hidden whitespace-nowrap text-overflow-ellipsis text-sm sm:text-md sm:font-semibold ">{item.title}</p>
+                        </div>
+                      </div>
+                      );
+                    })
+                  }
+                </ImageList>
+              </Box> :
+            <div className={`bg-white p-2 pt-0 ${filteredData.length ? `grid gap-2 md:grid-cols-2 grid-cols-1`:""}`}>
+              {
+                filteredData.length ? searchResult:<img src={emptyImage} className="mx-auto py-24"/>
+              }
+            </div>
+        }
+      </div>    
     </main>
   );
 };

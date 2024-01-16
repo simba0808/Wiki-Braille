@@ -58,7 +58,7 @@ export default {
       '200': '#fcd9bd',
       '300': '#fdba8c',
       '400': '#ff8a4c',
-      '500': '#ff5a1f',
+      '500': '#f58634',
       '600': '#d03801',
       '700': '#b43403',
       '800': '#8a2c0d',
@@ -106,7 +106,7 @@ export default {
       '200': '#c3ddfd',
       '300': '#a4cafe',
       '400': '#76a9fa',
-      '500': '#3f83f8',
+      '500': '#375DA8',
       '600': '#1c64f2',
       '700': '#1a56db',
       '800': '#1e429f',
@@ -154,9 +154,16 @@ export default {
       colors: {
         primary: '#45B4D0',
         secondary: '#66FFDO',
-        blue: '#151865',
         lightRed: '#ef4444',
       },
+      screens: {
+        xs: '480px',
+        sm: '640px',
+        md: '768px',
+        lg: '1024px',
+        xl: '1280px',
+        '2xl': '1536px',
+      }
     },
   },
   

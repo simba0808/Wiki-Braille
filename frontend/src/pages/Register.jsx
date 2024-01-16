@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
-import { useDispatch, useSelector } from "react-redux";
 import { RegisterImage } from "../assets";
 import { useRegisterMutation } from "../slices/userApiSlice";
 
@@ -38,38 +36,39 @@ const Register = () => {
   const handleSubmit = async () => {
     const isName = checkName(name);
     if(isName === 0) {
-      setNameStatus("Name is required");
+      setNameStatus("O nome é obrigatório");
       return;
     }  
     const isEmail = checkEmail(email);
     if(isEmail < 0) {
-      setEmailStatus("Email is reurired");
+      setEmailStatus("O e-mail é solicitado");
       return;
     } else {
       if(isEmail == 0) {
-        setEmailStatus("Email is not valid");
+        setEmailStatus("O e-mail não é válido");
         return;
       }
       setEmailStatus("");
     }
     const isPassword = checkPassword(password, confirmPassword);
     if(isPassword < 0) {
-      setPasswordStatus("Password must be at least 6 characters");
+      setPasswordStatus("A senha deve ter pelo menos 6 caracteres");
       return;
     } else {
       if(isPassword == 0) {
-        setPasswordStatus("Passwords do not match");
+        setPasswordStatus("As senhas não correspondem");
         return;
       }
       setPasswordStatus("");
     }
     try {
       const res = await register({ name, email, password }).unwrap();
-      console.log(res);
-      toast.success('Registered in Successfully!', {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
-      //navigate("/");
+      toast.success('Registrado com sucesso!', {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+      setTimeout(() => {
+        navigate("/");
+      }, 1000)
     } catch (err) {
-			toast.error(err?.data?.message || err.error, {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+			toast.error("Falha ao registrar o usuário", {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
     }
     
 
@@ -121,19 +120,20 @@ const Register = () => {
               <h1
                 className="mb-4 text-xl  font-semibold text-gray-700 dark:text-gray-200"
               >
-                Create account
+                Criar uma conta
               </h1>
               <label className="block text-sm">
-                <span className="text-gray-700 dark:text-gray-400">Name: {nameStatus}</span>
+                <span className="text-gray-700 dark:text-gray-400">Nome: {nameStatus}</span>
                 <input
                   className={`block w-full mt-1 text-sm border p-2 rounded-md focus:ring-2 focus:ring-purple-200 focus:border-purple-600 focus:outline-none focus:shadow-outline-purple form-input ${nameStatus === "" ? "border-grey-200":"border-lightRed"}`}
                   placeholder="Jane Doe"
+                  autoFocus
                   value={name}
                   onChange={handleChangeName}
                 />
               </label>
               <label className="block mt-4 text-sm">
-                <span className="text-gray-700 dark:text-gray-400">Email: {emailStatus}</span>
+                <span className="text-gray-700 dark:text-gray-400">E-mail: {emailStatus}</span>
                 <input
                   className={`block w-full mt-1 text-sm border p-2 rounded-md focus:ring-2 focus:ring-purple-200 focus:border-purple-600 focus:outline-none focus:shadow-outline-purple form-input ${emailStatus === "" ? "border-grey-200":"border-lightRed"}`}
                   placeholder="example@email.com"
@@ -142,7 +142,7 @@ const Register = () => {
                 />
               </label>
               <label className="block mt-4 text-sm">
-                <span className="text-gray-700 dark:text-gray-400">Password: {passwordStatus}</span>
+                <span className="text-gray-700 dark:text-gray-400">Senha: {passwordStatus}</span>
                 <input
                   className={`block w-full mt-1 p-2 text-sm border rounded-md focus:border-purple-600  focus:ring-2 focus:ring-purple-200 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input ${passwordStatus === "" ? "border-grey-200":"border-lightRed"}`}
                   placeholder="***************"
@@ -153,7 +153,7 @@ const Register = () => {
               </label>
               <label className="block mt-4 text-sm">
                 <span className="text-gray-700 dark:text-gray-400">
-                  Confirm password: {passwordStatus}
+                  Confirmar senha: {passwordStatus}
                 </span>
                 <input
                   className={`block w-full mt-1 p-2 text-sm border rounded-md focus:border-purple-600 focus:ring-2 focus:ring-purple-200 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input ${passwordStatus === "" ? "border-grey-200":"border-lightRed"}`}
@@ -171,8 +171,8 @@ const Register = () => {
                     className="text-purple-600 form-checkbox focus:border-purple-400 focus:outline-none"
                   />
                   <span className="ml-2">
-                    I agree to the&nbsp;
-                    <span className="underline">privacy policy</span>
+                    Eu concordo com os&nbsp;
+                    <span className="underline">política de privacidade</span>
                   </span>
                 </label>
               </div>
@@ -181,7 +181,7 @@ const Register = () => {
                 className="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                 onClick={handleSubmit}
               >
-                Create account
+                Criar uma conta
               </button>
 
               <hr className="my-8" />
@@ -191,7 +191,7 @@ const Register = () => {
                   className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
                   to={"/login"}
                 >
-                  Already have an account? Login
+                  Já tem uma conta? Conecte-se
                 </Link>
               </p>
             </div>

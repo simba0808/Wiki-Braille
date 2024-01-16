@@ -9,7 +9,7 @@ import 'express-async-errors'
 import connectDB from './config/database.js';
 //Router
 import userRouter from './routers/userRouter.js';
-
+import dataRouter from './routers/dataRouter.js';
 
 const port = process.env.PORT;
 
@@ -25,13 +25,16 @@ app.use(cors());
 app.use(cookieParser());
 
 app.use('/api/user', userRouter);
+app.use('/api/data', dataRouter);
+
+app.use(express.static("./images"));
 
 if (process.env.NODE_ENV === 'production') {
   const __dirname = path.resolve();
   app.use(express.static(path.join(__dirname, '/frontend/dist')));
 
   app.get('*', (req, res) =>
-    res.sendFile(path.resolve(__dirname, 'frontend', 'dist', 'index.html'))
+    res.sendFile(path.resolve(__dirname, '../frontend', 'dist', 'index.html'))
   );
 } else {
   app.get('/', (req, res) => {

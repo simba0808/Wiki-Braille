@@ -1,19 +1,7 @@
 #root {
   margin: 0 auto;
   text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  --mainWidth: calc(100vw-250px);
 }
 
 .toast-message {
@@ -42,6 +30,31 @@
   animation-name: fadeOut;
 }
 
+.active {
+  background: white; border-radius: 9999px; color: #63b3ed;
+}
+
+#side-open:checked ~ #sidebar {
+  transform: translateX(0);
+}
+
+
+@media (min-width: 1024px) {
+  .main-container {
+    position: absolute;
+    width: calc(100% - 250px);
+    left: 250px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .main-container {
+    position: absolute;
+    width: 100%;
+    left: 0;
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -62,25 +75,8 @@
   }
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }

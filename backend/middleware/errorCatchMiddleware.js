@@ -14,7 +14,6 @@ const errorHandler = (err, req, res, next) => {
 };
 
 const notFoundHandler = (req, res, next) => {
-  console.log(1);
   const error = new Error(`Not Found - ${req.originalUrl}`);
   res.status(404);
   next(error);

@@ -9,7 +9,7 @@ const AdminRoute = () => {
   if(!userInfo) {
     return <Navigate to="/" replace />;
   }
-  if(userInfo && userInfo.role === 1) {
+  if(userInfo && userInfo.role === 2) {
     return <Outlet />;
   }
   if(userInfo && userInfo.role === 0) {

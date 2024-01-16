@@ -1,110 +1,124 @@
-import { parse } from "node-html-parser";
+import jszip from "jszip";
 import fs from "fs";
-import iconv from "iconv-lite";
+import mammoth from "mammoth";
+import Data from "../models/data.js";
+import sharp from "sharp";
 
 const extractDataFromWord = async (req, res) => {
-  
-  const path = req.body.filePath;
-  const type = req.body.type;
-  console.log(path);
-  
-  const buffer = fs.readFileSync(path);
-
-  const decodedData = iconv.decode(buffer, "iso-8859-1");
-  const root = parse(decodedData).text;
-  //const root = parse(data).text;
-    //console.log(root);
-    const titleMatch = root.match(/Título: (.+)/g);
-    if(titleMatch) {
-      const titles = titleMatch.map((title) => 
-        title.replace("Título: ", "")
-      );
-      const title = titles.map((item) => item.match(/<\/span><\/h\d>/g) ? item.replace(/<\/span><\/h\d>/g, ""): item);
-      // const result = titles.match(/<\/span><\/h\d>/g);
-      // if(result) {
-      //   const title = result.map((item) => item.replace(/<\/span><\/h\d>/g, ""));
-      //   console.log(title)
-      // }
-      console.log(title)
-    }
-    
-    const catagoryMatch = root.match(/Categoria: (.+)/g);
-    if(catagoryMatch) {
-      const tempCatagories = catagoryMatch.map((catagory) => catagory.replace("Categoria: ", ""));
-      const catagories = tempCatagories.map((catagory) => catagory.match(/<\/span><\/h\d>/g) ? catagory.replace(/<\/span><\/h\d>/g, ""): catagory);
-      console.log(catagories);
-    }
-
-    if(type === "text") {
-      const descriptionMatch = root.match(/_y[0-9][0-9]: (.+)/g);
-      if(descriptionMatch) {
-        const descriptions = descriptionMatch.map((description) => description.replace(/_y[0-9][0-9]: /,""));
-        console.log(descriptions)
-      }
-    } else if(type === "braille") {
-      console.log("enter")
-      const descriptionMatch = root.match(/<f->([\s\S]+?)<f\+>/);
-      if(descriptionMatch) {
-        console.log("FFFFF")
-        console.log(descriptionMatch, descriptionMatch.length);
-      }
-    }
-  // fs.readFile(path, (err, data) => {
-  //   if(err) throw err;
-  //   const zip = new PizZip();
-  //   zip.file(data);
-  //   const doc = new Docxtemplater();
-  //   doc.loadZip(zip)
-  //   console.log('2')
-  // })
-  // const imageModule = new ImageModule({centered: false});
-
-  // doc.attachModule(imageModule);
-  // doc.render();
-  // console.log('2')
-  // const images = imageModule.imageNumber;
-  // console.log(images)
-  // mammoth.extractRawText({ path })
-  //   .then(result => {
-  //     console.log(result)
-  //     const texts = result.value;
-  //     texts.split("Título").map((text, index) => {
-  //       text = "Título"+text;
-  //       const title = text.match(/Título: (.+)/) ? text.match(/Título: (.+)/)[1]: "";
-  //       const catagory = text.match(/Categoria: (.+)/) ? text.match(/Categoria: (.+)/)[1]:"";
-  //       const description = text.match(/<f->([\s\S]+?)<f\+>/) ? text.match(/<f->([\s\S]+?)<f\+>/)[0]:"";
-  //     });
-  //     console.log(result.messages)
-  //     const images = result.messages.filter(message => message.type === "image");
-  //     console.log('>>>>', images.length)
-  //     images.forEach((image, index) => {
-  //       const { contentType, content } = image;
-  //       const extension = contentType.split("/")[1];
-  //       console.log(`image_${index}.${extension}`)
-  //       fs.writeFileSync(`image_${index}.${extension}`, content, 'binary');
-  //     });
+  mammoth.extractRawText({ path: req.file.path })
+    .then(async (result) => {
+      const root = result.value;
       
-  //     mammoth.images.imgElement(function(image) {
-  //       console.log("dddddddddddddddddddd")
-  //       return image.read("base64").then(function(buffer) {
-  //         console.log("dddddddddddddddddddd")
-  //         console.log(buffer);
-  //       })
-  //     })
-  //     // const titleMatch = item.match(/Título: (.+)/);
-  //     // const title = titleMatch ? titleMatch[1] : "";
-  //     // console.log(titleMatch);
+      let dataSet = [];
 
-  //     // texts.match(/Título: (.+)/).map((item, index) => {
-  //     //   console.log(index, item);
-  //     // });
-  //     // texts.match(/Categoria: (.+)/).map((item, index) => {
-  //     //   console.log(index, item);
-  //     // })
-  //   })
-  //   .catch(err => {
-  //     console.error(err);
-  //   })
+      try {
+        const paragraphs = root.split(/(?=^Título:)/gm);
+
+        paragraphs.forEach(async (paragraph, index) => {
+          let title = paragraph.match(/Título: (.+)/g);
+          if(title !== null) {
+            let catagory, tag, description;
+            catagory = paragraph.match(/Categoria: (.+)/g);
+            tag = paragraph.match(/Tag([\s\S]*?): (.+)/g);
+
+            if(tag) {
+              description = paragraph.replace(title, "").replace(catagory, "").replace(tag, "").trim();
+              description = description.replace(/\n\n/gm, "\n");
+            } else {
+              description = paragraph.replace(title, "").replace(catagory, "").trim();
+            }
+
+            title = title[0].split(":")[1].trim();
+            catagory = catagory[0].split(":")[1].trim();
+            tag = tag ? tag[0].split(":")[1].trim() : "";
+
+            dataSet.push({
+              title,
+              catagory,
+              tag,
+              description, 
+              image: "",
+            });
+          }
+        });
+
+        const zip = await jszip.loadAsync(fs.readFileSync(req.file.path));
+        const images = zip.file(/\.png|\.jpeg|\.jpg|\.gif|\.emf/i);
+
+        fs.access("./images", (error) => {
+          if (error) {
+            fs.mkdirSync("./images");
+          }
+        });
+
+        for(let i = 0; i < images.length; i++) {
+          const image = images[i];
+          const orignalName = image.name.split('/')[2];
+          //const contentType = `image/${orignalName.split('.')[1]}`;
+          const content = await image.async("nodebuffer");
+          //fs.writeFileSync(`./images/${orignalName}`, content, "base64");
+
+          // const imageModel = await ImageModel.create({
+          //   orignalName,
+          //   content,
+          //   contentType,
+          // });
+          //dataSet[i].image = imageModel._id;
+          const timeStamp = new Date().toISOString().replace(/[-T:Z.]/g, '');
+          await sharp(content).webp({ quality: 20 }).toFile("./images/" + `${timeStamp}-${orignalName}`);
+          dataSet[i].image = `http://localhost:3000/${timeStamp}-${orignalName}`;
+        }
+
+        const document = await Data.aggregate([
+          {
+            $sort: { "title_id": -1 }
+          }, 
+          {
+            $project: {
+              "title_id": 1
+            }
+          },
+          {
+            $limit: 1
+          }
+        ]);
+
+        let start_index = 0;
+        if(document.length > 0) {
+          start_index = parseInt(document[0].title_id.replace(/^0+/, ""));
+        } else {
+          start_index = 0;
+        }
+        try {
+          dataSet.forEach(async (item, index) => {
+            item = {...item, title_id:  (start_index+index+1).toString().padStart(6, "0")};
+            const data = await Data.create(item);
+          });
+          res.status(200).send({
+            message: "success",
+          });
+          fs.unlink(req.file.path, (err) => {
+            if(err) {
+              console.log(err);
+              return;
+            }
+          });
+        } catch (err) {
+          console.log(err);
+          res.status(403);
+          throw new Error("Error occured while saving Doc");
+        }
+      } catch (err) {
+        console.log(err);
+        res.status(403);
+        throw new Error("Error occured while parsing Doc")
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(405);
+      throw new Error("Error occured while extracting text from Doc");
+    })
 };
 
 export {
