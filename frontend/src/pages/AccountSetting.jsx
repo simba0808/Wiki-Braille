@@ -173,7 +173,7 @@ const AccountSetting = () => {
   }
 
   return (
-    <main className="h-full ">
+    <main>
       { isLoading && <Loading /> }
       <ToastContainer  />
       <div className="container px-6 mx-auto grid divide divide-y-2 divide-slate-300">
@@ -182,11 +182,11 @@ const AccountSetting = () => {
         </h2>
         <div className="md:flex md:flex-row flex flex-col">
           <div className="md:w-[30%] md:flex md:flex-col justify-center">
-            <p className="text-lg font-bold">Informações pessoais</p>
+            <p className="text-lg xs:font-bold font-semibold p-2">Informações pessoais</p>
             <p className="md:py-2 md:block hidden">Atualize suas configurações de conta</p>
           </div>
-          <div className="grow px-8 py-4">
-            <div className="flex">
+          <div className="grow xs:px-8 xs:py-4 py-2">
+            <div className="flex p-2">
               <div className="flex">
                 <div className="flex items-center">
                   <input type="file" accept="image/*" id="avatar-image-upload" hidden onChange={handleFileChange}/>
@@ -224,7 +224,7 @@ const AccountSetting = () => {
               />
             </div>
             <button 
-              className="float-left ml-2 mt-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+              className="float-right mr-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
               onClick={updateUserInfo}
             >
               Salvar
@@ -233,10 +233,10 @@ const AccountSetting = () => {
         </div>
         <div className="md:flex md:flex-row flex flex-col">
           <div className="md:w-[30%] md:flex md:flex-col justify-center">
-            <p className="text-lg font-bold">Alterar a senha</p>
+            <p className="text-lg xs:font-bold font-semibold p-2">Alterar a senha</p>
             <p className="md:py-2 md:block hidden">Atualizar a senha associada à sua conta.</p>
           </div>
-          <div className="grow px-8">
+          <div className="grow xs:px-8 px-2">
             <div className="px-2 py-1">
               <label className="float-left py-1">Senha atual</label>
               <input
@@ -268,7 +268,7 @@ const AccountSetting = () => {
               />
             </div>
             <button 
-              className="float-left ml-2 mt-4 mb-4 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+              className="float-right mr-2 mt-2 mb-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
               onClick={updatePassword}
             >
               Salvar
@@ -276,10 +276,10 @@ const AccountSetting = () => {
           </div>
         </div>
         <div className="flex">
-          <div className="w-[30%] py-4 flex flex-col justify-center">
-            <p className="text-lg font-bold">Excluir conta</p>
+          <div className="xs:w-[30%] py-4 flex flex-col justify-center">
+            <p className="text-lg xs:font-bold font-semibold p-2">Excluir conta</p>
           </div>
-          <div className="grow px-8 py-6">
+          <div className="grow xs:px-8 px-2 py-6">
             <button 
               className="float-left ml-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-700 hover:bg-red-500 focus:outline-none focus:shadow-outline-purple"
               onClick={() => setDeleteModalShow(true)}

@@ -1,7 +1,8 @@
 #root {
   margin: 0 auto;
   text-align: center;
-  --mainWidth: calc(100vw-250px);
+  --mainWidth: calc(100vw - 250px);
+  --mainHeight: calc(100% - 64px);
 }
 
 .toast-message {
@@ -42,7 +43,8 @@
 @media (min-width: 1024px) {
   .main-container {
     position: absolute;
-    width: calc(100% - 250px);
+    width: var(--mainWidth);
+    height: var(--mainHeight);
     left: 250px;
   }
 }
@@ -51,6 +53,7 @@
   .main-container {
     position: absolute;
     width: 100%;
+    height: var(--mainHeight);
     left: 0;
   }
 }
