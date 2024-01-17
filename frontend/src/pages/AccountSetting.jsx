@@ -180,102 +180,108 @@ const AccountSetting = () => {
         <h2 className="my-6 text-2xl text-left font-semibold text-gray-700 dark:text-gray-200">
           Configuração da conta
         </h2>
-        <div className="md:flex md:flex-row flex flex-col">
-          <div className="md:w-[30%] md:flex md:flex-col justify-center">
-            <p className="text-lg xs:font-bold font-semibold p-2">Informações pessoais</p>
-            <p className="md:py-2 md:block hidden">Atualize suas configurações de conta</p>
-          </div>
-          <div className="grow xs:px-8 xs:py-4 py-2">
-            <div className="flex p-2">
-              <div className="flex">
-                <div className="flex items-center">
-                  <input type="file" accept="image/*" id="avatar-image-upload" hidden onChange={handleFileChange}/>
-                  <label htmlFor="avatar-image-upload" className="relative hover:cursor-pointer">
-                    <img src={selectedAvatar  ? selectedAvatar : (fetchedAvatar!==undefined  && fetchedAvatar!=="" ? `data: image/jpeg;base64,${fetchedAvatar}`:defaultUserIcon) } className="w-[100px] h-[100px] rounded-full" />
-                    <div className="z-10 absolute left-0 top-0 w-[100px] h-[100px] flex items-center justify-center">
-                      <AiOutlineCloudUpload className="w-10 h-10 text-white"/>
-                    </div>
-                  </label>
-                </div>
-                <div className="flex items-center ml-4">
-                  <button 
-                    className="px-2 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-                    onClick={updateAvatar}
-                  >
-                    Alterar
-                  </button>
+        <div className="flex flex-col md:flex-row 2xl:flex-col divide 2xl:divide-y-2 md:divide-y-0 divide-y-2 divide-slate-300">
+          <div className="flex-1 flex flex-col 2xl:flex-row">
+            <div className="2xl:w-[30%] md:flex md:flex-col justify-center">
+              <p className="text-lg xs:font-bold font-semibold p-2">Informações pessoais</p>
+              <p className="md:py-2 md:block hidden">Atualize suas configurações de conta</p>
+            </div>
+            <div className="grow lg:px-8 2xl:py-4 py-2">
+              <div className="flex p-2">
+                <div className="flex">
+                  <div className="flex items-center">
+                    <input type="file" accept="image/*" id="avatar-image-upload" hidden onChange={handleFileChange}/>
+                    <label htmlFor="avatar-image-upload" className="relative hover:cursor-pointer">
+                      <img src={selectedAvatar  ? selectedAvatar : (fetchedAvatar!==undefined  && fetchedAvatar!=="" ? `data: image/jpeg;base64,${fetchedAvatar}`:defaultUserIcon) } className="w-[100px] h-[100px] rounded-full" />
+                      <div className="z-10 absolute left-0 top-0 w-[100px] h-[100px] flex items-center justify-center">
+                        <AiOutlineCloudUpload className="w-10 h-10 text-white"/>
+                      </div>
+                    </label>
+                  </div>
+                  <div className="flex items-center ml-4">
+                    <button 
+                      className="px-2 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                      onClick={updateAvatar}
+                    >
+                      Alterar
+                    </button>
+                  </div>
                 </div>
               </div>
+              <div className="p-2">
+                <label className="float-left">Seu nome</label>
+                <input
+                  className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
+                  value={username}
+                  onChange={(e) => setUserName(e.target.value)}
+                />
+              </div>
+              <div className="p-2">
+                <label className="float-left">Seu E-mail</label>
+                <input
+                  className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
+                  value={userInfo.email}
+                  disabled={true}
+                />
+              </div>
+              <button 
+                className="float-right mr-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                onClick={updateUserInfo}
+              >
+                Salvar
+              </button>
             </div>
-            <div className="p-2">
-              <label className="float-left">Seu nome</label>
-              <input
-                className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
-                value={username}
-                onChange={(e) => setUserName(e.target.value)}
-              />
+          </div>
+          <div className="flex-1 flex flex-col 2xl:flex-row">
+            <div className="2xl:w-[30%] md:flex md:flex-col justify-center">
+              <p className="text-lg xs:font-bold font-semibold p-2">Alterar a senha</p>
+              <p className="md:py-2 md:block hidden">Atualizar a senha associada à sua conta.</p>
             </div>
-            <div className="p-2">
-              <label className="float-left">Seu E-mail</label>
-              <input
-                className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
-                value={userInfo.email}
-                disabled={true}
-              />
+            <div className="grow lg:px-8 px-2 flex flex-col justify-between">
+              <div className="my-auto">
+                <div className="px-2 py-1">
+                  <label className="float-left py-1">Senha atual</label>
+                  <input
+                    className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
+                    type="password"
+                    placeholder="******"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                  />
+                </div>
+                <div className="px-2 py-1">
+                  <label className="float-left py-1">Nova senha</label>
+                  <input
+                    className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
+                    type="password"
+                    placeholder="******"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                  />
+                </div>
+                <div className="px-2 py-1">
+                  <label className="float-left py-1">Confirmar senha</label>
+                  <input
+                    className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
+                    type="password"
+                    placeholder="******"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div>
+                <button 
+                  className="float-right mr-2 mt-2 mb-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                  onClick={updatePassword}
+                >
+                  Salvar
+                </button>
+              </div>
             </div>
-            <button 
-              className="float-right mr-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-              onClick={updateUserInfo}
-            >
-              Salvar
-            </button>
           </div>
         </div>
-        <div className="md:flex md:flex-row flex flex-col">
-          <div className="md:w-[30%] md:flex md:flex-col justify-center">
-            <p className="text-lg xs:font-bold font-semibold p-2">Alterar a senha</p>
-            <p className="md:py-2 md:block hidden">Atualizar a senha associada à sua conta.</p>
-          </div>
-          <div className="grow xs:px-8 px-2">
-            <div className="px-2 py-1">
-              <label className="float-left py-1">Senha atual</label>
-              <input
-                className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
-                type="password"
-                placeholder="******"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-              />
-            </div>
-            <div className="px-2 py-1">
-              <label className="float-left py-1">Nova senha</label>
-              <input
-                className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
-                type="password"
-                placeholder="******"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-              />
-            </div>
-            <div className="px-2 py-1">
-              <label className="float-left py-1">Confirmar senha</label>
-              <input
-                className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
-                type="password"
-                placeholder="******"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            </div>
-            <button 
-              className="float-right mr-2 mt-2 mb-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-              onClick={updatePassword}
-            >
-              Salvar
-            </button>
-          </div>
-        </div>
-        <div className="flex">
+        <div className="flex flex-1 items-center">
           <div className="xs:w-[30%] py-4 flex flex-col justify-center">
             <p className="text-lg xs:font-bold font-semibold p-2">Excluir conta</p>
           </div>
@@ -341,7 +347,7 @@ const AccountSetting = () => {
               </div>
             </div>
           </div>
-        </div> : ""
+          </div> : ""
       }
       
     </main>

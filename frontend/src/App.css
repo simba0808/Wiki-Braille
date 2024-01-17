@@ -44,7 +44,7 @@
   .main-container {
     position: absolute;
     width: var(--mainWidth);
-    height: var(--mainHeight);
+    min-height: var(--mainHeight);
     left: 250px;
   }
 }
@@ -53,7 +53,7 @@
   .main-container {
     position: absolute;
     width: 100%;
-    height: var(--mainHeight);
+    min-height: var(--mainHeight);
     left: 0;
   }
 }

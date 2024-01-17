@@ -5,6 +5,7 @@ import Data from "../models/data.js";
 import sharp from "sharp";
 
 const extractDataFromWord = async (req, res) => {
+  console.log(Date.now())
   mammoth.extractRawText({ path: req.file.path })
     .then(async (result) => {
       const root = result.value;

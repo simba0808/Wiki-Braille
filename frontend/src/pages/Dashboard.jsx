@@ -138,7 +138,7 @@ const Dashboard = () => {
 
   const searchResult = filteredData.map((item, index) => {
     return (
-      <div className="relative h-[190px] col-span-1 flex flex-col items-start bg-slate-100 p-2 rounded-md hover:cursor-pointer" onClick={() => handleClick(index)} key={index}>
+      <div className="relative h-[190px] col-span-1 flex flex-col items-start bg-slate-100 p-2 border-2 shadow-md rounded-md hover:cursor-pointer" onClick={() => handleClick(index)} key={index}>
         <span className="absolute right-2 xs:w-20 xs:px-4 py-1 px-2 rounded-xl xs:text-md text-sm bg-purple-200 text-purple-600">{item.title_id}</span>
         <h2 className="p-0 pl-2 my-0 lg:text-[22px] md:text-lg sm:text-[22px] text-[18px] font-semibold">{item.title}</h2>
         <div className="flex w-full items-center justify-center flex-1">
@@ -166,7 +166,7 @@ const Dashboard = () => {
   });
 
   return (
-    <main className="min-h-[90vh] w-full flex">
+    <main className="w-full flex">
       {isLoading && <Loading />}
       <div className="container grow px-6 mx-auto">
         <h2 className="my-6 text-2xl text-left font-semibold text-gray-700 dark:text-gray-200">
@@ -312,7 +312,7 @@ const Dashboard = () => {
                   {
                     filteredData.map((item, index) => {
                       return (
-                      <div className="sm:h-[260px] h-auto relative flex flex-col justify-center shadow-md bg-white rounded-lg my-2 hover:cursor-pointer" key={item.image} onClick={() => handleClick(index)}>
+                      <div className="sm:h-[260px] h-auto relative flex flex-col justify-center my-2 border-2 border-t-0 shadow-md bg-white rounded-lg  hover:cursor-pointer" key={item.image} onClick={() => handleClick(index)}>
                         <span className="absolute xs:right-2 xs:top-2 right-1 top-1 xs:w-20 xs:px-4 py-1 px-2 rounded-xl text-xs md:text-sm bg-purple-200 text-purple-600">{item.title_id}</span>
                         <div key={item.image} className="p-2 pt-8 mx-auto">
                           <img 
