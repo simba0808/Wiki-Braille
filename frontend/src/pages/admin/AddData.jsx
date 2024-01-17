@@ -45,19 +45,28 @@ const AddData  = () => {
   const parseData = async () => {
     const sendData = async () => {
       setLoading(true);
-      axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
-      const formdata = new FormData();
-      formdata.append("file", file);
-      
-      const res = await axios.post("/api/data/parsedata", formdata);
-      if(res.data.message === "success") {
-        toast.success("Documentos salvos com sucesso", { autoClose:1000, hideProgressBar:true, pauseOnHover: false, closeOnClick: true, theme: "dark"});
-        setFile(undefined);
-      } else {
+      try {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
+        const formdata = new FormData();
+        formdata.append("file", file);
+        
+        const res = await axios.post("/api/data/parsedata", formdata);
+        console.log(res.data)
+        if(res.data.message === "success") {
+          setLoading(false);
+          toast.success("Documentos salvos com sucesso", { autoClose:1000, hideProgressBar:true, pauseOnHover: false, closeOnClick: true, theme: "dark"});
+          setFile(undefined);
+        } else {
+          setLoading(false);
+          toast.error("Falha ao salvar documentos", { autoClose:1000, hideProgressBar:true, pauseOnHover: false, closeOnClick: true, theme: "dark"});
+          setFile(undefined);
+        }
+      } catch (err) {
+        console.log(err)
+        setLoading(false);  
         toast.error("Falha ao salvar documentos", { autoClose:1000, hideProgressBar:true, pauseOnHover: false, closeOnClick: true, theme: "dark"});
         setFile(undefined);
       }
-      setLoading(false);
     }
     sendData();
   };
@@ -113,7 +122,7 @@ const AddData  = () => {
   
   
   return (
-    <main className="h-[100%] flex item-center justify-center overflow-y-hidden">
+    <main className="flex item-center justify-center overflow-y-hidden" style={{height: "var(--mainHeight)"}}>
       { isLoading && <Loading /> }
       <div className="container px-6">
         <h2 className="my-6 text-2xl text-left font-semibold text-gray-700 dark:text-gray-200">
@@ -168,7 +177,7 @@ const AddData  = () => {
                       className="float-left ml-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
                       onClick={parseData}
                     >
-                      Converter agora
+                      Conversor agora
                     </button>
                     <button className="float-left ml-2 px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-red-600 border border-transparent rounded-lg active:bg-red-700 hover:bg-red-500 focus:outline-none focus:shadow-outline-purple"
                       onClick={() => {

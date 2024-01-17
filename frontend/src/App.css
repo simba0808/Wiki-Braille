@@ -1,8 +1,8 @@
 #root {
   margin: 0 auto;
   text-align: center;
-  --mainWidth: calc(100vw - 250px);
-  --mainHeight: calc(100% - 64px);
+  --mainWidth: calc(100% - 250px);
+  --mainHeight: calc(100vh - 64px);
 }
 
 .toast-message {
@@ -39,6 +39,14 @@
   transform: translateX(0);
 }
 
+.navbar-container{
+  position: absolute;
+  position:-webkit-sticky;
+  width: var(--mainWidth);
+  height: 64px;
+  top: 0;
+  left: 250px;
+}
 
 @media (min-width: 1024px) {
   .main-container {
@@ -46,6 +54,8 @@
     width: var(--mainWidth);
     min-height: var(--mainHeight);
     left: 250px;
+    top: 64px;
+    padding: 0 20px;
   }
 }
 
@@ -54,6 +64,11 @@
     position: absolute;
     width: 100%;
     min-height: var(--mainHeight);
+    left: 0;
+    top: 64px;
+  }
+  .navbar-container {
+    width: 100%;
     left: 0;
   }
 }

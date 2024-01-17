@@ -5,11 +5,9 @@ import Data from "../models/data.js";
 import sharp from "sharp";
 
 const extractDataFromWord = async (req, res) => {
-  console.log(Date.now())
   mammoth.extractRawText({ path: req.file.path })
     .then(async (result) => {
-      const root = result.value;
-      
+      const root = result.value;  
       let dataSet = [];
 
       try {
@@ -24,11 +22,11 @@ const extractDataFromWord = async (req, res) => {
 
             if(tag) {
               description = paragraph.replace(title, "").replace(catagory, "").replace(tag, "").trim();
-              description = description.replace(/\n\n/gm, "\n");
             } else {
               description = paragraph.replace(title, "").replace(catagory, "").trim();
             }
-
+            description = description.replace(/\n\n/gm, "\n");
+            
             title = title[0].split(":")[1].trim();
             catagory = catagory[0].split(":")[1].trim();
             tag = tag ? tag[0].split(":")[1].trim() : "";
@@ -44,7 +42,7 @@ const extractDataFromWord = async (req, res) => {
         });
 
         const zip = await jszip.loadAsync(fs.readFileSync(req.file.path));
-        const images = zip.file(/\.png|\.jpeg|\.jpg|\.gif|\.emf/i);
+        const images = zip.file(/\.png|\.jpeg|\.jpg|\.gif/i);
 
         fs.access("./images", (error) => {
           if (error) {
@@ -52,73 +50,64 @@ const extractDataFromWord = async (req, res) => {
           }
         });
 
-        for(let i = 0; i < images.length; i++) {
-          const image = images[i];
-          const orignalName = image.name.split('/')[2];
-          //const contentType = `image/${orignalName.split('.')[1]}`;
-          const content = await image.async("nodebuffer");
-          //fs.writeFileSync(`./images/${orignalName}`, content, "base64");
-
-          // const imageModel = await ImageModel.create({
-          //   orignalName,
-          //   content,
-          //   contentType,
-          // });
-          //dataSet[i].image = imageModel._id;
-          const timeStamp = new Date().toISOString().replace(/[-T:Z.]/g, '');
-          await sharp(content).webp({ quality: 20 }).toFile("./images/" + `${timeStamp}-${orignalName}`);
-          dataSet[i].image = `http://localhost:3000/${timeStamp}-${orignalName}`;
+        if(images.length !==  dataSet.length) {
+          res.status(400).send("Invalid Document");
         }
-
-        const document = await Data.aggregate([
-          {
-            $sort: { "title_id": -1 }
-          }, 
-          {
-            $project: {
-              "title_id": 1
-            }
-          },
-          {
-            $limit: 1
+        else {
+          for(let i = 0; i < images.length; i++) {
+            const image = images[i];
+            const orignalName = image.name.split('/')[2];
+            const content = await image.async("nodebuffer");
+            const timeStamp = new Date().toISOString().replace(/[-T:Z.]/g, '');
+            await sharp(content).webp({ quality: 20 }).toFile("./images/" + `${timeStamp}-${orignalName}`);
+            dataSet[i].image = `http://localhost:3000/${timeStamp}-${orignalName}`;
           }
-        ]);
-
-        let start_index = 0;
-        if(document.length > 0) {
-          start_index = parseInt(document[0].title_id.replace(/^0+/, ""));
-        } else {
-          start_index = 0;
-        }
-        try {
-          dataSet.forEach(async (item, index) => {
-            item = {...item, title_id:  (start_index+index+1).toString().padStart(6, "0")};
-            const data = await Data.create(item);
-          });
-          res.status(200).send({
-            message: "success",
-          });
-          fs.unlink(req.file.path, (err) => {
-            if(err) {
-              console.log(err);
-              return;
+  
+          const document = await Data.aggregate([
+            {
+              $sort: { "title_id": -1 }
+            }, 
+            {
+              $project: {
+                "title_id": 1
+              }
+            },
+            {
+              $limit: 1
             }
-          });
-        } catch (err) {
-          console.log(err);
-          res.status(403);
-          throw new Error("Error occured while saving Doc");
+          ]);    
+          let start_index = 0;
+          if(document.length > 0) {
+            start_index = parseInt(document[0].title_id.replace(/^0+/, ""));
+          } else {
+            start_index = 0;
+          }
+  
+          try {
+            dataSet.forEach(async (item, index) => {
+              item = {...item, title_id:  (start_index+index+1).toString().padStart(6, "0")};
+              const data = await Data.create(item);
+            });
+            res.status(200).send({
+              message: "success",
+            });
+            fs.unlink(req.file.path, (err) => {
+              if(err) {
+                console.log(err);
+                res.status(500);
+                throw new Error("")
+              }
+            });
+          } catch (err) {
+            res.status(400).send("Error occured while saving Doc");
+          }
         }
       } catch (err) {
-        console.log(err);
-        res.status(403);
-        throw new Error("Error occured while parsing Doc")
+        res.status(400).send("Error occured while parsing Doc");
       }
     })
     .catch(err => {
-      console.error(err);
-      res.status(405);
-      throw new Error("Error occured while extracting text from Doc");
+      res.status(400).send("Error occured while extracting text from Doc");
     })
 };
 

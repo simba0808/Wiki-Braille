@@ -1,7 +1,4 @@
 import Data from "../models/data.js";
-//import fuse from "fuse";
-import ImageModel from "../models/image.js";
-import { ObjectId } from "mongodb";
 
 const searchData = async (req, res) => {
   let { word, advance, searchin, pageIndex } = req.body.searchWordGroup;
@@ -55,11 +52,14 @@ const searchData = async (req, res) => {
         totalQuery = [
           query,
           {
+            $sort: { "title_id": 1 }
+          },
+          {
             $skip: numberPerPage * (pageIndex - 1)
           },
           {
             $limit: numberPerPage
-          },
+          }
         ];
       } else {
         totalQuery = [
@@ -69,6 +69,8 @@ const searchData = async (req, res) => {
               catagory: advance,
             }
           },
+          { $addFields: { score: { $meta: "textScore" } } },
+          { $sort: { score: { $meta: "textScore" } } },
           {
             $skip: numberPerPage * (pageIndex - 1)
           },
@@ -85,6 +87,9 @@ const searchData = async (req, res) => {
           }
         },
         {
+          $sort: { "title_id": 1 }
+        },
+        {
           $skip: numberPerPage * (pageIndex - 1)
         },
         {
@@ -94,6 +99,7 @@ const searchData = async (req, res) => {
     }
 
     const result = await Data.aggregate(totalQuery);
+    console.log(result)
     res.status(200).send(result);
   } catch (err) {
     res.status(405);
@@ -141,6 +147,7 @@ const getFilteredNumber = async (req, res) => {
       query = {
         $match: {
           $text: { $search: word + " " + pluralWord },
+
         }
       };
     }
@@ -148,7 +155,7 @@ const getFilteredNumber = async (req, res) => {
   console.log(query)
   try {
     if (!await indexExists("title")) {
-      await Data.collection.createIndex({ title_id: "text", title: "text", tag: "text" }, { name: "title" }, { default_language: "portuguese" });
+      await Data.collection.createIndex({ title_id: "text", title: "text", tag: "text", description: "text" }, { name: "title" }, { default_language: "portuguese" });
     }
 
     let totalQuery = [];
@@ -205,27 +212,6 @@ const indexExists = async (fieldName) => {
   return existingIndex ? 1 : 0;
 };
 
-
-const getDescriptionImages = async (req, res) => {
-  const imageIds = req.body.imageIds;
-  const fetchedImages = [];
-  try {
-    for (let i = 0; i < imageIds.length; i++) {
-      const image = await ImageModel.findOne({ _id: new ObjectId(imageIds[i]) });
-      fetchedImages.push({
-        contentType: image.contentType,
-        content: image.content,
-      });
-    }
-    res.status(200).send(fetchedImages);
-  } catch (err) {
-    console.log(err);
-    res.status(405);
-    throw new Error("Error occured while fetching description images");
-  }
-
-};
-
 const updateDescription = async (req, res) => {
   const { text, title_id } = req.body;
   try {
@@ -260,6 +246,5 @@ const updateDescription = async (req, res) => {
 export {
   searchData,
   getFilteredNumber,
-  getDescriptionImages,
   updateDescription,
 };

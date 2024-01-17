@@ -214,12 +214,13 @@ const AccountSetting = () => {
                   className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
                   value={username}
                   onChange={(e) => setUserName(e.target.value)}
+                  autoFocus
                 />
               </div>
               <div className="p-2">
                 <label className="float-left">Seu E-mail</label>
                 <input
-                  className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
+                  className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none disabled:bg-slate-100 cursor-not-allowed form-input"
                   value={userInfo.email}
                   disabled={true}
                 />

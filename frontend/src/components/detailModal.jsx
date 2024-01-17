@@ -68,7 +68,7 @@ const detailModal = ( {descData, handleClick, updateHandle} ) => {
               </div>
             </div>
             <div className="flex justify-between items-center xs:pb-8 relative">
-              <span className="text-xl xs:text-[30px] font-semibold underline" href={`https://en/wikipedia.org/wiki/${title}`}>{` ${title}`}</span>
+              <span className="text-xl xs:text-[30px] font-semibold">{` ${title}`}</span>
               <p
                 className="xs:py-2 xs:px-4 py-2 px-3 xs:text-xl text-lg font-semibold rounded-xl bg-purple-200 text-purple-600"
               >

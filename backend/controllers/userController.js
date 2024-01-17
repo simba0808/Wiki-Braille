@@ -106,7 +106,6 @@ const sendVerifyCode = async (req, res) => {
     throw new Error("Can't find that email");
   }
   try {
-    const mailType = email.split("@")[1].split(".")[0];
     const verifyCode = generateVerifyCode();
 
     const transporter = nodemailer.createTransport({
@@ -386,7 +385,7 @@ const getAllUsers = async (req, res) => {
       }
     }, {
       name: true, email: true, role: true, avatar: true, createdAt: true
-    });
+    }).sort({ role: -1 });
     if (users) {
       res.status(200).send({ users });
     }

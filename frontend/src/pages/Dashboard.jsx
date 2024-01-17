@@ -168,7 +168,7 @@ const Dashboard = () => {
   return (
     <main className="w-full flex">
       {isLoading && <Loading />}
-      <div className="container grow px-6 mx-auto">
+      <div className="container mx-auto">
         <h2 className="my-6 text-2xl text-left font-semibold text-gray-700 dark:text-gray-200">
           Painel de controle
         </h2>
@@ -199,7 +199,7 @@ const Dashboard = () => {
               className="absolute inset-y-0 right-0 xs:px-4 px-2 my-0 text-sm font-medium leading5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
               onClick={() => setSearchWordGroup({...searchWordGroup, word: searchWord})}
             >
-              Para procurar
+              Pesquisar
             </button>
           </div>
           <div className="md:flex md:justify-between">

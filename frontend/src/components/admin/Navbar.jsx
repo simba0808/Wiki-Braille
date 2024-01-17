@@ -48,7 +48,7 @@ const Navbar = ({ handleSlide }) => {
   }
 
   return (
-    <header className="z-100 py-2 bg-white shadow-md dark:bg-grey-800">
+    <header className="navbar-container z-10 bg-white shadow-md dark:bg-grey-800">
       <div className="flex items-center justify-end h-full xs:px-10 px-4 mx-auto text-purple-600 dark:text-purple-300">
         <label
           className="p-1 mr-5 ml-1 rounded-md lg:hidden focus:outline-none focus:shadow-outline-purple"
