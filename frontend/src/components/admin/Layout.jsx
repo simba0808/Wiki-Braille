@@ -12,12 +12,12 @@ const AdminLayout = () => {
 
   return (
     <>
-        <input type="checkbox" id="side-open" checked={isChecked} onChange={handleChecked} className="hidden" />
-        <Navbar handleSlide={handleChecked}/>
-        <Sidebar handleSlide={handleChecked}/>
-        <div className="main-container flex flex-col  overflow-y-auto bg-slate-100 bg-[url('/src/assets/img/background.png')]">
-          <Outlet />
-        </div>
+      <input type="checkbox" id="side-open" checked={isChecked} onChange={handleChecked} className="hidden" />
+      <Navbar handleSlide={handleChecked}/>
+      <Sidebar handleSlide={handleChecked}/>
+      <div className="main-container flex flex-col  overflow-y-auto bg-slate-100 bg-[url('/src/assets/img/background.png')]">
+        <Outlet />
+      </div>
     </>
   );
 };

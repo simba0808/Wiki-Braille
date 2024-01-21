@@ -134,7 +134,7 @@ const UserManage  = () => {
   return (
     <main className="flex item-center justify-center md:overflow-hidden">
       { isLoading && <Loading /> }
-      <div className="container px-6">
+      <div className="container xs:px-6">
         <div className="flex justify-between">
           <h2 className="my-6 text-2xl text-left font-semibold text-gray-700 dark:text-gray-200">
             Gerenciamento de usuários
@@ -144,7 +144,7 @@ const UserManage  = () => {
           </div>
         </div>
         <ToastContainer />
-        <div className="w-full mb-8 overflow-hidden shadow-xs">
+        <div className="w-full overflow-hidden shadow-xs">
           <div className="w-full overflow-x-hidden">
             <table className="w-full whitespace-no-wrap">
               <thead>
@@ -230,9 +230,9 @@ const UserManage  = () => {
                 {`Exibição ${10*(currentPageIndex-1)+1}-${10*(currentPageIndex-1)+10>filteredData.length?filteredData.length:10*(currentPageIndex-1)+10} de ${filteredData.length}`} 
               </span>
               <span className="col-span-2"></span>
-              <span className="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+              <span className="flex justify-center col-span-4 mt-2 sm:mt-auto sm:justify-end">
                 <ul className="inline-flex sm:items-center">
-                  <li>
+                  <li className="my-auto">
                     <button
                       className="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple"
                       aria-label="Previous"
@@ -264,7 +264,7 @@ const UserManage  = () => {
                             </li>
                     })
                   }
-                  <li>
+                  <li className="my-auto">
                     <button
                       className="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
                       aria-label="Next"

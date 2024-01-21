@@ -2,7 +2,7 @@
   margin: 0 auto;
   text-align: center;
   --mainWidth: calc(100% - 250px);
-  --mainHeight: calc(100vh - 64px);
+  --mainHeight: calc(100% - 64px);
 }
 
 .toast-message {
@@ -55,7 +55,7 @@
     min-height: var(--mainHeight);
     left: 250px;
     top: 64px;
-    padding: 0 20px;
+    padding: 0 40px;
   }
 }
 
@@ -66,6 +66,7 @@
     min-height: var(--mainHeight);
     left: 0;
     top: 64px;
+    padding: 0 10px
   }
   .navbar-container {
     width: 100%;

@@ -99,7 +99,6 @@ const searchData = async (req, res) => {
     }
 
     const result = await Data.aggregate(totalQuery);
-    console.log(result)
     res.status(200).send(result);
   } catch (err) {
     res.status(405);
@@ -122,7 +121,6 @@ const getFilteredNumber = async (req, res) => {
     pluralWord = word.replace(/(?:[l])$/, 'is');
   }
 
-  console.log(word, pluralWord)
   if (word !== "") {
     if (searchin == 1) {
       query = {
@@ -152,7 +150,7 @@ const getFilteredNumber = async (req, res) => {
       };
     }
   }
-  console.log(query)
+
   try {
     if (!await indexExists("title")) {
       await Data.collection.createIndex({ title_id: "text", title: "text", tag: "text", description: "text" }, { name: "title" }, { default_language: "portuguese" });
@@ -213,7 +211,8 @@ const indexExists = async (fieldName) => {
 };
 
 const updateDescription = async (req, res) => {
-  const { text, title_id } = req.body;
+  const { text, newTag, title_id } = req.body;
+  
   try {
     const data = await Data.updateOne(
       {
@@ -224,7 +223,7 @@ const updateDescription = async (req, res) => {
           title_id: Data.title_id,
           title: Data.title,
           catagory: Data.catagory,
-          tag: Data.tag,
+          tag: newTag,
           description: text,
         }
       },

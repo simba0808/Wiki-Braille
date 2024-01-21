@@ -1,5 +1,5 @@
-import Loading from "../components/Loading";
-import { NotExistIcon } from "../assets";
+import Loading from "../Loading";
+import { NotExistIcon } from "../../assets";
 import React, { useEffect, useState, useCallback } from "react";
 //import { Controlled as ControlledZoom } from "react-medium-image-zoom";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -10,28 +10,29 @@ import axios from "axios";
 
 const detailModal = ( {descData, handleClick, updateHandle} ) => {
 
-  const {title_id, title, description, tag, image } = descData;
+  const {title_id, title, catagory, tag, description, image } = descData;
   const { userInfo } = useSelector((state) => state.auth);
   const [editable, setEditable] = useState(false);
-  const [text, setText] = useState("");
+  const [text, setText] = useState(description);
+  const [newTag, setNewTag] = useState(tag);
   const [isLoading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setText(description);
-  }, []);
 
   const handleCloseClick = () => {
     handleClick(false);
   };
 
   const editConfirm = async () => {
+    if(tag === newTag && text === description) {
+      toast.error('Nenhuma atualização', {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark"});
+      return;
+    }
     setEditable(false);
     setLoading(true);
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
-      const response = await axios.post("/api/data/edit", {text, title_id});
+      const response = await axios.post("/api/data/edit", {text, newTag, title_id});
       if(response.data.message === "success") {
-        updateHandle(text);
+        updateHandle({ text, tag: newTag });
         setLoading(false);
         toast.success('Atualizado com sucesso!', {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark"});
       }
@@ -39,6 +40,10 @@ const detailModal = ( {descData, handleClick, updateHandle} ) => {
       setLoading(false);
       toast.error('Falha ao atualizar a descrição', {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark"});
     }
+  };
+
+  const handleTagChange = (e) => {
+    setNewTag(e.target.value);
   };
 
   const handleTextChange = (e) => {
@@ -77,11 +82,20 @@ const detailModal = ( {descData, handleClick, updateHandle} ) => {
 
             </div>
             {
-              tag ?
-                <p className="py-1 xs:text-xl text-lg font-semibold">{`Tags: ${tag}`}</p>:<></>
+              catagory !== "Descrição" ?
+                <p className="py-1 xs:text-xl text-lg font-semibold flex">
+                  Tag: 
+                  <input 
+                    type="text"
+                    className={`sm:min-w-[500px] w-full px-2 bg-white ${editable?"rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none":""}`}
+                    value={newTag}
+                    disabled={editable?false:true}
+                    onChange={handleTagChange}
+                  />
+                </p> : <></>
             }
-            <div className="xs:flex xs:flex-row flex flex-col grow">
-              <div className="flex-1 flex items-center justify-center hover:cursor-zoom-in">
+            <div className="xs:flex xs:flex-row flex flex-col grow py-2">
+              <div className="flex-1 flex px-2 items-center justify-center hover:cursor-zoom-in">
                 <TransformWrapper initialScale={1} initialPositionX={0} initialPositionY={0} smooth={true}>
                   <TransformComponent>
                     <img 
@@ -91,7 +105,7 @@ const detailModal = ( {descData, handleClick, updateHandle} ) => {
                   </TransformComponent>
                 </TransformWrapper>
               </div>
-              <textarea 
+              <textarea
                 className={`w-full grow xs:flex-1 flex p-2 justify-center items-center overflow-y-auto ${editable?"rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none":""}`} 
                 disabled={editable?false:true}
                 value={text}
@@ -104,17 +118,22 @@ const detailModal = ( {descData, handleClick, updateHandle} ) => {
                 <div className="flex justify-end pt-2">
                   <button 
                     className="w-[90px] focus:outline-none modal-close px-4 p-3 rounded-lg text-black border border-purple-700 hover:bg-purple-300 active:bg-purple-600 active:text-white"
-                    onClick={() => setEditable(true)}
+                    onClick={() => setEditable(editable?false:true)}
                   >
-                    Editar
+                    {
+                      editable ? "Cancelar":"Editar"
+                    }
                   </button>
-                  <button 
-                    className="w-[90px] focus:outline-none bg-purple-800 py-1 px-auto ml-3 rounded-lg text-white  hover:bg-purple-400 active:border active:border-purple-700 active:bg-white active:text-purple-900"
-                    onClick={editConfirm}
-                    disabled={editable?false:true}
-                  >
-                    Confirmar
-                  </button>
+                  {
+                    editable ? 
+                    <button 
+                      className="w-[90px] focus:outline-none bg-purple-800 py-1 px-auto ml-3 rounded-lg text-white  hover:bg-purple-400 active:border active:border-purple-700 active:bg-white active:text-purple-900"
+                      onClick={editConfirm}
+                      disabled={editable?false:true}
+                    >
+                      Confirmar
+                    </button> : <></>
+                  }
                 </div>
               ) : <></>
             }
