@@ -48,8 +48,8 @@ const Navbar = ({ handleSlide }) => {
   }
 
   return (
-    <header className="navbar-container z-10 bg-white shadow-md dark:bg-grey-800">
-    <div className="flex items-center justify-end h-full xs:px-10 px-4 mx-auto text-purple-600 dark:text-purple-300">
+    <header className="navbar-container z-10 bg-white shadow-md">
+    <div className="flex items-center justify-end h-full xs:px-10 px-4 mx-auto text-purple-600">
         <label
           className="p-1 mr-5 ml-1 rounded-md lg:hidden focus:outline-none focus:shadow-outline-purple"
           aria-label="Menu"
@@ -100,7 +100,7 @@ const Navbar = ({ handleSlide }) => {
                 >
                   <li className="flex" ref={menuRef}>
                     <div
-                      className="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+                      className="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800"
                     >
                       <svg
                         className="w-6 h-6 mr-3"

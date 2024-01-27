@@ -21,7 +21,7 @@ const Sidebar = ({ handleSlide }) => {
         id="sidebar" 
         className={`z-20 w-[230px] shadow-md xs:w-[250px] fixed h-[100%] top-0 overflow-y-auto bg-white -translate-x-full lg:block lg:translate-x-0 transition duration-200 ease-in-out flex-shrink-0 `}
       >
-        <div className="py-4 text-gray-500 dark:text-gray-400">
+        <div className="py-4 text-gray-500">
           <Link
             to={"/editorDashboard"}
             className="ml-2 mt-4 text-lg font-bold text-gray-800 flex items-center justify-center"
@@ -40,7 +40,7 @@ const Sidebar = ({ handleSlide }) => {
               )}
               <Link
                 to={"/editorDashboard"}
-                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400 dark:hover:text-gray-200 dark:text-gray-100"
+                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
               >
                 <svg
                   className="w-5 h-5"
@@ -70,7 +70,7 @@ const Sidebar = ({ handleSlide }) => {
               )}
               <Link
                 to={"/editorAddData"}
-                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400 dark:hover:text-gray-200 dark:text-gray-100"
+                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
               >
                 <svg
                       className="w-5 h-5"
@@ -98,7 +98,7 @@ const Sidebar = ({ handleSlide }) => {
               )}
               <Link
                 to={"/editorSetting"}
-                className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400 dark:hover:text-gray-200"
+                className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400"
               >
                 <svg
                   className="w-5 h-5"

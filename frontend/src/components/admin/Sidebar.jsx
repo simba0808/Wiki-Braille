@@ -2,28 +2,33 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { LogoImage } from "../../assets";
 
-const Sidebar = ({handleSlide}) => {
+const Sidebar = ({ handleSlide }) => {
   const [slideShow, setSlideShow] = useState(0);
+  const [userExpaned, setUserExpanded] = useState(false);
   const currentLocation = useLocation().pathname.toString().toLowerCase();
   useEffect(() => {
-    if(currentLocation.includes("dashboard")) {
+    if (currentLocation.includes("dashboard")) {
       setSlideShow(0);
-    } else if(currentLocation.includes("setting")) {
-      setSlideShow(3)
-    } else if(currentLocation.includes("manage")) {
+    } else if (currentLocation.includes("guide")) {
+      setSlideShow(5)
+    } else if (currentLocation.includes("setting")) {
+      setSlideShow(4)
+    } else if (currentLocation.includes("activit")) {
+      setSlideShow(3);
+    } else if (currentLocation.includes("manage")) {
       setSlideShow(2);
-    } else if(currentLocation.includes("data")) {
+    } else if (currentLocation.includes("data")) {
       setSlideShow(1);
     }
   }, [currentLocation]);
 
   return (
     <>
-      <aside 
-        id="sidebar" 
+      <aside
+        id="sidebar"
         className={`z-20 w-[230px] shadow-md xs:w-[250px] fixed h-[100%] top-0 overflow-y-auto bg-white -translate-x-full lg:block lg:translate-x-0 transition duration-200 ease-in-out flex-shrink-0 `}
       >
-        <div className="py-4 text-gray-500 dark:text-gray-400">
+        <div className="py-4 text-gray-500">
           <Link
             to={"/adminDashboard"}
             className="ml-2 mt-4 text-lg font-bold text-gray-800 flex items-center justify-center"
@@ -31,8 +36,8 @@ const Sidebar = ({handleSlide}) => {
             <img className="w-[80%]" src={LogoImage} alt="" />
           </Link>
           <ul className="mt-14">
-            <li className={`relative px-6 py-3  ${slideShow===0 ? "bg-purple-100 rounded-lg":""}`} onClick={handleSlide}>
-              { slideShow === 0 ? (
+            <li className={`relative px-6 py-3  ${slideShow === 0 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
+              {slideShow === 0 ? (
                 <span
                   className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
                   aria-hidden="true"
@@ -42,7 +47,7 @@ const Sidebar = ({handleSlide}) => {
               )}
               <Link
                 to={"/adminDashboard"}
-                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400 dark:hover:text-gray-200 dark:text-gray-100"
+                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
               >
                 <svg
                   className="w-5 h-5"
@@ -61,36 +66,8 @@ const Sidebar = ({handleSlide}) => {
             </li>
           </ul>
           <ul>
-            <li className={`relative px-6 py-3  ${slideShow===1 ? "bg-purple-100 rounded-lg":""}`} onClick={handleSlide}>
-              { slideShow === 1 ? (
-                <span
-                  className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
-                  aria-hidden="true"
-                ></span>
-                ) : (
-                  <></>
-              )}
-              <Link
-                to={"/adminAddData"}
-                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400 dark:hover:text-gray-200 dark:text-gray-100"
-              >
-                <svg
-                      className="w-5 h-5"
-                      aria-hidden="true"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                      ></path>
-                </svg>
-                <span className="ml-4 text-md">Adicionar dados</span>
-              </Link>
-            </li>
-          </ul>
-          <ul>
-            <li className={`relative px-6 py-3  ${slideShow===2 ? "bg-purple-100 rounded-lg":""}`} onClick={handleSlide}>
-              {slideShow === 2 ? (
+            <li className={`relative px-6 py-3  ${slideShow === 1 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
+              {slideShow === 1 ? (
                 <span
                   className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
                   aria-hidden="true"
@@ -99,30 +76,98 @@ const Sidebar = ({handleSlide}) => {
                 <></>
               )}
               <Link
-                to={"/adminManage"}
-                className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400 dark:hover:text-gray-200"
+                to={"/adminAddData"}
+                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
               >
                 <svg
                   className="w-5 h-5"
                   aria-hidden="true"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
                 >
                   <path
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
                   ></path>
                 </svg>
-                <span className="ml-4 text-md">Usuários</span>
+                <span className="ml-4 text-md">Adicionar dados</span>
               </Link>
             </li>
           </ul>
+          <ul className={`relative`}>
+            <li className="px-6 py-3">
+              <button
+                className="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800"
+                onClick={() => setUserExpanded(!userExpaned)}
+              >
+                <span className="flex">
+                  <svg
+                    className="w-5 h-5"
+                    aria-hidden="true"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    ></path>
+                  </svg>
+                  <span className="ml-4 text-md">Gerenciamento</span>
+                </span>
+                <svg
+                  className="w-4 h-4"
+                  aria-hidden="true"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+              </button>
+            </li>
+            <ul className={userExpaned ? "block":"hidden opacity-0 transition duration-500"}>
+              <li className={`relative pl-8 py-3 ${slideShow === 2 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
+                {slideShow === 2 ? (
+                  <span
+                    className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
+                    aria-hidden="true"
+                  ></span>
+                ) : (
+                  <></>
+                )}
+                <Link
+                  to={"/adminManage"}
+                  className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400"
+                >
+                  <span className="ml-4 text-md">Usuários</span>
+                </Link>
+              </li>
+              <li className={`relative pl-8 py-3 ${slideShow === 3 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
+                {slideShow === 3 ? (
+                  <span
+                    className="absolute inset-y-0 left-0 w-1 h-full bg-purple-600 rounded-tr-lg rounded-br-lg"
+                    aria-hidden="true"
+                  ></span>
+                ) : (
+                  <></>
+                )}
+                <Link
+                  to={"/adminActivities"}
+                  className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400"
+                >
+                  <span className="ml-4 text-md">Atividades</span>
+                </Link>
+              </li>
+            </ul>
+          </ul>
           <ul>
-            <li className={`relative px-6 py-3  ${slideShow===3 ? "bg-purple-100 rounded-lg":""}`} onClick={handleSlide}>
-              {slideShow === 3 ? (
+            <li className={`relative px-6 py-3  ${slideShow === 4 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
+              {slideShow === 4 ? (
                 <span
                   className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
                   aria-hidden="true"
@@ -132,7 +177,7 @@ const Sidebar = ({handleSlide}) => {
               )}
               <Link
                 to={"/adminSetting"}
-                className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400 dark:hover:text-gray-200"
+                className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400"
               >
                 <svg
                   className="w-5 h-5"
@@ -147,6 +192,34 @@ const Sidebar = ({handleSlide}) => {
                   <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                 </svg>
                 <span className="ml-4 text-md">Configuração</span>
+              </Link>
+            </li>
+          </ul>
+          <ul>
+            <li className={`relative px-6 py-3  ${slideShow === 5 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
+              {slideShow === 5 ? (
+                <span
+                  className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
+                  aria-hidden="true"
+                ></span>
+              ) : (
+                <></>
+              )}
+              <Link
+                to={"/guide"}
+                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
+              >
+                <svg
+                  className="w-5 h-5"
+                  aria-hidden="true"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                  ></path>
+                </svg>
+                <span className="ml-4 text-md">Orientações</span>
               </Link>
             </li>
           </ul>

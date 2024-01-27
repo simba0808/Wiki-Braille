@@ -1,7 +1,5 @@
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
-import axios from "axios";
 
 const AdminRoute = () => {
   const { userInfo } = useSelector((state) => state.auth);

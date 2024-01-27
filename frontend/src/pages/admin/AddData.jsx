@@ -120,7 +120,7 @@ const AddData = () => {
       {isLoading && <Loading />}
       {isModalShow && invalidImages.length && <BadListModal clickClose={setModalShow} imageList={invalidImages} />}
       <div className="container xs:px-6">
-        <h2 className="my-6 text-2xl text-left font-semibold text-gray-700 dark:text-gray-200">
+        <h2 className="my-6 text-2xl text-left font-semibold text-gray-700">
           Adicionar novos dados
         </h2>
         <ToastContainer />

@@ -177,7 +177,7 @@ const AccountSetting = () => {
       { isLoading && <Loading /> }
       <ToastContainer  />
       <div className="container xs:px-6 mx-auto grid divide divide-y-2 divide-slate-300">
-        <h2 className="my-6 text-2xl text-left font-semibold text-gray-700 dark:text-gray-200">
+        <h2 className="my-6 text-2xl text-left font-semibold text-gray-700">
           Configuração da conta
         </h2>
         <div className="flex flex-col md:flex-row 2xl:flex-col divide 2xl:divide-y-2 md:divide-y-0 divide-y-2 divide-slate-300">

@@ -10,6 +10,7 @@ import connectDB from './config/database.js';
 //Router
 import userRouter from './routers/userRouter.js';
 import dataRouter from './routers/dataRouter.js';
+import logRouter from './routers/logRouter.js';
 
 const port = process.env.PORT;
 
@@ -26,6 +27,7 @@ app.use(cookieParser());
 
 app.use('/api/user', userRouter);
 app.use('/api/data', dataRouter);
+app.use('/api/log', logRouter);
 
 app.use(express.static("./images"));
 

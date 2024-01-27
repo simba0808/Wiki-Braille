@@ -5,13 +5,15 @@ import EditorRoute from "./EditorRoute";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ResetPassword from "../pages/ResetPassword";
-import AdminLayout from "../components/admin/layout";
+import AdminLayout from "../components/admin/Layout";
 import EditorLayout from "../components/editor/Layout";
-import UserLayout from "../components/user/layout";
+import UserLayout from "../components/user/Layout";
 import Dashboard from "../pages/Dashboard";
 import AccountSetting from "../pages/AccountSetting";
 import AddData from "../pages/admin/AddData";
 import UserManage from "../pages/admin/UserManage";
+import ActivityManage from "../pages/admin/activityManage.jsx";
+import Guidence from "../pages/admin/Guidence.jsx";
 
 const Router = () => {
   return(
@@ -37,9 +39,11 @@ const Router = () => {
         <Route element={<AdminRoute />}>
           <Route element={ <AdminLayout />} >
             <Route path="/adminAddData" element={ <AddData /> } />
+            <Route path="/adminActivities" element={ <ActivityManage /> } />
             <Route path="/adminManage" element={ <UserManage /> } />
             <Route path="/adminDashboard" element={ <Dashboard /> } />
             <Route path="/adminSetting" element={ <AccountSetting /> } />
+            <Route path="/guide" element={ <Guidence /> } />
           </Route>
         </Route>
       </Routes>

@@ -101,9 +101,9 @@ const Register = () => {
 
   return(
     <>
-      <div className="flex items-center min-h-screen p-6 bg-gray-50 dark:bg-gray-900">
+      <div className="flex items-center min-h-screen p-6 bg-gray-50">
       <div
-        className="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800"
+        className="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl"
       >
         <div className="flex flex-col overflow-y-auto md:flex-row">
           <div className="h-32 md:h-auto md:w-1/2">
@@ -118,12 +118,12 @@ const Register = () => {
           <div className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
             <div className="w-full text-left">
               <h1
-                className="mb-4 text-xl  font-semibold text-gray-700 dark:text-gray-200"
+                className="mb-4 text-xl  font-semibold text-gray-700"
               >
                 Criar uma conta
               </h1>
               <label className="block text-sm">
-                <span className="text-gray-700 dark:text-gray-400">Nome: {nameStatus}</span>
+                <span className="text-gray-700">Nome: {nameStatus}</span>
                 <input
                   className={`block w-full mt-1 text-sm border p-2 rounded-md focus:ring-2 focus:ring-purple-200 focus:border-purple-600 focus:outline-none focus:shadow-outline-purple form-input ${nameStatus === "" ? "border-grey-200":"border-lightRed"}`}
                   placeholder="Jane Doe"
@@ -133,7 +133,7 @@ const Register = () => {
                 />
               </label>
               <label className="block mt-4 text-sm">
-                <span className="text-gray-700 dark:text-gray-400">E-mail: {emailStatus}</span>
+                <span className="text-gray-700">E-mail: {emailStatus}</span>
                 <input
                   className={`block w-full mt-1 text-sm border p-2 rounded-md focus:ring-2 focus:ring-purple-200 focus:border-purple-600 focus:outline-none focus:shadow-outline-purple form-input ${emailStatus === "" ? "border-grey-200":"border-lightRed"}`}
                   placeholder="example@email.com"
@@ -142,9 +142,9 @@ const Register = () => {
                 />
               </label>
               <label className="block mt-4 text-sm">
-                <span className="text-gray-700 dark:text-gray-400">Senha: {passwordStatus}</span>
+                <span className="text-gray-700">Senha: {passwordStatus}</span>
                 <input
-                  className={`block w-full mt-1 p-2 text-sm border rounded-md focus:border-purple-600  focus:ring-2 focus:ring-purple-200 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input ${passwordStatus === "" ? "border-grey-200":"border-lightRed"}`}
+                  className={`block w-full mt-1 p-2 text-sm border rounded-md focus:border-purple-600  focus:ring-2 focus:ring-purple-200 focus:outline-none focus:shadow-outline-purple form-input ${passwordStatus === "" ? "border-grey-200":"border-lightRed"}`}
                   placeholder="***************"
                   type="password"
                   value={password}
@@ -152,11 +152,11 @@ const Register = () => {
                 />
               </label>
               <label className="block mt-4 text-sm">
-                <span className="text-gray-700 dark:text-gray-400">
+                <span className="text-gray-700">
                   Confirmar senha: {passwordStatus}
                 </span>
                 <input
-                  className={`block w-full mt-1 p-2 text-sm border rounded-md focus:border-purple-600 focus:ring-2 focus:ring-purple-200 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input ${passwordStatus === "" ? "border-grey-200":"border-lightRed"}`}
+                  className={`block w-full mt-1 p-2 text-sm border rounded-md focus:border-purple-600 focus:ring-2 focus:ring-purple-200 focus:outline-none focus:shadow-outline-purple form-input ${passwordStatus === "" ? "border-grey-200":"border-lightRed"}`}
                   placeholder="***************"
                   type="password"
                   value={confirmPassword}
@@ -165,7 +165,7 @@ const Register = () => {
               </label>
 
               <div className="flex mt-6 text-sm">
-                <label className="flex items-center dark:text-gray-400">
+                <label className="flex items-center">
                   <input
                     type="checkbox"
                     className="text-purple-600 form-checkbox focus:border-purple-400 focus:outline-none"
@@ -188,7 +188,7 @@ const Register = () => {
 
               <p className="mt-4">
                 <Link
-                  className="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+                  className="text-sm font-medium text-purple-600 hover:underline"
                   to={"/login"}
                 >
                   Já tem uma conta? Conecte-se

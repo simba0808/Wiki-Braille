@@ -1,12 +1,12 @@
 import mongoose from "mongoose";
 import { MongoClient, GridFSBucket, ObjectId } from "mongodb";
 import Grid from "gridfs-stream";
-import fs from "fs";
 import nodemailer from "nodemailer";
 import User from "../models/user.js";
 import generateToken from "../utils/generateToken.js";
 import forgotTemplate from "../utils/forgotTemplate.js";
 import { randomInt } from "crypto";
+import Logger from "../models/logger.js";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -51,17 +51,40 @@ const authUser = async (req, res) => {
   }
 
   if(user.role === -1) {
+    await Logger.create({
+      name: "Login",
+      status: "Failed",
+      user: user.name,
+      time: new Date().toUTCString(),
+      detail: `Login (${user.role === 2 ? "Admin":(user.role? "Editor":"User")})`,
+    });
     res.status(401);
     throw new Error("inactive");
   }
 
   const isMatch = await user.matchPassword(password);
   if (!isMatch) {
+    await Logger.create({
+      name: "Login",
+      status: "Failed",
+      user: user.name,
+      time: new Date().toUTCString(),
+      detail: `Login (${user.role === 2 ? "Admin":(user.role? "Editor":"User")})`,
+    });
     res.status(401);
     throw new Error("Invalid password");
   }
 
   const token = generateToken(user._id, user.role);
+  
+  await Logger.create({
+    name: "Login",
+    status: "Success",
+    user: user.name,
+    time: new Date().toUTCString(),
+    detail: `Login (${user.role === 2 ? "Admin":(user.role? "Editor":"User")})`,
+  });
+
   res.status(200).json({
     _id: user._id,
     name: user.name,

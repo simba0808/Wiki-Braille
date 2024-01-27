@@ -61,7 +61,7 @@ const extractDataFromWord = async (req, res) => {
               });
             }
           });
-          
+
           if(invalidImages.length !== 0) {
             invalidImages.sort((a, b) => a.order - b.order);
             console.log(invalidImages)
@@ -81,13 +81,14 @@ const extractDataFromWord = async (req, res) => {
 
           for(let i = 0; i < images.length; i++) {
             const image = images[i];
-            const orignalName = image.name.split('/').pop();  
+            const orignalName = image.name.split('/').pop();
+            const index = parseInt(orignalName.match(/\d+/));
             const content = await image.async("nodebuffer");
             const timeStamp = new Date().toISOString().replace(/[-T:Z.]/g, '');
             await sharp(content).webp({ quality: 20 }).toFile("./images/" + `${timeStamp}-${orignalName}`);
-            dataSet[i].image = `http://localhost/${timeStamp}-${orignalName}`;
+            dataSet[index-1].image = `http://localhost:3000/${timeStamp}-${orignalName}`;
           }
-          
+
           const document = await Data.aggregate([
             {
               $sort: { "title_id": -1 }
@@ -134,11 +135,6 @@ const extractDataFromWord = async (req, res) => {
     })
 };
 
-const uploadFile = async (req, res) => {
-  console.log(req.file)
-  res.status(200).send("ok");
-};
-
 const deleteUploadedFile = async (path) => {
   fs.unlink(path, (err) => {
     if(err) {
@@ -151,5 +147,4 @@ const deleteUploadedFile = async (path) => {
 
 export {
   extractDataFromWord,
-  uploadFile,
 };

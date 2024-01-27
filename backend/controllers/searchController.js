@@ -1,8 +1,9 @@
 import Data from "../models/data.js";
+import Logger from "../models/logger.js";
 
 const searchData = async (req, res) => {
-  let { word, advance, searchin, pageIndex } = req.body.searchWordGroup;
-  const numberPerPage = req.body.numberPerPage;
+  let { word, advance, searchin, pageIndex, numberPerPage, sortMethod } = req.body;
+  console.log(sortMethod)
   let query = {};
   let pluralWord = word;
 
@@ -52,9 +53,6 @@ const searchData = async (req, res) => {
         totalQuery = [
           query,
           {
-            $sort: { "title_id": 1 }
-          },
-          {
             $skip: numberPerPage * (pageIndex - 1)
           },
           {
@@ -69,8 +67,6 @@ const searchData = async (req, res) => {
               catagory: advance,
             }
           },
-          { $addFields: { score: { $meta: "textScore" } } },
-          { $sort: { score: { $meta: "textScore" } } },
           {
             $skip: numberPerPage * (pageIndex - 1)
           },
@@ -78,6 +74,12 @@ const searchData = async (req, res) => {
             $limit: numberPerPage
           },
         ];
+        // if (searchin === 0) {
+        //   totalQuery.push(
+        //     { $addFields: { score: { $meta: "textScore" } } },
+        //     { $sort: { score: { $meta: "textScore" } } }
+        //   );
+        // }
       }
     } else {
       totalQuery = [
@@ -87,9 +89,6 @@ const searchData = async (req, res) => {
           }
         },
         {
-          $sort: { "title_id": 1 }
-        },
-        {
           $skip: numberPerPage * (pageIndex - 1)
         },
         {
@@ -97,7 +96,12 @@ const searchData = async (req, res) => {
         },
       ];
     }
-
+    if(sortMethod) {
+      totalQuery.splice(1, 0, {$sort: { title_id: 1 }});
+    } else {
+      totalQuery.splice(1, 0, {$sort: { rate: -1, ratedCount: -1 }});
+    }
+    console.log(totalQuery)
     const result = await Data.aggregate(totalQuery);
     res.status(200).send(result);
   } catch (err) {
@@ -199,7 +203,7 @@ const getFilteredNumber = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.status(405);
+    res.status(500);
     throw new Error("Error occured while searching database");
   }
 };
@@ -211,8 +215,8 @@ const indexExists = async (fieldName) => {
 };
 
 const updateDescription = async (req, res) => {
-  const { text, newTag, title_id } = req.body;
-  
+  const { user, text, newTag, title_id } = req.body;
+
   try {
     const data = await Data.updateOne(
       {
@@ -232,18 +236,88 @@ const updateDescription = async (req, res) => {
       }
     );
     if (data) {
+      await Logger.create({
+        name: "Update Description",
+        status: "Success",
+        user: user,
+        time: new Date().toUTCString(),
+        detail: `Update Description(${title_id})`,
+      });
       res.status(200).send({
         message: "success",
-      })
+      });
     }
   } catch (err) {
-    res.status(405);
+    await Logger.create({
+      name: "Update Description",
+      status: "Failed",
+      user: user,
+      time: new Date().toUTCString(),
+      detail: `Update Description(${title_id})`,
+    });
+    res.status(500);
     throw new Error("Error occured updating description")
   }
+};
+
+const rateDescription = async (req, res) => {
+  const { title_id, rate } = req.body;
+  
+  try {
+    let data = await Data.findOne({ title_id });
+    let curRate = 0, curRatedCount = 0;
+    if(data) {
+      curRate = data.rate;
+      curRatedCount = data.ratedCount;
+      console.log(curRate, curRatedCount)
+      // console.log(curRate, curRatedCount)
+      // const result = await Data.updateOne({ title_id: title_id },  {
+      //   $set: {
+      //     rate: (curRate + rate) / (curRatedCount + 1),
+      //     ratedCount: curRatedCount + 1
+      //   }
+      // }, {
+      //   upsert: true
+      // });
+      // if(result) {
+      //   res.status(200).send("success");
+      // }
+      data.rate = ((data.rate*data.ratedCount+rate)/(data.ratedCount+1)).toFixed(2);
+      data.ratedCount = data.ratedCount+1;
+      const result = await data.save();   
+
+
+
+      
+      if(result) {
+        res.status(200).send("success");
+      }
+    }
+
+  } catch (err) {
+    res.status(500);
+    throw new Error("failed rating");
+  }
+};
+
+const deleteDescription = async (req, res) => {
+  const result = await Data.deleteOne({ title_id: req.params.id });
+  if (result) {
+    res.status(200).send({
+      message: "success",
+    });
+  } else {
+    res.status(205).send({
+      message: "not found"
+    });
+  }
+
 };
 
 export {
   searchData,
   getFilteredNumber,
   updateDescription,
+  rateDescription,
+  deleteDescription,
 };

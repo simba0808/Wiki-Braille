@@ -16,7 +16,6 @@ import {
   updateUserRole, 
   deleteAccount,
   deleteAccountByAdmin,
-
 } from "../controllers/userController.js";
 
 import { authUserMiddleware, authAdminMiddleware } from "../middleware/authMiddleware.js";

@@ -27,6 +27,14 @@ const dataSchema = mongoose.Schema(
       type: String,
       default: "",
       required: true,
+    },
+    rate: {
+      type: Number,
+      default: 0
+    },
+    ratedCount: {
+      type: Number,
+      default: 0
     }
   }
 );

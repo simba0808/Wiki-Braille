@@ -71,7 +71,7 @@ const UserManage  = () => {
     if(currentPageIndex > filteredData.length/10) {
       return;
     }
-    if(currentPageIndex === startPageIndex+9) {
+    if(currentPageIndex === startPageIndex+4) {
       setStartPageIndex(startPageIndex+1);
     }
     setCurrentPageIndex(currentPageIndex+1);
@@ -136,7 +136,7 @@ const UserManage  = () => {
       { isLoading && <Loading /> }
       <div className="container xs:px-6">
         <div className="flex justify-between">
-          <h2 className="my-6 text-2xl text-left font-semibold text-gray-700 dark:text-gray-200">
+          <h2 className="my-6 text-2xl text-left font-semibold text-gray-700">
             Gerenciamento de usuários
           </h2>
           <div className="flex items-center">
@@ -146,7 +146,7 @@ const UserManage  = () => {
         <ToastContainer />
         <div className="w-full overflow-hidden shadow-xs">
           <div className="w-full overflow-x-hidden">
-            <table className="w-full whitespace-no-wrap">
+            <table className="w-full border whitespace-no-wrap">
               <thead>
                 <tr className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-50">
                   <th className="xs:px-4 px-2 py-3 text-center">Usuário</th>
@@ -266,7 +266,7 @@ const UserManage  = () => {
                   }
                   <li className="my-auto">
                     <button
-                      className="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
+                      className="xs:w-10 xs:h-10 w-8 h-8 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
                       aria-label="Next"
                       onClick={forwardButtonHandle}
                     >
