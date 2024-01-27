@@ -62,7 +62,6 @@ const Dashboard = () => {
     if (filterGroup.filteredCount === null) {
       getTotalNumbers(filterGroup.word, filterGroup.advance, filterGroup.searchin);
     } else {
-      console.log(sortMethod)
       fetchFilteredData(filterGroup.word, filterGroup.advance, filterGroup.searchin, filterGroup.pageIndex, filterGroup.numberPerPage, sortMethod);
     }
   }, []);
@@ -84,6 +83,8 @@ const Dashboard = () => {
   useEffect(() => {
     if (filteredCount !== 0) {
       fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod);
+    } else {
+      setFilteredData([]);
     }
   }, [filteredCount]);
 
@@ -122,6 +123,7 @@ const Dashboard = () => {
   }
 
   const fetchFilteredData = async (word, advance, searchin, pageIndex, numberPerPage, sortMethod) => {
+    setFilteredData([]);
     setLoading(true);
     try {
       const searcher = {
@@ -259,6 +261,8 @@ const Dashboard = () => {
             >
               <option value="Descrição">Descrição</option>
               <option value="Desenhos em braille">Desenhos em braille</option>
+              <option value="Braille spellings">Braille spellings</option>
+              <option value="Examples of braille spelling">Examples of braille spelling</option>
             </select>
           </div>
           <div className="md:w-[48%] w-full relative my-2 px-2 text-gray-500 flex bg-white rounded-md border-2 border-slate-200">

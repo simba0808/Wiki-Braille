@@ -28,6 +28,10 @@ const userSchema = mongoose.Schema(
       type: String,
       default: "",
     },
+    verifyTimestamp: {
+      type: Number,
+      default: 0,
+    }
   },
   {
     timestamps: true,

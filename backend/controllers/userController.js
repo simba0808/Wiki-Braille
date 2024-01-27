@@ -50,13 +50,13 @@ const authUser = async (req, res) => {
     throw new Error("User not found");
   }
 
-  if(user.role === -1) {
+  if (user.role === -1) {
     await Logger.create({
       name: "Login",
       status: "Failed",
       user: user.name,
       time: new Date().toUTCString(),
-      detail: `Login (${user.role === 2 ? "Admin":(user.role? "Editor":"User")})`,
+      detail: `Login (${user.role === 2 ? "Admin" : (user.role ? "Editor" : "User")})`,
     });
     res.status(401);
     throw new Error("inactive");
@@ -69,20 +69,20 @@ const authUser = async (req, res) => {
       status: "Failed",
       user: user.name,
       time: new Date().toUTCString(),
-      detail: `Login (${user.role === 2 ? "Admin":(user.role? "Editor":"User")})`,
+      detail: `Login (${user.role === 2 ? "Admin" : (user.role ? "Editor" : "User")})`,
     });
     res.status(401);
     throw new Error("Invalid password");
   }
 
   const token = generateToken(user._id, user.role);
-  
+
   await Logger.create({
     name: "Login",
     status: "Success",
     user: user.name,
     time: new Date().toUTCString(),
-    detail: `Login (${user.role === 2 ? "Admin":(user.role? "Editor":"User")})`,
+    detail: `Login (${user.role === 2 ? "Admin" : (user.role ? "Editor" : "User")})`,
   });
 
   res.status(200).json({
@@ -109,19 +109,50 @@ const registerUser = async (req, res) => {
     password,
   });
 
-  if (newUser) {
-    res.status(200).json({
-      _id: newUser._id,
-      email: newUser.email,
+  try {
+    const verifyCode = generateVerifyCode();
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      secure: true,
+      requireTLS: true,
+      auth: {
+        user: "profitteamcad@gmail.com",
+        pass: "vojhaizydjtqdahe"
+      }
     });
-  } else {
+    const mailOptions = {
+      from: "profitteamcad@gmail.com",
+      to: email,
+      subject: `Enter Verificatin Code ${verifyCode}`,
+      text: "code",
+      html: forgotTemplate(email, verifyCode),
+    };
+
+    transporter.sendMail(mailOptions, async function (err, info) {
+      if (err) {
+        await User.deleteOne({ email });
+        res.status(500);
+        throw new Error("Error occurred while sending email");
+      } else {
+        newUser.verifyCode = verifyCode;
+        newUser.verifyTimestamp = new Date().getTime();
+        const update = await newUser.save();
+        if (update) {
+          res.status(200).send({
+            message: "sent"
+          });
+        }
+      }
+    });
+  } catch (err) {
     res.status(500);
-    throw new Error("User could not be created");
+    throw new Error("Error occurred while generating code");
   }
 };
 
 const sendVerifyCode = async (req, res) => {
-  const email = req.body.email;
+  const { email } = req.body.email;
 
   const user = await User.findOne({ email });
   if (!user) {
@@ -158,6 +189,7 @@ const sendVerifyCode = async (req, res) => {
       }
     });
     user.verifyCode = verifyCode;
+    user.verifyTimestamp = new Date().getTime();
     const update = await user.save();
     if (update) {
       res.status(200).send({
@@ -171,17 +203,26 @@ const sendVerifyCode = async (req, res) => {
 };
 
 const verifyResetCode = async (req, res) => {
-  const { email, verifyCode } = req.body;
+  const { email, verifyCode, timestamp, type } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (user.verifyCode === verifyCode) {
-      res.status(200).send({
-        message: "verified"
+    if (user.verifyTimestamp + 60 * 1000 < timestamp) {
+      if (type === "register") {
+        await User.deleteOne({ email });
+      }
+      res.status(401).send({
+        message: "expired"
       });
     } else {
-      res.status(404).send({
-        message: "unverified"
-      });
+      if (user.verifyCode === verifyCode) {
+        res.status(200).send({
+          message: "verified"
+        });
+      } else {
+        res.status(401).send({
+          message: "unverified"
+        });
+      }
     }
   } catch (err) {
     res.status(500);

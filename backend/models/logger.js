@@ -5,7 +5,7 @@ const loggerSchema = mongoose.Schema({
     type: String,
   },
   status: {
-    type: String,
+    type: String  ,
   },
   user: {
     type: String,
