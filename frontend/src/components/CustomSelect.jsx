@@ -3,7 +3,7 @@ import { useState } from "react";
 const CustomSelect = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(null);
-  const options = ["Best Match", "Title Number", "Star Rating"];
+  const options = ["Descrição", "Desenhos em braille", "Braille spellings", "Examples of braille spelling"];
 
   const toggleDropDown = () => {
     setIsOpen(!isOpen);
@@ -20,7 +20,7 @@ const CustomSelect = () => {
         <span className="rouned-md shadow-md">
           <button
             type="button"
-            className="inline-flex justify-center w-full rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            className="inline-flex justify-center w-full rounded-md border border-gray-300 bg-white py-2 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             onClick={toggleDropDown}
             id="option-menu"
             aria-haspopup="true"
@@ -46,7 +46,7 @@ const CustomSelect = () => {
       {
         isOpen && (
           <div
-            className="z-20 origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+            className="z-20 origin-top-right absolute left-0 mt-2 w-56 rounded-md shadow-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
             role="menu"
             aria-aria-orientation="vertical"
             aria-labelledby="option-menu"

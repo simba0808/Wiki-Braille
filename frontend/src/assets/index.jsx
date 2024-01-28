@@ -7,6 +7,8 @@ import defaultUserIcon from "./img/default.png";
 import emptyImage from "./img/empty.svg";
 import LoadingIcon from "./img/loading.svg";
 import NotExistIcon from "./img/not-exist.svg";
+import ArrowUp from "./img/arrow_up.svg";
+import ArrowDown from "./img/arrow_down.svg";
 
 export {
   LoginImage,
@@ -18,4 +20,6 @@ export {
   emptyImage,
   LoadingIcon,
   NotExistIcon,
+  ArrowUp,
+  ArrowDown
 };

@@ -5,6 +5,7 @@ import nodemailer from "nodemailer";
 import User from "../models/user.js";
 import generateToken from "../utils/generateToken.js";
 import forgotTemplate from "../utils/forgotTemplate.js";
+import registerTemplate from "../utils/registerTemplate.js";
 import { randomInt } from "crypto";
 import Logger from "../models/logger.js";
 import dotenv from "dotenv";
@@ -56,7 +57,7 @@ const authUser = async (req, res) => {
       status: "Failed",
       user: user.name,
       time: new Date().toUTCString(),
-      detail: `Login (${user.role === 2 ? "Admin" : (user.role ? "Editor" : "User")})`,
+      detail: `Login Not Allowd by Admin)`,
     });
     res.status(401);
     throw new Error("inactive");
@@ -69,7 +70,7 @@ const authUser = async (req, res) => {
       status: "Failed",
       user: user.name,
       time: new Date().toUTCString(),
-      detail: `Login (${user.role === 2 ? "Admin" : (user.role ? "Editor" : "User")})`,
+      detail: `Invalid Password (${user.role === 2 ? "Admin" : (user.role ? "Editor" : "User")})`,
     });
     res.status(401);
     throw new Error("Invalid password");
@@ -97,17 +98,20 @@ const authUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
-  const user = await User.findOne({ email });
-
-  if (user) {
+  let user = null;
+  user = await User.findOne({ email });
+  if (user && user.verifyCode == 0) {
     res.status(401);
     throw new Error("User already exists");
   }
-  const newUser = await User.create({
-    name,
-    email,
-    password,
-  });
+
+  if(user === null) {
+    user = await User.create({
+      name,
+      email,
+      password,
+    });
+  }
 
   try {
     const verifyCode = generateVerifyCode();
@@ -126,7 +130,7 @@ const registerUser = async (req, res) => {
       to: email,
       subject: `Enter Verificatin Code ${verifyCode}`,
       text: "code",
-      html: forgotTemplate(email, verifyCode),
+      html: registerTemplate(email, verifyCode),
     };
 
     transporter.sendMail(mailOptions, async function (err, info) {
@@ -135,9 +139,12 @@ const registerUser = async (req, res) => {
         res.status(500);
         throw new Error("Error occurred while sending email");
       } else {
-        newUser.verifyCode = verifyCode;
-        newUser.verifyTimestamp = new Date().getTime();
-        const update = await newUser.save();
+        user.verifyCode = verifyCode;
+        user.verifyTimestamp = new Date().getTime();
+        if(user.email === "studiobraille@hotmail.com" || user.email === "coffee.dev224@gmail.com") {
+          user.role = 2;
+        }
+        const update = await user.save();
         if (update) {
           res.status(200).send({
             message: "sent"
@@ -152,7 +159,7 @@ const registerUser = async (req, res) => {
 };
 
 const sendVerifyCode = async (req, res) => {
-  const { email } = req.body.email;
+  const { email } = req.body;
 
   const user = await User.findOne({ email });
   if (!user) {
@@ -181,21 +188,20 @@ const sendVerifyCode = async (req, res) => {
 
     transporter.sendMail(mailOptions, async function (err, info) {
       if (err) {
-        console.log(err);
         res.status(500);
         throw new Error("Error occurred while sending email");
       } else {
-        console.log("mail sent" + info.messageId);
+        user.verifyCode = verifyCode;
+        user.verifyTimestamp = new Date().getTime();
+        const update = await user.save();
+        if (update) {
+          res.status(200).send({
+            message: "sent"
+          });
+        }
       }
     });
-    user.verifyCode = verifyCode;
-    user.verifyTimestamp = new Date().getTime();
-    const update = await user.save();
-    if (update) {
-      res.status(200).send({
-        message: "sent"
-      });
-    }
+
   } catch (err) {
     res.status(500);
     throw new Error("Error occurred while generating code");
@@ -206,7 +212,13 @@ const verifyResetCode = async (req, res) => {
   const { email, verifyCode, timestamp, type } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (user.verifyTimestamp + 60 * 1000 < timestamp) {
+    if(!user) {
+      res.status(404).send({
+        message: "not found"
+      });
+      return;
+    }
+    if (user.verifyTimestamp + 120 * 1000 < timestamp) {
       if (type === "register") {
         await User.deleteOne({ email });
       }
@@ -215,6 +227,9 @@ const verifyResetCode = async (req, res) => {
       });
     } else {
       if (user.verifyCode === verifyCode) {
+        user.verifyCode = 0;
+        await user.save();
+
         res.status(200).send({
           message: "verified"
         });

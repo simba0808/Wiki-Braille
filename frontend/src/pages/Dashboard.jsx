@@ -1,7 +1,6 @@
 import Loading from "../components/Loading";
 import DetailModal from "../components/modals/detailModal";
-import { emptyImage } from "../assets";
-import { NotExistIcon } from "../assets";
+import { emptyImage, NotExistIcon, ArrowUp, ArrowDown } from "../assets";
 import CustomSelect from "../components/CustomSelect";
 import { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -36,6 +35,7 @@ const Dashboard = () => {
   const [filteredCount, setFilteredCount] = useState(filterGroup.filteredCount !== null ? filterGroup.filteredCount : 0);
   const [filteredData, setFilteredData] = useState([]);
   const [sortMethod, setSortMethod] = useState(filterGroup.sortMode);
+  const [isDescending, setDescending] = useState([true, true]);
   const [viewMode, setViewMode] = useState(filterGroup.numberPerPage === 12 ? true : false);
   const [updateDescription, setUpdateDescription] = useState({});
   const [isLoading, setLoading] = useState(false);
@@ -92,7 +92,7 @@ const Dashboard = () => {
     if (filteredCount !== 0) {
       fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod);
     }
-  }, [sortMethod]);
+  }, [sortMethod, isDescending]);
 
   useEffect(() => {
     if (Object.keys(updateDescription).length !== 0 && filteredData) {
@@ -132,7 +132,8 @@ const Dashboard = () => {
         searchin,
         pageIndex: pageIndex,
         numberPerPage,
-        sortMethod
+        sortMethod,
+        descending: isDescending[sortMethod ? 0:1]
       };
 
       const response = await axios.post("/api/data/getdata", searcher);
@@ -157,6 +158,7 @@ const Dashboard = () => {
     if (currentPageIndex === startPageIndex) {
       setStartPageIndex(startPageIndex - 1);
     }
+    console.log(startPageIndex, currentPageIndex);
     setCurrentPageIndex(currentPageIndex - 1);
   };
 
@@ -261,8 +263,8 @@ const Dashboard = () => {
             >
               <option value="Descrição">Descrição</option>
               <option value="Desenhos em braille">Desenhos em braille</option>
-              <option value="Braille spellings">Braille spellings</option>
-              <option value="Examples of braille spelling">Examples of braille spelling</option>
+              <option value="Grafias em braille">Grafias em braille</option>
+              <option value="Exemplos da grafia braille">Exemplos da grafia braille</option>
             </select>
           </div>
           <div className="md:w-[48%] w-full relative my-2 px-2 text-gray-500 flex bg-white rounded-md border-2 border-slate-200">
@@ -286,17 +288,37 @@ const Dashboard = () => {
 
         {modalShow && selectedIndex !== -1 ? <DetailModal descData={{ ...filteredData[selectedIndex] }} handleClick={setModalShow} updateHandle={setUpdateDescription} /> : ""}
 
-        <div className="px-4 py-2 sm:px-12 px-4 rounded-t-xl">
-          <div className="sm:flex sm:justify-between ">
-            <p className="flex items-center"><span className="text-md font-semibold p-1">{filterGroup.filteredCount ? filterGroup.filteredCount : filteredCount}</span>registros pesquisados</p>
-            <div className="sm:flex sm:p-1 sm:flex-row flex flex-col gap-4 justify-end items-end">
-              <div className="flex items-center gap-2 mt-2">
-                <div className="bg-gray-200 text-xs xs:text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">
-                  <button className={`inline-flex items-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full px-3 py-2 ${sortMethod ? "active" : ""}`} id="list" onClick={() => { setSortMethod(true); dispatch(setFilterGroup({ ...filterGroup, sortMode: true })); }}>
-                    <span>Title Number</span>
+        <div className="px-4 py-2 rounded-t-xl">
+          <div className="w-full flex xl:flex-row flex-col items-center justify-between">
+            <p className="text-lg">
+              <b className="text-xl">{filterGroup.filteredCount ? filterGroup.filteredCount : filteredCount}</b>&nbsp;registros pesquisados
+            </p>
+            <div className="w-full flex md:p-1 md:flex-row flex-col gap-4 justify-end items-end">
+              <div className="flex xs:flex-row flex-col xs:items-center items-end gap-2 mt-2">
+                <div className="bg-gray-200 text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">
+                  <button 
+                    className={`w-[120px] relative inline-flex items-center justify-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full py-2 ${sortMethod ? "active" : ""}`} 
+                    id="list"
+                    onClick={() => { 
+                      if(sortMethod) setDescending([!isDescending[0], isDescending[1]]);
+                      setSortMethod(true);
+                      dispatch(setFilterGroup({ ...filterGroup, sortMode: true }));
+                    }}
+                  >   
+                    <span className="w-[80%]">numérica</span>
+                    <img className="absolute right-0" src={isDescending[0] ? ArrowDown : ArrowUp} />
                   </button>
-                  <button className={`inline-flex items-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-l-full px-3 py-2 ${!sortMethod ? "active" : ""}`} id="grid" onClick={() => { setSortMethod(false); dispatch(setFilterGroup({ ...filterGroup, sortMode: false })); }}>
-                    <span>Star Rating</span>
+                  <button
+                    className={`w-[120px] relative inline-flex items-center  transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full  py-2 ${!sortMethod ? "active" : ""}`}
+                    id="grid"
+                    onClick={() => {
+                      if(!sortMethod) setDescending([isDescending[0], !isDescending[1]]);
+                      setSortMethod(false);
+                      dispatch(setFilterGroup({ ...filterGroup, sortMode: false }));
+                    }}
+                  >
+                    <span className="w-[80%]">Avaliação</span>
+                    <img className="absolute right-1" src={isDescending[1] ? ArrowDown : ArrowUp} />
                   </button>
                 </div>
                 <div className="bg-gray-200 text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">
@@ -314,7 +336,7 @@ const Dashboard = () => {
                 <li className="flex items-center">
                   <button
                     aria-label="Previous"
-                    onClick={() => backButtonHandle}
+                    onClick={backButtonHandle}
                   >
                     <svg
                       aria-hidden="true"
@@ -392,7 +414,7 @@ const Dashboard = () => {
                 }
               </ImageList>
             </Box> :
-            <div className={`bg-white p-2 pt-0 ${filteredData.length ? `grid gap-2 md:grid-cols-2 grid-cols-1 rounded-b-xl` : ""}`}>
+            <div className={`p-2 pt-0 ${filteredData.length ? `grid gap-2 md:grid-cols-2 grid-cols-1 rounded-b-xl` : ""}`}>
               {
                 filteredData.length ? searchResult : <img src={emptyImage} className="mx-auto py-4 sm:py-14 2xl:py-24" />
               }

@@ -1,6 +1,7 @@
 import Loading from "../Loading";
 import { NotExistIcon } from "../../assets";
 import RatingModal from "./RatingModal";
+import CustomSelect from "../CustomSelect";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -132,6 +133,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
             {
               catagory !== "Descrição" ?
                 <p className="py-1 xs:text-xl text-lg font-semibold flex">
+                  
                   Tag:
                   <input
                     type="text"
@@ -142,7 +144,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
                   />
                 </p> : <></>
             }
-            <div className="flex py-2 items-center">
+            <div className="flex pt-2 items-center">
               {
                 [1, 2, 3].map((item) => {
                   return (
@@ -162,7 +164,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
               <span className="w-1 h-1 mx-1.5 bg-gray-500 rounded-full"></span>
               <span className="">{ratedCount} reviews</span>
             </div>
-            <div className="xs:flex xs:flex-row flex flex-col grow py-2">
+            <div className="xs:flex xs:flex-row flex flex-col grow">
               <div className="xs:flex-1 flex px-2 items-center justify-center hover:cursor-zoom-in">
                 <TransformWrapper initialScale={1} initialPositionX={0} initialPositionY={0} smooth={true}>
                   <TransformComponent>
@@ -181,7 +183,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
                       <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
                     </svg>
                   </button>
-                  <div class="bg-purple-600 text-white text-sm rounded-md py-1 px-2 absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <div className="bg-purple-600 text-white text-sm rounded-md py-1 px-2 absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     {isCopy ? "copied!" : "copy"}
                   </div>
                 </div>

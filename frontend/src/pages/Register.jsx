@@ -68,7 +68,11 @@ const Register = () => {
       const res = await register({ name, email, password }).unwrap();
       setVerifyShow(true);
     } catch (err) {
-      toast.error("Falha ao registrar o usuário", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+      if(err.data.message === "User already exists") {
+        toast.error("O usuário já existe", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+      } else {
+        toast.error("Falha ao registrar o usuário", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+      }
     }
   };
 
@@ -83,20 +87,30 @@ const Register = () => {
   };
 
   const handleCodeSubmit = async () => {
-    const res = await axios.post("/api/auth/verify", { email, code, timestamp: new Date().getTime(), type: "register" });
-    if (res.data.message === "success") {
-      toast.success('Registrado com sucesso!', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
-      setTimeout(() => {
+    try {
+      const res = await axios.post("/api/user/verify", { email, verifyCode: code, timestamp: new Date().getTime(), type: "register" });
+      console.log(res)
+      if (res.data.message === "verified") {
+        toast.success('Registrado com sucesso!', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        setTimeout(() => {
+          setVerifyShow(false);
+          navigate("/");
+        }, 1000)
+      }
+    } catch (err) {
+      const message = err.response.data.message;
+      if (message === "not found") {
+        toast.error("Esse usuário não foi encontrado. Registre-se novamente", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
         setVerifyShow(false);
-        navigate("/");
-      }, 1000)
-    } else if (res.data.message === "expired") {
-      toast.error("Código expirado. Registre-se novamente", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
-      setVerifyShow(false);
-      setCode("");
-    } else {
-      toast.error("Código inválido. Por favor, tente novamente", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
-      setCode("");
+        setCode("");
+      } else if (message === "expired") {
+        toast.error("Código expirado. Registre-se novamente", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        setVerifyShow(false);
+        setCode("");
+      } else {
+        toast.error("Código inválido. Por favor, tente novamente", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        setCode("");       
+      }
     }
   };
 
@@ -148,13 +162,13 @@ const Register = () => {
                     <h1
                       className="mb-4 text-xl font-semibold text-gray-700"
                     >
-                      Conecte-se
+                      Verificação de e-mail
                     </h1>
                     <label className="block mt-4 text-sm">
-                      <span className="text-gray-700">Verify Code: {emailStatus}</span>
+                      <span className="text-gray-700">Você deve inserir o código em 2 minutos</span>
                       <input
                         className={`block w-full mt-1 text-sm border p-2 rounded-md focus:ring-2 focus:ring-purple-200 focus:border-purple-600 focus:outline-none focus:shadow-outline-purple form-input ${emailStatus === "" ? "border-grey-200" : "border-red-400 ring-2 ring-red-100"}`}
-                        placeholder="Enter your verification code"
+                        placeholder="Digite seu código de verificação"
                         autoFocus={true}
                         value={code}
                         onChange={handleChangeCodeInput}
