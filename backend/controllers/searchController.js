@@ -3,7 +3,6 @@ import Logger from "../models/logger.js";
 
 const searchData = async (req, res) => {
   let { word, advance, searchin, pageIndex, numberPerPage, sortMethod, descending } = req.body;
-  console.log(sortMethod)
   let query = {};
   let pluralWord = word;
 
@@ -99,10 +98,12 @@ const searchData = async (req, res) => {
     if(sortMethod) {
       totalQuery.splice(1, 0, {$sort: { title_id: descending?-1:1 }});
     } else {
-      totalQuery.splice(1, 0, {$sort: { rate: descending?-1:1 }});
+      totalQuery.splice(1, 0, {$sort: { rate: descending?-1:1, title_id: 1 }});
     }
-    console.log(totalQuery)
+    
     const result = await Data.aggregate(totalQuery);
+    const temp = result.map((item) => item.title_id+" "+item.title)
+    console.log(temp)
     res.status(200).send(result);
   } catch (err) {
     res.status(405);

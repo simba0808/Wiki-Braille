@@ -31,7 +31,7 @@ const Dashboard = () => {
   const [startPageIndex, setStartPageIndex] = useState(1);
   const [currentPageIndex, setCurrentPageIndex] = useState(filterGroup.pageIndex);
   const [numberPerPage, setNumberPerPage] = useState(filterGroup.numberPerPage);
-  const [searchWord, setSearchWord] = useState("");
+  const [searchWord, setSearchWord] = useState(filterGroup.word);
   const [filteredCount, setFilteredCount] = useState(filterGroup.filteredCount !== null ? filterGroup.filteredCount : 0);
   const [filteredData, setFilteredData] = useState([]);
   const [sortMethod, setSortMethod] = useState(filterGroup.sortMode);
@@ -62,12 +62,13 @@ const Dashboard = () => {
     if (filterGroup.filteredCount === null) {
       getTotalNumbers(filterGroup.word, filterGroup.advance, filterGroup.searchin);
     } else {
+      console.log(filterGroup)
       fetchFilteredData(filterGroup.word, filterGroup.advance, filterGroup.searchin, filterGroup.pageIndex, filterGroup.numberPerPage, sortMethod);
     }
   }, []);
 
   useEffect(() => {
-    if (currentPageIndex !== filterGroup.numberPerPage) {
+    if (currentPageIndex !== filterGroup.pageIndex) {
       dispatch(setFilterGroup({ ...filterGroup, pageIndex: currentPageIndex }))
       fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod);
     }
@@ -163,7 +164,7 @@ const Dashboard = () => {
   };
 
   const forwardButtonHandle = () => {
-    if (currentPageIndex > (filteredCount % numberPerPage ? filteredCount / numberPerPage + 1 : filteredCount / numberPerPage)) {
+    if ((currentPageIndex+1) >= (filteredCount % numberPerPage ? filteredCount / numberPerPage + 1 : filteredCount / numberPerPage)) {
       return;
     }
     if (currentPageIndex === startPageIndex + 4) {
