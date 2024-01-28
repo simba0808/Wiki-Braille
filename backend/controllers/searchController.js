@@ -1,5 +1,6 @@
 import Data from "../models/data.js";
 import Logger from "../models/logger.js";
+import fs from "fs";
 
 const searchData = async (req, res) => {
   let { word, advance, searchin, pageIndex, numberPerPage, sortMethod, descending } = req.body;
@@ -95,14 +96,14 @@ const searchData = async (req, res) => {
         },
       ];
     }
-    if(sortMethod) {
-      totalQuery.splice(1, 0, {$sort: { title_id: descending?-1:1 }});
+    if (sortMethod) {
+      totalQuery.splice(1, 0, { $sort: { title_id: descending ? -1 : 1 } });
     } else {
-      totalQuery.splice(1, 0, {$sort: { rate: descending?-1:1, title_id: 1 }});
+      totalQuery.splice(1, 0, { $sort: { rate: descending ? -1 : 1, title_id: 1 } });
     }
-    
+
     const result = await Data.aggregate(totalQuery);
-    const temp = result.map((item) => item.title_id+" "+item.title)
+    const temp = result.map((item) => item.title_id + " " + item.title)
     console.log(temp)
     res.status(200).send(result);
   } catch (err) {
@@ -261,13 +262,44 @@ const updateDescription = async (req, res) => {
   }
 };
 
+const updateImageDescription = async (req, res) => {
+  const {title_id, newTag, text, user} = req.body;
+  try {
+    const data = await Data.findOne({ title_id });
+    if (data) {
+      fs.unlink(`images/${data.image.split("http://localhost:3000/")[1]}`, (err) => {
+      });
+      data.text = text;
+      data.newTag = newTag;
+      data.image = "http://localhost:3000/"+req.file.filename;
+      await data.save();
+
+      await Logger.create({
+        name: "Update Description",
+        status: "Success",
+        user: user,
+        time: new Date().toUTCString(),
+        detail: `Update Description(${title_id})`,
+      });
+
+      res.status(200).send({
+        message: "success",
+        path: "http://localhost:3000/"+req.file.filename,
+      });
+    }
+  } catch (err) {
+    res.status(404);
+    throw new Error("not found")
+  }
+};
+
 const rateDescription = async (req, res) => {
   const { title_id, rate } = req.body;
-  
+
   try {
     let data = await Data.findOne({ title_id });
     let curRate = 0, curRatedCount = 0;
-    if(data) {
+    if (data) {
       curRate = data.rate;
       curRatedCount = data.ratedCount;
       console.log(curRate, curRatedCount)
@@ -283,14 +315,14 @@ const rateDescription = async (req, res) => {
       // if(result) {
       //   res.status(200).send("success");
       // }
-      data.rate = ((data.rate*data.ratedCount+rate)/(data.ratedCount+1)).toFixed(2);
-      data.ratedCount = data.ratedCount+1;
-      const result = await data.save();   
+      data.rate = ((data.rate * data.ratedCount + rate) / (data.ratedCount + 1)).toFixed(2);
+      data.ratedCount = data.ratedCount + 1;
+      const result = await data.save();
 
 
 
-      
-      if(result) {
+
+      if (result) {
         res.status(200).send("success");
       }
     }
@@ -319,6 +351,7 @@ export {
   searchData,
   getFilteredNumber,
   updateDescription,
+  updateImageDescription,
   rateDescription,
   deleteDescription,
 };

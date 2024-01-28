@@ -98,7 +98,10 @@ const Dashboard = () => {
   useEffect(() => {
     if (Object.keys(updateDescription).length !== 0 && filteredData) {
       filteredData[selectedIndex].description = updateDescription.text;
-      filteredData[selectedIndex].tag = updateDescription.tag
+      filteredData[selectedIndex].tag = updateDescription.tag;
+      if(updateDescription.image !== null) {
+        filteredData[selectedIndex].image = updateDescription.image;
+      } 
     }
   }, [updateDescription]);
 

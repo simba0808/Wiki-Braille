@@ -8,6 +8,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import copy from "copy-to-clipboard";
+import { AiOutlineCloudUpload } from "react-icons/ai";
 import "react-medium-image-zoom/dist/styles.css";
 
 const detailModal = ({ descData, handleClick, updateHandle }) => {
@@ -20,6 +21,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
   const [newTag, setNewTag] = useState(tag);
   const [isCopy, setIsCopy] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const [ratingModalShow, setRatingModalShow] = useState(false);
   const [deleteModalShow, setDeleteModalShow] = useState(false);
 
@@ -40,7 +42,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
   };
 
   const editConfirm = async () => {
-    if (tag === newTag && text === description) {
+    if ((tag === newTag && text === description) && selectedImage === null) {
       toast.error('Nenhuma atualização', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
       return;
     }
@@ -49,9 +51,21 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
 
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
-      const response = await axios.post("/api/data/edit", { user: userInfo.name, text, newTag, title_id });
+      let response = null;
+      if (selectedImage === null) {
+        response = await axios.post("/api/data/edit", { user: userInfo.name, text, newTag, title_id }); 
+      } else {
+        const formData = new FormData();
+        formData.append("image", selectedImage);
+        formData.append("user", userInfo.name);
+        formData.append("text", text);
+        formData.append("newTag", newTag);
+        formData.append("title_id", title_id);
+        response = await axios.post("/api/data/editimage", formData);
+      }
       if (response.data.message === "success") {
-        updateHandle({ text, tag: newTag });
+        
+        updateHandle({ text, tag: newTag, image: selectedImage?response.data.path:null });
         setLoading(false);
         toast.success('Atualizado com sucesso!', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
       }
@@ -84,6 +98,10 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
     }
   };
 
+  const handleChangeImage = (e) => {
+    console.log(e.target.files[0])
+    setSelectedImage(e.target.files[0]);
+  };
   const deleteDescription = async () => {
     axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
     try {
@@ -133,7 +151,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
             {
               catagory !== "Descrição" ?
                 <p className="py-1 xs:text-xl text-lg font-semibold flex">
-                  
+
                   Tag:
                   <input
                     type="text"
@@ -166,14 +184,27 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
             </div>
             <div className="xs:flex xs:flex-row flex flex-col grow">
               <div className="xs:flex-1 flex px-2 items-center justify-center hover:cursor-zoom-in">
-                <TransformWrapper initialScale={1} initialPositionX={0} initialPositionY={0} smooth={true}>
-                  <TransformComponent>
-                    <img
-                      className="max-h-[280px] md:max-h-[450px] w-full mx-auto my-auto py-4"
-                      src={image ? image : NotExistIcon}
-                    />
-                  </TransformComponent>
-                </TransformWrapper>
+                {
+                  <div className="flex items-center">
+                    <input type="file" accept="image/*" id="avatar-image-upload" hidden disabled={editable ? false : true} onChange={handleChangeImage} />
+                    <label htmlFor="avatar-image-upload" className="relative hover:cursor-pointer">
+                      <TransformWrapper initialScale={1} initialPositionX={0} initialPositionY={0} smooth={true}>
+                        <TransformComponent>
+                          <img
+                            className="max-h-[280px] md:max-h-[450px] w-full mx-auto my-auto py-4"
+                            src={selectedImage === null ? (image ? image : NotExistIcon) : URL.createObjectURL(selectedImage)}
+                          />
+                        </TransformComponent>
+                      </TransformWrapper>
+                      {
+                        editable ?
+                          <div className="bg-gray-700 border-dotted border-2 z-10 absolute left-[50%] top-[50%] transform translate-x-[-50%] translate-y-[-50%] w-[100px] h-[100px] flex items-center justify-center rounded-full">
+                            <AiOutlineCloudUpload className="w-10 h-10 text-white" />
+                          </div> : <></>
+                      }
+                    </label>
+                  </div>
+                }
               </div>
               <div className="xs:flex-1 grow w-full p-2 flex flex-col justify-start items-end gap-2">
                 <div className="relative inline-block group">
@@ -201,7 +232,11 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
                 <div className="flex justify-end pt-2">
                   <button
                     className="w-[90px] focus:outline-none modal-close px-auto py-3 rounded-lg text-purple-700 border border-purple-700 hover:bg-purple-300 active:bg-purple-600 active:text-white"
-                    onClick={() => setEditable(editable ? false : true)}
+                    onClick={() => {
+                      if (editable) setSelectedImage(null);
+                      setEditable(editable ? false : true);
+                    }
+                    }
                   >
                     {
                       editable ? "Cancelar" : "Editar"
