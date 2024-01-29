@@ -292,7 +292,7 @@ const Dashboard = () => {
 
         <div className="px-4 py-2 rounded-t-xl">
           <div className="w-full flex xl:flex-row flex-col items-center justify-between">
-            <p className="text-lg">
+            <p className="w-full text-lg text-left">
               <b className="text-xl">{filterGroup.filteredCount ? filterGroup.filteredCount : filteredCount}</b>&nbsp;registros pesquisados
             </p>
             <div className="w-full flex md:p-1 md:flex-row flex-col gap-4 justify-end items-end">

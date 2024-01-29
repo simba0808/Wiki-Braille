@@ -8,17 +8,17 @@ const Sidebar = ({ handleSlide }) => {
   const currentLocation = useLocation().pathname.toString().toLowerCase();
   useEffect(() => {
     if (currentLocation.includes("dashboard")) {
-      setSlideShow(0);
-    } else if (currentLocation.includes("guide")) {
-      setSlideShow(5)
-    } else if (currentLocation.includes("setting")) {
-      setSlideShow(4)
-    } else if (currentLocation.includes("activit")) {
-      setSlideShow(3);
-    } else if (currentLocation.includes("manage")) {
-      setSlideShow(2);
-    } else if (currentLocation.includes("data")) {
       setSlideShow(1);
+    } else if (currentLocation.includes("guide")) {
+      setSlideShow(0)
+    } else if (currentLocation.includes("setting")) {
+      setSlideShow(5)
+    } else if (currentLocation.includes("activit")) {
+      setSlideShow(4);
+    } else if (currentLocation.includes("manage")) {
+      setSlideShow(3);
+    } else if (currentLocation.includes("data")) {
+      setSlideShow(2);
     }
   }, [currentLocation]);
 
@@ -38,6 +38,27 @@ const Sidebar = ({ handleSlide }) => {
           <ul className="mt-14">
             <li className={`relative px-6 py-3  ${slideShow === 0 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
               {slideShow === 0 ? (
+                <span
+                  className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
+                  aria-hidden="true"
+                ></span>
+              ) : (
+                <></>
+              )}
+              <Link
+                to={"/adminGuide"}
+                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
+              >
+                <svg className="w-[22px] w-[22px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 9H5a1 1 0 0 0-1 1v4c0 .6.4 1 1 1h6m0-6v6m0-6 5.4-3.9A1 1 0 0 1 18 6v12.2a1 1 0 0 1-1.6.8L11 15m7 0a3 3 0 0 0 0-6M6 15h3v5H6v-5Z" />
+                </svg>
+                <span className="ml-4 text-md">Orientações</span>
+              </Link>
+            </li>
+          </ul>
+          <ul>
+            <li className={`relative px-6 py-3  ${slideShow === 1 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
+              {slideShow === 1 ? (
                 <span
                   className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
                   aria-hidden="true"
@@ -66,8 +87,8 @@ const Sidebar = ({ handleSlide }) => {
             </li>
           </ul>
           <ul>
-            <li className={`relative px-6 py-3  ${slideShow === 1 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
-              {slideShow === 1 ? (
+            <li className={`relative px-6 py-3  ${slideShow === 2 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
+              {slideShow === 2 ? (
                 <span
                   className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
                   aria-hidden="true"
@@ -130,9 +151,9 @@ const Sidebar = ({ handleSlide }) => {
                 </svg>
               </button>
             </li>
-            <ul className={userExpaned ? "block":"hidden opacity-0 transition duration-500"}>
-              <li className={`relative pl-8 py-3 ${slideShow === 2 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
-                {slideShow === 2 ? (
+            <ul className={userExpaned ? "block" : "hidden opacity-0 transition duration-500"}>
+              <li className={`relative pl-8 py-3 ${slideShow === 3 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
+                {slideShow === 3 ? (
                   <span
                     className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
                     aria-hidden="true"
@@ -147,8 +168,8 @@ const Sidebar = ({ handleSlide }) => {
                   <span className="ml-4 text-md">Usuários</span>
                 </Link>
               </li>
-              <li className={`relative pl-8 py-3 ${slideShow === 3 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
-                {slideShow === 3 ? (
+              <li className={`relative pl-8 py-3 ${slideShow === 4 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
+                {slideShow === 4 ? (
                   <span
                     className="absolute inset-y-0 left-0 w-1 h-full bg-purple-600 rounded-tr-lg rounded-br-lg"
                     aria-hidden="true"
@@ -166,8 +187,8 @@ const Sidebar = ({ handleSlide }) => {
             </ul>
           </ul>
           <ul>
-            <li className={`relative px-6 py-3  ${slideShow === 4 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
-              {slideShow === 4 ? (
+            <li className={`relative px-6 py-3  ${slideShow === 5 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
+              {slideShow === 5 ? (
                 <span
                   className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
                   aria-hidden="true"
@@ -195,34 +216,7 @@ const Sidebar = ({ handleSlide }) => {
               </Link>
             </li>
           </ul>
-          <ul>
-            <li className={`relative px-6 py-3  ${slideShow === 5 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
-              {slideShow === 5 ? (
-                <span
-                  className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
-                  aria-hidden="true"
-                ></span>
-              ) : (
-                <></>
-              )}
-              <Link
-                to={"/guide"}
-                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
-              >
-                <svg
-                  className="w-5 h-5"
-                  aria-hidden="true"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                  ></path>
-                </svg>
-                <span className="ml-4 text-md">Orientações</span>
-              </Link>
-            </li>
-          </ul>
+
         </div>
       </aside>
     </>

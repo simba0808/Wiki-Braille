@@ -13,7 +13,7 @@ import AccountSetting from "../pages/AccountSetting";
 import AddData from "../pages/admin/AddData";
 import UserManage from "../pages/admin/UserManage";
 import ActivityManage from "../pages/admin/activityManage.jsx";
-import Guidence from "../pages/admin/Guidence.jsx";
+import Guidence from "../pages/Guidence.jsx";
 
 const Router = () => {
   return(
@@ -25,12 +25,14 @@ const Router = () => {
         <Route path="/resetPassword" element={ <ResetPassword /> } />
         <Route element={ <PrivateRoute /> }>
           <Route element={ <UserLayout />} >
+            <Route path="/guide" element={ <Guidence /> } />
             <Route path="/dashboard" element={ <Dashboard /> } />
             <Route path="/setting" element={ <AccountSetting /> } />
           </Route>
         </Route>
         <Route element={<EditorRoute />}>
           <Route element={ <EditorLayout />} >
+            <Route path="/editorGuide" element={ <Guidence /> } />
             <Route path="/editorAddData" element={ <AddData /> } />
             <Route path="/editorDashboard" element={ <Dashboard /> } />
             <Route path="/editorSetting" element={ <AccountSetting /> } />
@@ -38,12 +40,12 @@ const Router = () => {
         </Route>
         <Route element={<AdminRoute />}>
           <Route element={ <AdminLayout />} >
+            <Route path="/adminGuide" element={ <Guidence /> } />
             <Route path="/adminAddData" element={ <AddData /> } />
             <Route path="/adminActivities" element={ <ActivityManage /> } />
             <Route path="/adminManage" element={ <UserManage /> } />
             <Route path="/adminDashboard" element={ <Dashboard /> } />
             <Route path="/adminSetting" element={ <AccountSetting /> } />
-            <Route path="/guide" element={ <Guidence /> } />
           </Route>
         </Route>
       </Routes>

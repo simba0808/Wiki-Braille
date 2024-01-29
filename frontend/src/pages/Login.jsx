@@ -74,11 +74,11 @@ const Login = () => {
       dispatch(setCredentials({...res}));
       const { role } = res;
       if (role === 2) {
-        navigate("/adminDashboard");
+        navigate("/adminGuide");
       } else if(role === 1){
-        navigate("/editorDashboard");
+        navigate("/editorGuide");
       } else if (role === 0) {
-        navigate("/dashboard");
+        navigate("/guide");
       }
     } catch (err) {
       setPassword("");
