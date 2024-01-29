@@ -59,34 +59,15 @@ const Dashboard = () => {
       }
     };
     fetchAuthData();
-    if (filterGroup.filteredCount === null) {
-      getTotalNumbers(filterGroup.word, filterGroup.advance, filterGroup.searchin);
-    } else {
-      fetchFilteredData(filterGroup.word, filterGroup.advance, filterGroup.searchin, filterGroup.pageIndex, filterGroup.numberPerPage, sortMethod);
-    }
   }, []);
 
   useEffect(() => {
-    if (currentPageIndex !== filterGroup.pageIndex) {
-      dispatch(setFilterGroup({ ...filterGroup, pageIndex: currentPageIndex }))
-      fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod);
-    }
+    fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod);
   }, [currentPageIndex]);
 
   useEffect(() => {
-    if (numberPerPage !== filterGroup.numberPerPage) {
-      fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod);
-      dispatch(setFilterGroup({ ...filterGroup, numberPerPage: numberPerPage }))
-    }
+    fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod);
   }, [numberPerPage])
-
-  useEffect(() => {
-    if (filteredCount !== 0) {
-      fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod);
-    } else {
-      setFilteredData([]);
-    }
-  }, [filteredCount]);
 
   useEffect(() => {
     if (filteredCount !== 0) {
@@ -98,32 +79,11 @@ const Dashboard = () => {
     if (Object.keys(updateDescription).length !== 0 && filteredData) {
       filteredData[selectedIndex].description = updateDescription.text;
       filteredData[selectedIndex].tag = updateDescription.tag;
-      if(updateDescription.image !== null) {
+      if (updateDescription.image !== null) {
         filteredData[selectedIndex].image = updateDescription.image;
-      } 
+      }
     }
   }, [updateDescription]);
-
-  const getTotalNumbers = async (word, advance, searchin) => {
-    const searcher = {
-      word: word,
-      advance: advance,
-      searchin: searchin,
-    };
-
-    try {
-      const response = await axios.post("/api/data/totalnumber", searcher);
-      setFilteredCount(response.data.filteredCount);
-      dispatch(setFilterGroup({
-        ...filterGroup, word: searchWord, advance: advance, searchin: searchin, filteredCount: response.data.filteredCount
-      }));
-      setCurrentPageIndex(1);
-      setSelectedIndex(-1);
-      setStartPageIndex(1);
-    } catch (err) {
-      toast.error("Falha ao buscar dados", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: 'dark' })
-    }
-  }
 
   const fetchFilteredData = async (word, advance, searchin, pageIndex, numberPerPage, sortMethod) => {
     setFilteredData([]);
@@ -136,12 +96,16 @@ const Dashboard = () => {
         pageIndex: pageIndex,
         numberPerPage,
         sortMethod,
-        descending: isDescending[sortMethod ? 0:1]
+        descending: isDescending[sortMethod ? 0 : 1]
       };
 
       const response = await axios.post("/api/data/getdata", searcher);
-      //setShowResults(response.data);
-      setFilteredData(response.data);
+      dispatch(setFilterGroup({
+        ...filterGroup, word, advance, searchin, pageIndex, filteredCount
+      }));
+
+      setFilteredCount(response.data.count);
+      setFilteredData(response.data.data);
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -153,7 +117,7 @@ const Dashboard = () => {
     setSelectedIndex(index);
     setModalShow(true);
   };
-  
+
   const backButtonHandle = () => {
     if (currentPageIndex < 2) {
       return;
@@ -165,7 +129,7 @@ const Dashboard = () => {
   };
 
   const forwardButtonHandle = () => {
-    if ((currentPageIndex+1) >= (filteredCount % numberPerPage ? filteredCount / numberPerPage + 1 : filteredCount / numberPerPage)) {
+    if ((currentPageIndex + 1) >= (filteredCount % numberPerPage ? filteredCount / numberPerPage + 1 : filteredCount / numberPerPage)) {
       return;
     }
     if (currentPageIndex === startPageIndex + 4) {
@@ -180,7 +144,7 @@ const Dashboard = () => {
 
   const handleSearchEntered = (e) => {
     if (e.keyCode === 13) {
-      getTotalNumbers(searchWord, refAdvance.current.value, refSearchIn.current.value);
+      fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod);
     }
   };
 
@@ -246,7 +210,7 @@ const Dashboard = () => {
           </div>
           <button
             className="absolute inset-y-0 right-0 xs:px-4 px-2 my-0 text-sm font-medium leading5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-            onClick={() => getTotalNumbers(searchWord, refAdvance.current.value, refSearchIn.current.value)}
+            onClick={() => fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod)}
           >
             Pesquisar
           </button>
@@ -261,7 +225,6 @@ const Dashboard = () => {
               className="grow py-2 pl-2 focus:outline-none focus:border-none text-slate-900"
               defaultValue={filterGroup.advance}
               ref={refAdvance}
-            //onChange={(e) => setSearchWordGroup({ ...searchWordGroup, advance: e.target.value })}
             >
               <option value="Descrição">Descrição</option>
               <option value="Desenhos em braille">Desenhos em braille</option>
@@ -278,7 +241,6 @@ const Dashboard = () => {
               className="grow py-2 pl-2 focus:outline-none focus:border-none text-slate-900"
               defaultValue={filterGroup.searchin}
               ref={refSearchIn}
-            //onChange={(e) => setSearchWordGroup({ ...searchWordGroup, searchin: e.target.value })}
             >
               <option value="0">Tudo</option>
               <option value="1">Pesquisar por título</option>
@@ -287,26 +249,23 @@ const Dashboard = () => {
             </select>
           </div>
         </div>
-
-        {modalShow && selectedIndex !== -1 ? <DetailModal descData={{ ...filteredData[selectedIndex] }} handleClick={setModalShow} updateHandle={setUpdateDescription} /> : ""}
-
         <div className="px-4 py-2 rounded-t-xl">
           <div className="w-full flex xl:flex-row flex-col items-center justify-between">
             <p className="w-full text-lg text-left">
-              <b className="text-xl">{filterGroup.filteredCount ? filterGroup.filteredCount : filteredCount}</b>&nbsp;registros pesquisados
+              <b className="text-xl">{filteredCount}</b>&nbsp;registros pesquisados
             </p>
             <div className="w-full flex md:p-1 md:flex-row flex-col gap-4 justify-end items-end">
               <div className="flex xs:flex-row flex-col xs:items-center items-end gap-2 mt-2">
                 <div className="bg-gray-200 text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">
-                  <button 
-                    className={`w-[120px] relative inline-flex items-center justify-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full py-2 ${sortMethod ? "active" : ""}`} 
+                  <button
+                    className={`w-[120px] relative inline-flex items-center justify-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full py-2 ${sortMethod ? "active" : ""}`}
                     id="list"
-                    onClick={() => { 
-                      if(sortMethod) setDescending([!isDescending[0], isDescending[1]]);
+                    onClick={() => {
+                      if (sortMethod) setDescending([!isDescending[0], isDescending[1]]);
                       setSortMethod(true);
                       dispatch(setFilterGroup({ ...filterGroup, sortMode: true }));
                     }}
-                  >   
+                  >
                     <span className="w-[80%]">numérica</span>
                     <img className="absolute right-0" src={isDescending[0] ? ArrowDown : ArrowUp} />
                   </button>
@@ -314,7 +273,7 @@ const Dashboard = () => {
                     className={`w-[120px] relative inline-flex items-center  transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full  py-2 ${!sortMethod ? "active" : ""}`}
                     id="grid"
                     onClick={() => {
-                      if(!sortMethod) setDescending([isDescending[0], !isDescending[1]]);
+                      if (!sortMethod) setDescending([isDescending[0], !isDescending[1]]);
                       setSortMethod(false);
                       dispatch(setFilterGroup({ ...filterGroup, sortMode: false }));
                     }}
@@ -357,9 +316,8 @@ const Dashboard = () => {
                   [1, 2, 3, 4, 5].map((item, index) => {
                     return <li key={index} className="mx-1">
                       <button
-                        className={`xs:w-10 xs:h-10 w-8 h-8 rounded-md text-purple-600 focus:outline-none focus:shadow-outline-purple border border-purple-600 focus:outline-none focus:shadow-outline-purple ${filterGroup.pageIndex === startPageIndex + index ? "bg-purple-600 text-white" : ""} ${(startPageIndex + index) > (filterGroup.filteredCount % numberPerPage ? filterGroup.filteredCount / numberPerPage + 1 : filterGroup.filteredCount / numberPerPage) ? "opacity-50 cursor-not-allowed" : ""}}`}
+                        className={`xs:w-10 xs:h-10 w-8 h-8 rounded-md text-purple-600 focus:outline-none focus:shadow-outline-purple border border-purple-600 focus:outline-none focus:shadow-outline-purple ${currentPageIndex === startPageIndex + index ? "bg-purple-600 text-white" : ""} ${(startPageIndex + index) > (filteredCount % numberPerPage ? filteredCount / numberPerPage + 1 : filteredCount / numberPerPage) ? "opacity-50 cursor-not-allowed" : ""}}`}
                         onClick={() => setCurrentPageIndex(startPageIndex + index)}
-                        disabled={(startPageIndex + index) > (filterGroup.filteredCount % numberPerPage ? filterGroup.filteredCount / numberPerPage + 1 : filterGroup.filteredCount / numberPerPage) ? true : false}
                       >
                         {startPageIndex + index}
                       </button>
@@ -370,7 +328,6 @@ const Dashboard = () => {
                   <button
                     aria-label="Next"
                     onClick={forwardButtonHandle}
-                    disabled={(currentPageIndex) >= (filterGroup.filteredCount ? filterGroup.filteredCount : filteredCount % numberPerPage ? filterGroup.filteredCount ? filterGroup.filteredCount : filteredCount / numberPerPage + 1 : filteredCount / numberPerPage) ? true : false}
                   >
                     <svg
                       className="w-4 h-4 fill-current"
@@ -421,6 +378,9 @@ const Dashboard = () => {
                 filteredData.length ? searchResult : <img src={emptyImage} className="mx-auto py-4 sm:py-14 2xl:py-24" />
               }
             </div>
+        }
+        {
+          modalShow && selectedIndex !== -1 ? <DetailModal descData={{ ...filteredData[selectedIndex] }} handleClick={setModalShow} updateHandle={setUpdateDescription} /> : ""
         }
       </div>
     </main>

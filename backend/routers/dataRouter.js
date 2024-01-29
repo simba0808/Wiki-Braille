@@ -1,6 +1,5 @@
 import { 
   searchData, 
-  getFilteredNumber, 
   updateDescription, 
   updateImageDescription,
   rateDescription, 
@@ -17,7 +16,6 @@ const upload = multer({dest: "uploads/"});
 
 
 router.post('/parsedata', upload.single("file"), extractDataFromWord);
-router.post('/totalnumber', getFilteredNumber);
 router.post('/getdata', searchData);
 router.post('/edit', authEditMiddleware,  updateDescription);
 router.post('/editimage', authEditMiddleware, imageUpload.single("image"), updateImageDescription);

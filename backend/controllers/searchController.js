@@ -3,6 +3,10 @@ import Logger from "../models/logger.js";
 import fs from "fs";
 
 const searchData = async (req, res) => {
+  if (!await indexExists("title")) {
+    await Data.collection.createIndex({ title_id: "text", title: "text", tag: "text", description: "text" }, { name: "title" }, { default_language: "portuguese" });
+  }
+
   let { word, advance, searchin, pageIndex, numberPerPage, sortMethod, descending } = req.body;
   let query = {};
   let pluralWord = word;
@@ -25,7 +29,6 @@ const searchData = async (req, res) => {
             { title: { $regex: new RegExp(word, 'i') } },
             { title: { $regex: new RegExp(pluralWord, 'i') } }
           ]
-
         }
       };
     } else if (searchin == 2) {
@@ -52,12 +55,6 @@ const searchData = async (req, res) => {
       if (word.match(/^\d{6}$/) !== null) {
         totalQuery = [
           query,
-          {
-            $skip: numberPerPage * (pageIndex - 1)
-          },
-          {
-            $limit: numberPerPage
-          }
         ];
       } else {
         totalQuery = [
@@ -66,12 +63,6 @@ const searchData = async (req, res) => {
             $match: {
               catagory: advance,
             }
-          },
-          {
-            $skip: numberPerPage * (pageIndex - 1)
-          },
-          {
-            $limit: numberPerPage
           },
         ];
         // if (searchin === 0) {
@@ -88,12 +79,6 @@ const searchData = async (req, res) => {
             catagory: advance,
           }
         },
-        {
-          $skip: numberPerPage * (pageIndex - 1)
-        },
-        {
-          $limit: numberPerPage
-        },
       ];
     }
     if (sortMethod) {
@@ -102,111 +87,21 @@ const searchData = async (req, res) => {
       totalQuery.splice(1, 0, { $sort: { rate: descending ? -1 : 1, title_id: 1 } });
     }
 
+    totalQuery.push({
+      $facet: {
+        totalCount: [{ $count: "total" }],
+        limitData: [{ $skip: numberPerPage * (pageIndex - 1) }, { $limit: numberPerPage }]
+      }
+    });
+
     const result = await Data.aggregate(totalQuery);
-    const temp = result.map((item) => item.title_id + " " + item.title)
-    console.log(temp)
-    res.status(200).send(result);
+    res.status(200).send({
+      count: result[0].totalCount[0].total,
+      data: result[0].limitData
+    });
   } catch (err) {
     res.status(405);
     throw new Error("Error occured while searching database")
-  }
-};
-
-const getFilteredNumber = async (req, res) => {
-  let { word, advance, searchin } = req.body;
-  let pluralWord = word;
-  let query = {};
-
-  if (word.endsWith("ão")) {
-    pluralWord = word.replace(/(?:ão)$/, 'ões')
-  } else if (word.match(/(?:[nrsz])$/)) {
-    pluralWord = word + 'es'
-  } else if (word.match(/(?:[m])$/)) {
-    pluralWord = word.replace(/(?:[m])$/, 'ns');
-  } else if (word.match(/(?:[l])$/)) {
-    pluralWord = word.replace(/(?:[l])$/, 'is');
-  }
-
-  if (word !== "") {
-    if (searchin == 1) {
-      query = {
-        $match: {
-          $or: [
-            { title: { $regex: new RegExp(word, 'i') } },
-            { title: { $regex: new RegExp(pluralWord, 'i') } }
-          ]
-
-        }
-      };
-    } else if (searchin == 2) {
-      query = {
-        $match: {
-          $or: [
-            { tag: { $regex: new RegExp(word, 'i') } },
-            { tag: { $regex: new RegExp(pluralWord, 'i') } }
-          ]
-        }
-      };
-    } else {
-      query = {
-        $match: {
-          $text: { $search: word + " " + pluralWord },
-
-        }
-      };
-    }
-  }
-
-  try {
-    if (!await indexExists("title")) {
-      await Data.collection.createIndex({ title_id: "text", title: "text", tag: "text", description: "text" }, { name: "title" }, { default_language: "portuguese" });
-    }
-
-    let totalQuery = [];
-    if (word !== "") {
-      if (word.match(/^\d{6}$/) !== null) {
-        totalQuery = [
-          query,
-          {
-            $count: "filteredCount"
-          }
-        ];
-      } else {
-        totalQuery = [
-          query,
-          {
-            $match: { catagory: advance }
-          },
-          {
-            $count: "filteredCount"
-          }
-        ];
-      }
-    } else {
-      totalQuery = [
-        {
-          $match: { catagory: advance }
-        },
-        {
-          $count: "filteredCount"
-        }
-      ];
-    }
-
-    const result = await Data.aggregate(totalQuery);
-    if (result[0]) {
-      res.status(200).send({
-        filteredCount: result[0].filteredCount
-      });
-    } else {
-      res.status(200).send({
-        filteredCount: 0
-      });
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(500);
-    throw new Error("Error occured while searching database");
   }
 };
 
@@ -263,7 +158,7 @@ const updateDescription = async (req, res) => {
 };
 
 const updateImageDescription = async (req, res) => {
-  const {title_id, category, tag, text, user} = req.body;
+  const { title_id, category, tag, text, user } = req.body;
   try {
     const data = await Data.findOne({ title_id });
     if (data) {
@@ -272,7 +167,7 @@ const updateImageDescription = async (req, res) => {
       data.text = text;
       data.catagory = category;
       data.tag = tag;
-      data.image = "http://localhost:3000/"+req.file.filename;
+      data.image = "http://localhost:3000/" + req.file.filename;
       await data.save();
 
       await Logger.create({
@@ -285,7 +180,7 @@ const updateImageDescription = async (req, res) => {
 
       res.status(200).send({
         message: "success",
-        path: "http://localhost:3000/"+req.file.filename,
+        path: "http://localhost:3000/" + req.file.filename,
       });
     }
   } catch (err) {
@@ -303,7 +198,6 @@ const rateDescription = async (req, res) => {
     if (data) {
       curRate = data.rate;
       curRatedCount = data.ratedCount;
-      console.log(curRate, curRatedCount)
       // console.log(curRate, curRatedCount)
       // const result = await Data.updateOne({ title_id: title_id },  {
       //   $set: {
@@ -320,14 +214,10 @@ const rateDescription = async (req, res) => {
       data.ratedCount = data.ratedCount + 1;
       const result = await data.save();
 
-
-
-
       if (result) {
         res.status(200).send("success");
       }
     }
-
   } catch (err) {
     res.status(500);
     throw new Error("failed rating");
@@ -345,12 +235,10 @@ const deleteDescription = async (req, res) => {
       message: "not found"
     });
   }
-
 };
 
 export {
   searchData,
-  getFilteredNumber,
   updateDescription,
   updateImageDescription,
   rateDescription,

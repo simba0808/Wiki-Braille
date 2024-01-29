@@ -132,7 +132,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
       >
         <ToastContainer />
         <div className=" overflow-y-hidden xs:h-[700px] h-[95%] border border-teal-500 shadow-lg modal-container bg-white w-11/12 md:w-[60%] mx-auto rounded shadow-lg z-50 overflow-y-auto">
-          <div className="modal-content xs:h-[700px] h-[100%] py-4 text-left px-6 flex flex-col justify-around overflow-y-hidden">
+          <div className="modal-content xs:h-[700px] h-[100%] py-6 text-left px-6 flex flex-col justify-around overflow-y-hidden">
             <div className="flex justify-end items-center pb-3">
               <div className="modal-close cursor-pointer z-50 " onClick={handleCloseClick}>
                 <svg

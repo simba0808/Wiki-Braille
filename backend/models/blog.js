@@ -11,6 +11,7 @@ const blogSchema = mongoose.Schema({
   },
   selected: {
     type: Boolean,
+    default: false,
   },
 }, {
   timestamps: true
