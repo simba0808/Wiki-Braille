@@ -59,7 +59,7 @@ const BlogAddModal = ({closeHandle}) => {
     >
       <div className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <ToastContainer />
-      <div className="relative bg-white rounded-md shadow-xl p-6 w-full h-[70%] md:w-2/3 xl:w-1/2 z-50">
+      <div className="relative bg-white rounded-md shadow-xl p-6 w-full h-[90%] xs:h-[70%] md:w-2/3 xl:w-1/2 z-50">
         <p className="text-xl font-semibold text-left">Add New Blog</p>
         <div className="mb-2">
           <label className="block mt-4 text-sm text-left">

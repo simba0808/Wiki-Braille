@@ -41,7 +41,7 @@ const Sidebar = ({ handleSlide }) => {
                 <></>
               )}
               <Link
-                to={"/guide"}
+                to={"/editorGuide"}
                 className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
               >
                 <svg className="w-[22px] w-[22px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

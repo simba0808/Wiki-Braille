@@ -12,13 +12,20 @@ const Guidence = () => {
   const [text, setText] = useState("It's important to provide accessibility, inclusion, and resources that empower them to participate fully in society and pursue their goals.");
   const [isAddBlog, setAddBlog] = useState(false);
   const [blogs, setBlogs] = useState([]);
+  const [selectedBlog, setSelectedBlog] = useState(null);
 
   useEffect(() => {
-    console.log(userInfo)
     const fetchBlogs = async () => {
       try {
         axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
         const response = await axios.get("/api/blog");
+        const blogs = response.data.blogs;
+        blogs.map((blog) => {
+          if (blog.selected === true) {
+            setSelectedBlog(blog);
+            return;
+          }
+        });
         setBlogs(response.data.blogs);
       } catch (err) {
         toast.error("Falha ao obter blogs.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
@@ -26,6 +33,39 @@ const Guidence = () => {
     };
     fetchBlogs();
   }, []);
+
+  useEffect(() => {
+    if(selectedBlog !== null) {
+      setTitle(selectedBlog.title);
+      setText(selectedBlog.text);
+    }
+  }, [selectedBlog]);
+
+  const selectBlog = async (id) => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
+      const response = await axios.post(`/api/blog`, {id});
+      if(response.data.message === "success") {
+        setSelectedBlog(response.data.blog);
+      }
+    } catch (err) {
+
+    }   
+  };
+
+  const updateBlog = async (id) => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
+      const response = await axios.post("/api/blog/update", {id, title, text});
+      if(response.data.message === "success") {
+        toast.success("Blog atualizado com sucesso.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        setSelectedBlog(response.data.blog);
+        
+      }
+    } catch(err) {
+      toast.error("Falha ao atualizar blog.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+    }
+  };
 
   const deleteBlog = async (id) => {
     try {
@@ -43,13 +83,19 @@ const Guidence = () => {
     <main className="relative flex item-center justify-center md:overflow-hidden">
       <div className="container xs:px-6">
         <ToastContainer />
-        <div className="relative flex w-full min-h-[600px] bg-no-repeat bg-cover bg-[url('/src/assets/img/blog.png')]">
-
+        <div className="relative flex w-full min-h-[600px]">
+          <img className="z-0 w-full max-h-[600px] object-cover" src={selectedBlog? selectedBlog.image : "/src/assets/img/blog.png"} alt="blog" />
           {
             userInfo.role === 2 &&
             <button
               className="absolute right-4 top-4"
-              onClick={() => setEditable(!editable)}
+              onClick={() => {
+                  if(editable) {
+                    updateBlog(selectedBlog._id);
+                  }
+                  setEditable(!editable);
+                }
+              }
             >
               <svg className="w-[40px] h-[40px] text-white-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <path stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m14.3 4.8 2.9 2.9M7 7H4a1 1 0 0 0-1 1v10c0 .6.4 1 1 1h11c.6 0 1-.4 1-1v-4.5m2.4-10a2 2 0 0 1 0 3l-6.8 6.8L8 14l.7-3.6 6.9-6.8a2 2 0 0 1 2.8 0Z" />
@@ -93,6 +139,7 @@ const Guidence = () => {
                 <BlogPost
                   key={blog._id}
                   blog={blog}
+                  selectHandle={selectBlog}
                   deleteHandle={deleteBlog}
                 />
               ))

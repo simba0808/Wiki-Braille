@@ -9,6 +9,9 @@ const blogSchema = mongoose.Schema({
   image: {
     type: String,
   },
+  selected: {
+    type: Boolean,
+  },
 }, {
   timestamps: true
 });

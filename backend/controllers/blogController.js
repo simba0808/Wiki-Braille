@@ -31,6 +31,48 @@ const addNewBlog = async (req, res) => {
   }
 };
 
+const selectBlog = async (req, res) => {
+  const id = req.body.id;
+  try {
+    const blog = await Blog.findOne({ selected: true });
+    if(blog) {
+      blog.selected = false;
+      await blog.save();
+    }
+
+    const selectedBlog = await Blog.findById(id);
+    selectedBlog.selected = true;
+    await selectedBlog.save();
+
+    res.status(200).send({
+      message: "success",
+      blog: selectedBlog,
+    });
+  } catch(err) {
+    res.status(500);
+    throw new Error("Error occured while selecting blog");
+  }
+
+};
+
+const updateBlog = async (req, res) => {
+  const { id, title, text } = req.body;
+  console.log(id, title, text);
+  try {
+    const blog = await Blog.findById(id);
+    blog.title = title;
+    blog.text = text;
+    await blog.save();
+    res.status(200).send({
+      message: "success",
+      blog,
+    });
+  } catch(err) {
+    res.status(500);
+    throw new Error("Error occured while updating blog");
+  }
+};
+
 const deleteBlog = async (req, res) => {
   const id = req.params.id;
   
@@ -50,5 +92,7 @@ const deleteBlog = async (req, res) => {
 export {
   getAllBlogs,
   addNewBlog,
+  selectBlog,
+  updateBlog,
   deleteBlog,
 };
