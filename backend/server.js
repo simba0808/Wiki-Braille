@@ -11,6 +11,7 @@ import connectDB from './config/database.js';
 import userRouter from './routers/userRouter.js';
 import dataRouter from './routers/dataRouter.js';
 import logRouter from './routers/logRouter.js';
+import blogRouter from "./routers/blogRouter.js";
 
 const port = process.env.PORT;
 
@@ -28,8 +29,10 @@ app.use(cookieParser());
 app.use('/api/user', userRouter);
 app.use('/api/data', dataRouter);
 app.use('/api/log', logRouter);
+app.use('/api/blog', blogRouter);
 
 app.use(express.static("./images"));
+app.use(express.static("./images/blogs"));
 
 if (process.env.NODE_ENV === 'production') {
   const __dirname = path.resolve();

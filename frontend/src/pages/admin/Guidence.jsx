@@ -1,13 +1,45 @@
-import { useState } from "react";
 import BlogPost from "../../components/BlogPost";
+import BlogAddModal from "../../components/modals/BlogAddModal";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 const Guidence = () => {
+  const authInfo = useSelector((state) => state.auth);
   const [editable, setEditable] = useState(false);
   const [title, setTitle] = useState("Everyone can cook.");
   const [text, setText] = useState("It's important to provide accessibility, inclusion, and resources that empower them to participate fully in society and pursue their goals.");
+  const [isAddBlog, setAddBlog] = useState(false);
+  const [blogs, setBlogs] = useState([]);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${authInfo.token}`;
+        const response = await axios.get("/api/blog");
+        setBlogs(response.data.blogs);
+      } catch (err) {
+        toast.error("Falha ao obter blogs.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+      }
+    };
+    fetchBlogs();
+  }, []);
+
+  const deleteBlog = async (id) => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${authInfo.token}`;
+      await axios.delete(`/api/blog/${id}`);
+      const response = await axios.get("/api/blog");
+      setBlogs(response.data.blogs);
+      toast.success("Blog deletado com sucesso.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+    } catch (err) {
+      toast.error("Falha ao deletar blog.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+    }
+  };
 
   return (
-    <main className="flex item-center justify-center md:overflow-hidden">
+    <main className="relative flex item-center justify-center md:overflow-hidden">
       <div className="container xs:px-6">
         <div className="relative flex w-full min-h-[600px] bg-no-repeat bg-cover bg-[url('/src/assets/img/blog.png')]">
           <button
@@ -48,23 +80,31 @@ const Guidence = () => {
             <p className={`${editable ? "block" : "hidden"} absolute bottom-4 right-4 text-gray-500 text-sm`}>{text.length} / 150</p>
           </div>
         </div>
-        <div className="w-full mt-4 py-4 flex flex-col">
-          <div className="w-full flex justify-end py-2">
-            <button onClick="">
-              <svg className="w-[60px] h-[40px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <path stroke="#6c2bd9" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 7.8v8.4M7.8 12h8.4m4.8 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
-            </button>
-          </div>
-          <div className="max-w-[1000px] mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
-            <BlogPost />
-            <BlogPost />
-            <BlogPost />
-            <BlogPost />
-            <BlogPost />
+        <div className="w-full mt-8 py-4 flex flex-col">
+          <div className="max-w-[1000px] mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            {
+              blogs.map((blog) => (
+                <BlogPost
+                  key={blog._id}
+                  blog={blog}
+                  deleteHandle={deleteBlog}
+                />
+              ))
+            }
           </div>
         </div>
       </div>
+      <div className="fixed right-4 bottom-4 flex justify-end py-2">
+        <button onClick={() => setAddBlog(true)}>
+          <svg className="w-[60px] h-[60px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path stroke="#6c2bd9" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 7.8v8.4M7.8 12h8.4m4.8 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+        </button>
+      </div>
+      {
+        isAddBlog ?
+          <BlogAddModal closeHandle={setAddBlog} /> : <></>
+      }
     </main>
   )
 };
