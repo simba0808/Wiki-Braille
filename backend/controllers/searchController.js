@@ -263,14 +263,15 @@ const updateDescription = async (req, res) => {
 };
 
 const updateImageDescription = async (req, res) => {
-  const {title_id, newTag, text, user} = req.body;
+  const {title_id, category, tag, text, user} = req.body;
   try {
     const data = await Data.findOne({ title_id });
     if (data) {
       fs.unlink(`images/${data.image.split("http://localhost:3000/")[1]}`, (err) => {
       });
       data.text = text;
-      data.newTag = newTag;
+      data.catagory = category;
+      data.tag = tag;
       data.image = "http://localhost:3000/"+req.file.filename;
       await data.save();
 

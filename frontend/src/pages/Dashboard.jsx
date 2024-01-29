@@ -62,7 +62,6 @@ const Dashboard = () => {
     if (filterGroup.filteredCount === null) {
       getTotalNumbers(filterGroup.word, filterGroup.advance, filterGroup.searchin);
     } else {
-      console.log(filterGroup)
       fetchFilteredData(filterGroup.word, filterGroup.advance, filterGroup.searchin, filterGroup.pageIndex, filterGroup.numberPerPage, sortMethod);
     }
   }, []);
@@ -154,7 +153,7 @@ const Dashboard = () => {
     setSelectedIndex(index);
     setModalShow(true);
   };
-
+  
   const backButtonHandle = () => {
     if (currentPageIndex < 2) {
       return;
@@ -162,7 +161,6 @@ const Dashboard = () => {
     if (currentPageIndex === startPageIndex) {
       setStartPageIndex(startPageIndex - 1);
     }
-    console.log(startPageIndex, currentPageIndex);
     setCurrentPageIndex(currentPageIndex - 1);
   };
 

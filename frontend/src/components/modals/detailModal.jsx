@@ -19,6 +19,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
   const [editable, setEditable] = useState(false);
   const [text, setText] = useState(description);
   const [newTag, setNewTag] = useState(tag);
+  const [newCategory, setNewCategory] = useState(catagory);
   const [isCopy, setIsCopy] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -53,19 +54,20 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
       axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
       let response = null;
       if (selectedImage === null) {
-        response = await axios.post("/api/data/edit", { user: userInfo.name, text, newTag, title_id }); 
+        response = await axios.post("/api/data/edit", { user: userInfo.name, text, newTag, title_id });
       } else {
         const formData = new FormData();
         formData.append("image", selectedImage);
         formData.append("user", userInfo.name);
         formData.append("text", text);
-        formData.append("newTag", newTag);
+        formData.append("category", newCategory);
+        formData.append("tag", newTag);
         formData.append("title_id", title_id);
         response = await axios.post("/api/data/editimage", formData);
       }
       if (response.data.message === "success") {
-        
-        updateHandle({ text, tag: newTag, image: selectedImage?response.data.path:null });
+
+        updateHandle({ text, tag: newTag, image: selectedImage ? response.data.path : null });
         setLoading(false);
         toast.success('Atualizado com sucesso!', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
       }
@@ -83,6 +85,15 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
     setText(e.target.value);
   };
 
+  const handleCategoryChange = (e) => {
+    setNewCategory(e.target.value);
+  };
+
+  const handleChangeImage = (e) => {
+    console.log(e.target.files[0])
+    setSelectedImage(e.target.files[0]);
+  };
+
   const handleCopyToClipboard = async () => {
     axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
     const response = await axios.post("/api/log/createlogs", {
@@ -98,10 +109,6 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
     }
   };
 
-  const handleChangeImage = (e) => {
-    console.log(e.target.files[0])
-    setSelectedImage(e.target.files[0]);
-  };
   const deleteDescription = async () => {
     axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
     try {
@@ -148,20 +155,35 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
               </p>
 
             </div>
+            <div className="pt-1 flex items-center gap-4">
+            <p className="xs:text-xl text-md font-normal">
+              Categoria:
+              <select
+                className={`ml-2 px-2 bg-white border-2 rounded-md ${editable ? "rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none" : ""}`}
+                defaultValue={catagory}
+                disabled={editable ? false : true}
+                onChange={handleCategoryChange}
+              >
+                <option value="Descrição">Descrição</option>
+                <option value="Desenhos em braille">Desenhos em braille</option>
+                <option value="Grafias em braille">Grafias em braille</option>
+                <option value="Exemplos da grafia braille">Exemplos da grafia braille</option>
+              </select>
+            </p>
             {
               catagory !== "Descrição" ?
-                <p className="py-1 xs:text-xl text-lg font-semibold flex">
-
+                <p className="grow py-1 xs:text-xl text-md font-normal flex">
                   Tag:
                   <input
                     type="text"
-                    className={`sm:min-w-[500px] w-full px-2 bg-white ${editable ? "rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none" : ""}`}
+                    className={`w-full px-2 bg-white ${editable ? "rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none" : ""}`}
                     value={newTag}
                     disabled={editable ? false : true}
                     onChange={handleTagChange}
                   />
                 </p> : <></>
             }
+            </div>
             <div className="flex pt-2 items-center">
               {
                 [1, 2, 3].map((item) => {
@@ -219,7 +241,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
                   </div>
                 </div>
                 <textarea
-                  className={`w-full grow overflow-y-auto bg-gray-100 p-2 rounded-md text-sm xs:text-md ${editable ? "rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none" : ""}`}
+                  className={`w-full grow overflow-y-auto bg-gray-100 p-2 rounded-md text-sm lg:text-lg ${editable ? "rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none" : ""}`}
                   disabled={editable ? false : true}
                   value={text}
                   onChange={handleTextChange}
@@ -258,7 +280,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
                               className="w-[90px] focus:outline-none bg-purple-800 py-3 px-auto ml-3 rounded-lg text-white  hover:bg-purple-400 active:border active:border-purple-700 active:bg-white active:text-purple-900"
                               onClick={() => setDeleteModalShow(true)}
                             >
-                              Delete
+                              Excluir
                             </button> : <></>
                         }
                       </>
