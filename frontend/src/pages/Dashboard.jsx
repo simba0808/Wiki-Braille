@@ -144,6 +144,9 @@ const Dashboard = () => {
 
   const handleSearchEntered = (e) => {
     if (e.keyCode === 13) {
+      setCurrentPageIndex(1);
+      setStartPageIndex(1);
+      setSelectedIndex(-1);
       fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod);
     }
   };
@@ -187,7 +190,7 @@ const Dashboard = () => {
         <ToastContainer />
         <div className="h-[40px] relative my-2 text-gray-500 focus-within:text-purple-600">
           <input
-            className="block w-full h-[100%] pl-14 pr-20 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
+            className="block w-full h-[100%] pl-14 pr-20 text-md text-black border-2 rounded-md focus:border focus:border-purple-400 focus:ring-2 focus:ring-purple-200 focus:outline-none form-input"
             placeholder="apple"
             autoFocus
             defaultValue={filterGroup.word}
@@ -210,7 +213,12 @@ const Dashboard = () => {
           </div>
           <button
             className="absolute inset-y-0 right-0 xs:px-4 px-2 my-0 text-sm font-medium leading5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-r-md active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
-            onClick={() => fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod)}
+            onClick={() => {
+              setCurrentPageIndex(1);
+              setStartPageIndex(1);
+              setSelectedIndex(-1);
+              fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod)
+            }}
           >
             Pesquisar
           </button>
@@ -249,16 +257,16 @@ const Dashboard = () => {
             </select>
           </div>
         </div>
-        <div className="px-4 py-2 rounded-t-xl">
+        <div className="px-2 py-2 rounded-t-xl">
           <div className="w-full flex xl:flex-row flex-col items-center justify-between">
             <p className="w-full text-lg text-left">
               <b className="text-xl">{filteredCount}</b>&nbsp;registros pesquisados
             </p>
             <div className="w-full flex md:p-1 md:flex-row flex-col gap-4 justify-end items-end">
-              <div className="flex xs:flex-row flex-col xs:items-center items-end gap-2 mt-2">
+              <div className="flex items-center gap-2 mt-2">
                 <div className="bg-gray-200 text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">
                   <button
-                    className={`w-[120px] relative inline-flex items-center justify-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full py-2 ${sortMethod ? "active" : ""}`}
+                    className={`${!screenSize.isSmall?"w-[120px]":""} px-2 relative inline-flex items-center justify-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full py-2 ${sortMethod ? "active" : ""}`}
                     id="list"
                     onClick={() => {
                       if (sortMethod) setDescending([!isDescending[0], isDescending[1]]);
@@ -267,10 +275,10 @@ const Dashboard = () => {
                     }}
                   >
                     <span className="w-[80%]">numérica</span>
-                    <img className="absolute right-0" src={isDescending[0] ? ArrowDown : ArrowUp} />
+                    { !screenSize.isSmall && <img className="absolute right-0" src={isDescending[0] ? ArrowDown : ArrowUp} />}
                   </button>
                   <button
-                    className={`w-[120px] relative inline-flex items-center  transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full  py-2 ${!sortMethod ? "active" : ""}`}
+                    className={`${!screenSize.isSmall?"w-[120px]":""} px-2 relative inline-flex items-center  transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full  py-2 ${!sortMethod ? "active" : ""}`}
                     id="grid"
                     onClick={() => {
                       if (!sortMethod) setDescending([isDescending[0], !isDescending[1]]);
@@ -279,16 +287,16 @@ const Dashboard = () => {
                     }}
                   >
                     <span className="w-[80%]">Avaliação</span>
-                    <img className="absolute right-1" src={isDescending[1] ? ArrowDown : ArrowUp} />
+                    { !screenSize.isSmall && <img className="absolute right-1" src={isDescending[1] ? ArrowDown : ArrowUp} /> }
                   </button>
                 </div>
                 <div className="bg-gray-200 text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">
                   <button className={`inline-flex items-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full px-4 py-2 ${!viewMode ? "active" : ""}`} id="list" onClick={() => { setViewMode(false); setNumberPerPage(10) }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="fill-current w-4 h-4 mr-2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                    { !screenSize.isSmall &&  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="fill-current w-4 h-4 mr-2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg> }
                     <span>Lista</span>
                   </button>
                   <button className={`inline-flex items-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-l-full px-4 py-2 ${viewMode ? "active" : ""}`} id="grid" onClick={() => { setViewMode(true); setNumberPerPage(12); }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="fill-current w-4 h-4 mr-2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    { !screenSize.isSmall && <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="fill-current w-4 h-4 mr-2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> }
                     <span>Grade</span>
                   </button>
                 </div>
@@ -318,6 +326,7 @@ const Dashboard = () => {
                       <button
                         className={`xs:w-10 xs:h-10 w-8 h-8 rounded-md text-purple-600 focus:outline-none focus:shadow-outline-purple border border-purple-600 focus:outline-none focus:shadow-outline-purple ${currentPageIndex === startPageIndex + index ? "bg-purple-600 text-white" : ""} ${(startPageIndex + index) > (filteredCount % numberPerPage ? filteredCount / numberPerPage + 1 : filteredCount / numberPerPage) ? "opacity-50 cursor-not-allowed" : ""}}`}
                         onClick={() => setCurrentPageIndex(startPageIndex + index)}
+                        disabled={(startPageIndex + index) > (filteredCount % numberPerPage ? filteredCount / numberPerPage + 1 : filteredCount / numberPerPage) ? true : false}
                       >
                         {startPageIndex + index}
                       </button>

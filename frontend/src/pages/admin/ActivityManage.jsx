@@ -56,14 +56,9 @@ const ActivityManage = () => {
     });
     if (response.data.data) {
       setFilteredData(response.data.data);
-      console.log(response.data.totalCount)
       setFilteredCount(response.data.totalCount);
     }
   };
-
-  useEffect(() => {
-    console.log(filteredCount)
-  }, [filteredCount])
 
   const handleChangeDate = (newVal) => {
     setDateRange(newVal);
@@ -195,7 +190,9 @@ const ActivityManage = () => {
                           {item.user}
                         </td>
                         <td className="px-4 py-1">
-                          {item.time.split("T")[0]+" "+item.time.split("T")[1].split(".")[0]}
+                          {
+                            new Date(new Date(item.time).toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" })).toString()
+                          }
                         </td>
                         <td className="px-4 py-1">
                           {item.detail}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
+import Loading from "../Loading";
 
 const BlogAddModal = ({closeHandle}) => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -25,8 +26,18 @@ const BlogAddModal = ({closeHandle}) => {
   };
 
   const handleChangeFile = (e) => {
-    setInvalidInput(false);
-    setSelectedImage(e.target.files[0]);
+    const allowedExtensions = ["jpg", "jpeg", "png"];
+    console.log(e.target.files[0]);
+    const fileExtension = e.target.files[0].name.split(".").pop().toLowerCase();
+    const isAllowedExtension = allowedExtensions.includes(fileExtension);
+    console.log(isAllowedExtension);
+    if (isAllowedExtension) {
+      setInvalidInput(false);
+      setSelectedImage(e.target.files[0]);
+    } else {
+      setInvalidInput(true);
+      return;
+    }
   };
 
   const handleSubmit = async () => {
@@ -59,8 +70,8 @@ const BlogAddModal = ({closeHandle}) => {
     >
       <div className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <ToastContainer />
-      <div className="relative bg-white rounded-md shadow-xl p-6 w-full h-[90%] xs:h-[70%] md:w-2/3 xl:w-1/2 z-50">
-        <p className="text-xl font-semibold text-left">Add New Blog</p>
+      <div className="relative bg-white rounded-md shadow-xl p-6 w-full  md:w-2/3 xl:w-1/2 z-50">
+        <p className="text-xl font-semibold text-left">Adicionar novo blog</p>
         <div className="mb-2">
           <label className="block mt-4 text-sm text-left">
             <span className="text-lg text-gray-700">Título: </span>
@@ -123,7 +134,7 @@ const BlogAddModal = ({closeHandle}) => {
         <div>
           <span className="text-red-400">{isInvalidInput ? "Entrada inválida. Verifique se sua entrada está correta":""}</span>
         </div>
-        <div className="absolute bottom-4 right-4 flex gap-4 justify-end">
+        <div className="flex gap-4 justify-end">
           <button 
             className="bg-white rounded-md px-3 py-2 text-purple-600 text-md border border-purple-600 rounded-lg transition:colors duration-500 hover:bg-purple-500 hover:text-white active:bg-purple-700 "
             onClick={handleModalClose}

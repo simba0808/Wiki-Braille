@@ -1,6 +1,28 @@
 import mongoose from "mongoose";
 
-const dataSchema = mongoose.Schema(
+const commentSchema = new mongoose.Schema(
+  {
+    comment: {
+      type: String,
+      default: "",
+      required: true,
+    },
+    user: {
+      type: String,
+      default: "",
+      required: true,
+    },
+    rate: {
+      type: Number,
+      default: 0,
+    },
+    date: {
+      type: Date,
+    }
+  }
+);
+
+const dataSchema =  mongoose.Schema(
   {
     title_id: {
       type: String,
@@ -35,7 +57,8 @@ const dataSchema = mongoose.Schema(
     ratedCount: {
       type: Number,
       default: 0
-    }
+    },
+    comments: [commentSchema]
   }
 );
 

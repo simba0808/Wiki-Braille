@@ -1,5 +1,6 @@
 import BlogPost from "../components/BlogPost";
 import BlogAddModal from "../components/modals/BlogAddModal";
+import Loading from "../components/Loading";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -140,6 +141,7 @@ const Guidence = () => {
                   key={blog._id}
                   blog={blog}
                   selectHandle={selectBlog}
+                  selectedBlog={selectedBlog._id}
                   deleteHandle={deleteBlog}
                 />
               ))

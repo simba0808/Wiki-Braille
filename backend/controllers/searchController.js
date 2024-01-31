@@ -6,7 +6,6 @@ const searchData = async (req, res) => {
   if (!await indexExists("title")) {
     await Data.collection.createIndex({ title_id: "text", title: "text", tag: "text", description: "text" }, { name: "title" }, { default_language: "portuguese" });
   }
-
   let { word, advance, searchin, pageIndex, numberPerPage, sortMethod, descending } = req.body;
   let query = {};
   let pluralWord = word;
@@ -52,9 +51,13 @@ const searchData = async (req, res) => {
   try {
     let totalQuery = [];
     if (word !== "") {
-      if (word.match(/^\d{6}$/) !== null) {
+      if (word.match(/^\d{1,6}$/) !== null) {
         totalQuery = [
-          query,
+          {
+            $match: {
+              title_id: word.padStart(6, "0")
+            }
+          },
         ];
       } else {
         totalQuery = [
@@ -96,7 +99,7 @@ const searchData = async (req, res) => {
 
     const result = await Data.aggregate(totalQuery);
     res.status(200).send({
-      count: result[0].totalCount[0].total,
+      count: result[0].totalCount.length ? result[0].totalCount[0].total : 0,
       data: result[0].limitData
     });
   } catch (err) {
@@ -112,7 +115,7 @@ const indexExists = async (fieldName) => {
 };
 
 const updateDescription = async (req, res) => {
-  const { user, text, newTag, title_id } = req.body;
+  const { user, text, category, newTag, title_id } = req.body;
 
   try {
     const data = await Data.updateOne(
@@ -123,7 +126,7 @@ const updateDescription = async (req, res) => {
         $set: {
           title_id: Data.title_id,
           title: Data.title,
-          catagory: Data.catagory,
+          catagory: category,
           tag: newTag,
           description: text,
         }
@@ -137,7 +140,7 @@ const updateDescription = async (req, res) => {
         name: "Update Description",
         status: "Success",
         user: user,
-        time: new Date().toUTCString(),
+        time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
         detail: `Update Description(${title_id})`,
       });
       res.status(200).send({
@@ -149,7 +152,7 @@ const updateDescription = async (req, res) => {
       name: "Update Description",
       status: "Failed",
       user: user,
-      time: new Date().toUTCString(),
+      time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
       detail: `Update Description(${title_id})`,
     });
     res.status(500);
@@ -174,7 +177,7 @@ const updateImageDescription = async (req, res) => {
         name: "Update Description",
         status: "Success",
         user: user,
-        time: new Date().toUTCString(),
+        time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
         detail: `Update Description(${title_id})`,
       });
 
@@ -184,13 +187,20 @@ const updateImageDescription = async (req, res) => {
       });
     }
   } catch (err) {
+    await Logger.create({
+      name: "Update Description",
+      status: "Failed",
+      user: user,
+      time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
+      detail: `Update Description(${title_id})`,
+    });
     res.status(404);
     throw new Error("not found")
   }
 };
 
 const rateDescription = async (req, res) => {
-  const { title_id, rate } = req.body;
+  const { title_id, rate, comment, user } = req.body;
 
   try {
     let data = await Data.findOne({ title_id });
@@ -198,22 +208,18 @@ const rateDescription = async (req, res) => {
     if (data) {
       curRate = data.rate;
       curRatedCount = data.ratedCount;
-      // console.log(curRate, curRatedCount)
-      // const result = await Data.updateOne({ title_id: title_id },  {
-      //   $set: {
-      //     rate: (curRate + rate) / (curRatedCount + 1),
-      //     ratedCount: curRatedCount + 1
-      //   }
-      // }, {
-      //   upsert: true
-      // });
-      // if(result) {
-      //   res.status(200).send("success");
-      // }
       data.rate = ((data.rate * data.ratedCount + rate) / (data.ratedCount + 1)).toFixed(2);
       data.ratedCount = data.ratedCount + 1;
+      if(comment !== "") {
+        await data.comments.push({
+          comment: comment,
+          user: user,
+          rate: parseInt(rate),
+          date: new Date().toUTCString()
+        });
+      }
+      
       const result = await data.save();
-
       if (result) {
         res.status(200).send("success");
       }
@@ -225,15 +231,32 @@ const rateDescription = async (req, res) => {
 };
 
 const deleteDescription = async (req, res) => {
-  const result = await Data.deleteOne({ title_id: req.params.id });
-  if (result) {
-    res.status(200).send({
-      message: "success",
+  const { user } = req.body;
+  try {
+    const result = await Data.deleteOne({ title_id: req.params.id });
+    if (result) {
+      await Logger.create({
+        name: "Delete Description",
+        status: "Success",
+        user: user,
+        time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
+        detail: `Delete Description(${req.params.id})`,
+      });
+
+      res.status(200).send({
+        message: "success",
+      });
+    }
+  } catch(err) {
+    await Logger.create({
+      name: "Delete Description",
+      status: "Failed",
+      user: user,
+      time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
+      detail: `Delete Description(${req.params.id})`,
     });
-  } else {
-    res.status(205).send({
-      message: "not found"
-    });
+    res.status(500);
+    throw new Error("Failed deleting description");
   }
 };
 

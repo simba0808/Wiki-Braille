@@ -1,7 +1,7 @@
 import Loading from "../Loading";
 import { NotExistIcon } from "../../assets";
 import RatingModal from "./RatingModal";
-import CustomSelect from "../CustomSelect";
+import ReviewModal from "./ReviewModal";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -24,6 +24,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
   const [isLoading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [ratingModalShow, setRatingModalShow] = useState(false);
+  const [reviewModalShow, setReviewModalShow] = useState(false);
   const [deleteModalShow, setDeleteModalShow] = useState(false);
 
   useEffect(() => {
@@ -36,6 +37,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
       });
     };
     createLog();
+    console.log(descData)
   }, []);
 
   const handleCloseClick = () => {
@@ -43,7 +45,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
   };
 
   const editConfirm = async () => {
-    if ((tag === newTag && text === description) && selectedImage === null) {
+    if ((tag === newTag && text === description && catagory === newCategory) && selectedImage === null) {
       toast.error('Nenhuma atualização', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
       return;
     }
@@ -54,7 +56,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
       axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
       let response = null;
       if (selectedImage === null) {
-        response = await axios.post("/api/data/edit", { user: userInfo.name, text, newTag, title_id });
+        response = await axios.post("/api/data/edit", { user: userInfo.name, category: newCategory, text, newTag, title_id });
       } else {
         const formData = new FormData();
         formData.append("image", selectedImage);
@@ -90,7 +92,6 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
   };
 
   const handleChangeImage = (e) => {
-    console.log(e.target.files[0])
     setSelectedImage(e.target.files[0]);
   };
 
@@ -112,12 +113,12 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
   const deleteDescription = async () => {
     axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
     try {
-      const response = await axios.post(`/api/data/delete/${title_id}`);
+      const response = await axios.post(`/api/data/delete/${title_id}`, { user: userInfo.name });;
       if (response.data.message === "success") {
         toast.success('Excluído com sucesso', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
         setTimeout(() => {
           window.location.reload(false);
-        }, 500);
+        }, 200);
       }
     } catch (err) {
       toast.error('Falha ao excluir a descrição', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
@@ -131,15 +132,15 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
         className="main-modal fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster"
       >
         <ToastContainer />
-        <div className=" overflow-y-hidden xs:h-[700px] h-[95%] border border-teal-500 shadow-lg modal-container bg-white w-11/12 md:w-[60%] mx-auto rounded shadow-lg z-50 overflow-y-auto">
+        <div className="w-[96%] md:w-[80%] xl:w-[60%] mx-auto xs:h-[700px] h-[95%] border border-teal-500 shadow-lg modal-container bg-white rounded shadow-lg z-50 overflow-y-auto">
           <div className="modal-content xs:h-[700px] h-[100%] py-6 text-left px-6 flex flex-col justify-around overflow-y-hidden">
             <div className="flex justify-end items-center pb-3">
               <div className="modal-close cursor-pointer z-50 " onClick={handleCloseClick}>
                 <svg
                   className="fill-current text-black"
                   xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
+                  width="24"
+                  height="24"
                   viewBox="0 0 18 18"
                 >
                   <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
@@ -155,34 +156,34 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
               </p>
 
             </div>
-            <div className="pt-1 flex items-center gap-4">
-            <p className="xs:text-xl text-md font-normal">
-              Categoria:
-              <select
-                className={`ml-2 px-2 bg-white border-2 rounded-md ${editable ? "rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none" : ""}`}
-                defaultValue={catagory}
-                disabled={editable ? false : true}
-                onChange={handleCategoryChange}
-              >
-                <option value="Descrição">Descrição</option>
-                <option value="Desenhos em braille">Desenhos em braille</option>
-                <option value="Grafias em braille">Grafias em braille</option>
-                <option value="Exemplos da grafia braille">Exemplos da grafia braille</option>
-              </select>
-            </p>
-            {
-              catagory !== "Descrição" ?
-                <p className="grow py-1 xs:text-xl text-md font-normal flex">
-                  Tag:
-                  <input
-                    type="text"
-                    className={`w-full px-2 bg-white ${editable ? "rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none" : ""}`}
-                    value={newTag}
-                    disabled={editable ? false : true}
-                    onChange={handleTagChange}
-                  />
-                </p> : <></>
-            }
+            <div className="pt-1 flex flex-col sm:flex-row items-start sm:items-center sm:gap-4 gap-0">
+              <p className="lg:text-xl sm:text-md text-sm font-normal">
+                Categoria:
+                <select
+                  className={`ml-2 px-2 bg-white border-2 rounded-md ${editable ? "rounded-md border border-purple-300 ring-2 ring-purple-100 outline-none" : ""}`}
+                  defaultValue={catagory}
+                  disabled={editable ? false : true}
+                  onChange={handleCategoryChange}
+                >
+                  <option value="Descrição">Descrição</option>
+                  <option value="Desenhos em braille">Desenhos em braille</option>
+                  <option value="Grafias em braille">Grafias em braille</option>
+                  <option value="Exemplos da grafia braille">Exemplos da grafia braille</option>
+                </select>
+              </p>
+              {
+                catagory !== "Descrição" ?
+                  <p className="grow w-full sm:w-auto py-1 flex lg:text-xl sm:text-md text-sm font-normal">
+                    Tag:
+                    <input
+                      type="text"
+                      className={`w-full px-2 bg-white ${editable ? "rounded-md border border-purple-300 ring-2 ring-purple-100 outline-none" : ""}`}
+                      value={newTag}
+                      disabled={editable ? false : true}
+                      onChange={handleTagChange}
+                    />
+                  </p> : <></>
+              }
             </div>
             <div className="flex pt-2 items-center">
               {
@@ -202,7 +203,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
               }
               <span className="flex items-center pl-2">{rate}</span>
               <span className="w-1 h-1 mx-1.5 bg-gray-500 rounded-full"></span>
-              <span className="">{ratedCount} reviews</span>
+              <span className="hover:cursor-pointer" onClick={() => setReviewModalShow(true)}>{ratedCount} reviews</span>
             </div>
             <div className="xs:flex xs:flex-row flex flex-col grow">
               <div className="xs:flex-1 flex px-2 items-center justify-center hover:cursor-zoom-in">
@@ -228,8 +229,8 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
                   </div>
                 }
               </div>
-              <div className="xs:flex-1 grow w-full p-2 flex flex-col justify-start items-end gap-2">
-                <div className="relative inline-block group">
+              <div className="relative xs:flex-1 grow w-full p-2 flex flex-col justify-start items-end gap-2">
+                <div className="absolute right-4 top-4 inline-block group">
                   <button onClick={handleCopyToClipboard}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className={`w-6 h-6 bi bi-clipboard ${isCopy ? "text-red-500" : ""}`} viewBox="0 0 16 16">
                       <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
@@ -241,7 +242,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
                   </div>
                 </div>
                 <textarea
-                  className={`w-full grow overflow-y-auto bg-gray-100 p-2 rounded-md text-sm lg:text-lg ${editable ? "rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none" : ""}`}
+                  className={`w-full grow overflow-y-auto bg-gray-100 p-2 pt-6 rounded-md text-sm lg:text-lg ${editable ? "rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none" : ""}`}
                   disabled={editable ? false : true}
                   value={text}
                   onChange={handleTextChange}
@@ -292,7 +293,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
         </div>
       </div>
       {
-        deleteModalShow ?
+        deleteModalShow &&
           <div className="min-w-screen h-screen animated fadeIn faster  fixed  left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-none bg-no-repeat bg-center bg-cover" id="modal-id">
             <div className="absolute bg-black opacity-80 inset-0 z-0"></div>
             <div className="w-full  max-w-lg p-5 relative mx-auto my-auto rounded-xl shadow-lg  bg-white ">
@@ -323,11 +324,15 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
                 </div>
               </div>
             </div>
-          </div> : ""
+          </div>
       }
       {
-        ratingModalShow ?
-          <RatingModal onClick={setRatingModalShow} title_id={title_id} /> : ""
+        ratingModalShow &&
+          <RatingModal onClick={setRatingModalShow} title_id={title_id} />
+      }
+      {
+        reviewModalShow &&
+          <ReviewModal data={descData} closeHandle={setReviewModalShow}/>
       }
     </>
   );

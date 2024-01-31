@@ -14,7 +14,6 @@ const getAllBlogs = async (req, res) => {
 
 const addNewBlog = async (req, res) => {
   const { title, text } = req.body;
-  console.log(title, text);
   try {
     const blog = await Blog.create({
       title,
@@ -57,7 +56,6 @@ const selectBlog = async (req, res) => {
 
 const updateBlog = async (req, res) => {
   const { id, title, text } = req.body;
-  console.log(id, title, text);
   try {
     const blog = await Blog.findById(id);
     blog.title = title;

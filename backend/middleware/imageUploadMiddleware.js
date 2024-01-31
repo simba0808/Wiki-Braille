@@ -5,7 +5,6 @@ const storage = multer.diskStorage({
     if(req.body.blog !== undefined && req.body.blog == "blog") {
       cb(null, 'images/blogs/');
     } else {
-      console.log(req.body.blog)
       cb(null, 'images/');
     }
   },

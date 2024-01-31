@@ -7,6 +7,7 @@ import axios from "axios";
 const RatingModal = ({ onClick, title_id }) => {
   const { userInfo } = useSelector((state) => state.auth);
   const [currentScore, setCurrentScore] = useState([false, false, false]);
+  const [comment, setComment] = useState("");
 
   const handleClickClose = () => {
     onClick(false);
@@ -18,11 +19,16 @@ const RatingModal = ({ onClick, title_id }) => {
       const response = await axios.post("/api/data/rate", {
         title_id: title_id,
         rate: currentScore.filter((item) => item === true).length,
+        comment: comment,
+        user: userInfo.name,
       });
-      console.log(response.data);
+
       if(response.data === "success") {
         toast.success("Classificado com sucesso", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
-        onClick(false)
+        onClick(false);
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 200);
       }
     } catch (err) {
       toast.error("Classificação de reprovação", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
@@ -43,7 +49,15 @@ const RatingModal = ({ onClick, title_id }) => {
             <FaStar  handleRate={setCurrentScore} />
           </div>
           <div className="w-3/4 flex flex-col">
-            <textarea rows="3" className="p-4 text-gray-500 rounded-xl resize-none outline-none border focus:border-purple-300 focus:ring-2 focus:ring-purple-200"></textarea>
+            <textarea 
+              className="p-4 text-gray-500 rounded-xl resize-none outline-none border focus:border-purple-300 focus:ring-2 focus:ring-purple-200"
+              maxLength={200}
+              rows="3"
+              placeholder="Digite aqui sua observação"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+            >
+            </textarea>
             <button className="py-3 my-8 text-lg bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl text-white" onClick={handleClickRate}>Avalie agora</button>
           </div>
         </div>

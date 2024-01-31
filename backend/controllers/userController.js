@@ -56,7 +56,7 @@ const authUser = async (req, res) => {
       name: "Login",
       status: "Failed",
       user: user.name,
-      time: new Date().toUTCString(),
+      time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
       detail: `Login Not Allowd by Admin)`,
     });
     res.status(401);
@@ -69,7 +69,7 @@ const authUser = async (req, res) => {
       name: "Login",
       status: "Failed",
       user: user.name,
-      time: new Date().toUTCString(),
+      time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
       detail: `Invalid Password (${user.role === 2 ? "Admin" : (user.role ? "Editor" : "User")})`,
     });
     res.status(401);
@@ -82,7 +82,7 @@ const authUser = async (req, res) => {
     name: "Login",
     status: "Success",
     user: user.name,
-    time: new Date().toUTCString(),
+    time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
     detail: `Login (${user.role === 2 ? "Admin" : (user.role ? "Editor" : "User")})`,
   });
 

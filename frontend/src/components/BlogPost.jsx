@@ -1,4 +1,4 @@
-const BlogPost = ({ blog, deleteHandle, selectHandle }) => {
+const BlogPost = ({ blog, deleteHandle, selectHandle, selectedBlog }) => {
 
   const handleSelected = () => {
     selectHandle(blog._id);
@@ -7,9 +7,9 @@ const BlogPost = ({ blog, deleteHandle, selectHandle }) => {
   const handleDeleteClick = () => {
     deleteHandle(blog._id);
   };
-
+ 
   return (
-    <div className="min-w-[300px] max-w-[350px] h-[350px] mx-auto bg-white border rounded-lg shadow-md" onClick={handleSelected}>
+    <div className={`min-w-[300px] max-w-[350px] h-[350px] mx-auto bg-white border rounded-lg shadow-md transform transition-transform duration-200 hover:translate-y-[-10px]  ${selectedBlog==blog._id?"ring-4 border-2 border-purple-400 ring-purple-200":""}`} onClick={handleSelected}>
       <div className="w-full h-[35%] rounded-t-lg">
         <img src={blog ? blog.image : ""} alt={blog ? blog.title : ""} className="w-full h-full object-cover rounded-t-lg" />
       </div>

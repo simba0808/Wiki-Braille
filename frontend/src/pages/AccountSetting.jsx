@@ -211,7 +211,7 @@ const AccountSetting = () => {
               <div className="p-2">
                 <label className="float-left">Seu nome</label>
                 <input
-                  className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
+                  className="block w-full p-2 text-md text-black border-2 rounded-md focus:border focus:border-purple-400 focus:ring-2 focus:ring-purple-200 focus:outline-none form-input"
                   value={username}
                   onChange={(e) => setUserName(e.target.value)}
                   autoFocus
@@ -220,7 +220,7 @@ const AccountSetting = () => {
               <div className="p-2">
                 <label className="float-left">Seu E-mail</label>
                 <input
-                  className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none disabled:bg-slate-100 cursor-not-allowed form-input"
+                  className="block w-full p-2 text-md text-black border-2 rounded-md focus:border focus:border-purple-400 focus:ring-2 focus:ring-purple-200 focus:outline-none disabled:bg-slate-100 cursor-not-allowed form-input"
                   value={userInfo.email}
                   disabled={true}
                 />
@@ -243,7 +243,7 @@ const AccountSetting = () => {
                 <div className="px-2 py-1">
                   <label className="float-left py-1">Senha atual</label>
                   <input
-                    className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
+                    className="block w-full p-2 text-md text-black border-2 rounded-md focus:border focus:border-purple-400 focus:ring-2 focus:ring-purple-200 focus:outline-none form-input"
                     type="password"
                     placeholder="******"
                     value={currentPassword}
@@ -253,7 +253,7 @@ const AccountSetting = () => {
                 <div className="px-2 py-1">
                   <label className="float-left py-1">Nova senha</label>
                   <input
-                    className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
+                    className="block w-full p-2 text-md text-black border-2 rounded-md focus:border focus:border-purple-400 focus:ring-2 focus:ring-purple-200 focus:outline-none form-input"
                     type="password"
                     placeholder="******"
                     value={newPassword}
@@ -263,7 +263,7 @@ const AccountSetting = () => {
                 <div className="px-2 py-1">
                   <label className="float-left py-1">Confirmar senha</label>
                   <input
-                    className="block w-full p-2 text-md text-black border-2 rounded-md focus:ring-2 focus:ring-purple-300 focus:outline-none form-input"
+                    className="block w-full p-2 text-md text-black border-2 rounded-md focus:border focus:border-purple-400 focus:ring-2 focus:ring-purple-200 focus:outline-none form-input"
                     type="password"
                     placeholder="******"
                     value={confirmPassword}

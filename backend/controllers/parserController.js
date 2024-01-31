@@ -38,6 +38,7 @@ const extractDataFromWord = async (req, res) => {
               tag,
               description, 
               image: "",
+              comments: [],
             });
           }
         });
@@ -64,7 +65,6 @@ const extractDataFromWord = async (req, res) => {
 
           if(invalidImages.length !== 0) {
             invalidImages.sort((a, b) => a.order - b.order);
-            console.log(invalidImages)
             res.status(203).send({
               message: "invalid image",
               data: invalidImages,

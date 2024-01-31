@@ -89,7 +89,6 @@ const Register = () => {
   const handleCodeSubmit = async () => {
     try {
       const res = await axios.post("/api/user/verify", { email, verifyCode: code, timestamp: new Date().getTime(), type: "register" });
-      console.log(res)
       if (res.data.message === "verified") {
         toast.success('Registrado com sucesso!', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
         setTimeout(() => {
