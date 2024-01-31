@@ -1,7 +1,9 @@
-const BlogPost = ({ blog, deleteHandle, selectHandle, selectedBlog }) => {
+import { useEffect } from "react";
+
+const BlogPost = ({ blog, deleteHandle, selectHandle, selectedBlog, role, index }) => {
 
   const handleSelected = () => {
-    selectHandle(blog._id);
+    selectHandle(blog._id, index);
   }
 
   const handleDeleteClick = () => {
@@ -21,13 +23,14 @@ const BlogPost = ({ blog, deleteHandle, selectHandle, selectedBlog }) => {
         <div className="absolute bottom-2 w-[90%]">
           <p className="text-sm">{`Criado por Elias ${blog?blog.createdAt.split("T")[0]:""}`}</p>
           {
-            <div className="flex justify-end py-2">
-              <button className="" onClick={handleDeleteClick}>
-                <svg className="w-[24px] h-[24px] text-[#6c2bd9] hover:text-[#ff699d]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
-                </svg>
-              </button>
-            </div>
+            role == 2 && 
+              <div className="flex justify-end py-2">
+                <button className="" onClick={handleDeleteClick}>
+                  <svg className="w-[24px] h-[24px] text-[#6c2bd9] hover:text-[#ff699d]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
+                  </svg>
+                </button>
+              </div>
           }
         </div>
       </div>

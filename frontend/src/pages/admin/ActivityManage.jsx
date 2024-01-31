@@ -1,12 +1,14 @@
 import Loading from "../../components/Loading";
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import DatePicker from "react-tailwindcss-datepicker";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 
 const ActivityManage = () => {
   const { userInfo } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [dateRange, setDateRange] = useState({
     startDate: null,
@@ -24,21 +26,20 @@ const ActivityManage = () => {
   const typeRef = useRef(null);
 
   useEffect(() => {
-    // const fetchLogData = async () => {
-    //   try {
-    //     axios.defaults.headers.common["Authorization"] = `Beaer ${userInfo.token}`;
-    //     const response = await axios.post("/api/log/getlogs", {
-    //       pagePerNumber: 15,
-    //     });
-    //     if (response.data.data) {
-    //       setFilteredData(response.data.data);
-    //       setFilteredCount(response.data.totalCount);
-    //     }
-    //   } catch (err) {
-    //     toast.error("Failed to fetch logs", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
-    //   }
-    // };
-    // fetchLogData();
+    const fetchAuthData = async () => {
+      if (userInfo.role !== 2) {
+        navigate("/");
+      } else {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
+        try {
+          const res = await axios.get("/api/user/");
+          dispatch(setCredentials({ ...res.data }));
+        } catch (err) {
+          navigate("/");
+        }
+      }
+    };
+    fetchAuthData();
   }, []);
 
   useEffect(() => {

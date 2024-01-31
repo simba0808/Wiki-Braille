@@ -50,6 +50,10 @@ const dataSchema =  mongoose.Schema(
       default: "",
       required: true,
     },
+    totalRate: {
+      type: Number,
+      default: 0,
+    },
     rate: {
       type: Number,
       default: 0

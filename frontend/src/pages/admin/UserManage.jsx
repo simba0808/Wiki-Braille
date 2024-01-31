@@ -1,12 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { defaultUserIcon } from "../../assets";
 import { ToastContainer, toast } from "react-toastify";
 import Loading from "../../components/Loading";
 
 const UserManage  = () => {
   const { userInfo } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   const [filteredData, setFilteredData] = useState([]);
   const [avatars, setAvatars] = useState([]);
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
@@ -19,6 +21,21 @@ const UserManage  = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       setLoading(true);
+      const fetchAuthData = async () => {
+        if (userInfo.role !== 2) {
+          navigate("/");
+        } else {
+          axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
+          try {
+            const res = await axios.get("/api/user/");
+            dispatch(setCredentials({ ...res.data }));
+          } catch (err) {
+            navigate("/");
+          }
+        }
+      };
+      fetchAuthData();
+
       try {
         axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
         const response = await axios.post("/api/user/getallusers", { email: userInfo.email });

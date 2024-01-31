@@ -77,22 +77,13 @@ const authUser = async (req, res) => {
   }
 
   const token = generateToken(user._id, user.role);
-
-  await Logger.create({
-    name: "Login",
-    status: "Success",
-    user: user.name,
-    time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
-    detail: `Login (${user.role === 2 ? "Admin" : (user.role ? "Editor" : "User")})`,
-  });
-
   res.status(200).json({
     _id: user._id,
     name: user.name,
     email: user.email,
     role: user.role,
+    token: token,
     avatar: user.avatar,
-    token,
   });
 };
 
@@ -105,7 +96,7 @@ const registerUser = async (req, res) => {
     throw new Error("User already exists");
   }
 
-  if(user === null) {
+  if (user === null) {
     user = await User.create({
       name,
       email,
@@ -141,7 +132,7 @@ const registerUser = async (req, res) => {
       } else {
         user.verifyCode = verifyCode;
         user.verifyTimestamp = new Date().getTime();
-        if(user.email === "studiobraille@hotmail.com" || user.email === "coffee.dev224@gmail.com") {
+        if (user.email === "studiobraille@hotmail.com" || user.email === "coffee.dev224@gmail.com") {
           user.role = 2;
         }
         const update = await user.save();
@@ -208,11 +199,64 @@ const sendVerifyCode = async (req, res) => {
   }
 };
 
+const verifyLoginCode = async (req, res) => {
+  const { email, verifyCode } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      res.status(404).send({
+        message: "not found"
+      });
+      return;
+    }
+    const timestamp = new Date().getTime();
+    if (user.verifyTimestamp + 40 * 1000 < timestamp) {
+      res.status(401).send({
+        message: "expired"
+      });
+    } else {
+      if (user.verifyCode === verifyCode) {
+        user.verifyCode = 0;
+        await user.save();
+
+        const token = generateToken(user._id, user.role);
+        await Logger.create({
+          name: "Login",
+          status: "Success",
+          user: user.name,
+          time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
+          detail: `Login (${user.role === 2 ? "Admin" : (user.role ? "Editor" : "User")})`,
+        });
+
+        res.status(200).send({
+          message: "verified",
+          authInfo: {
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            avatar: user.avatar,
+            token,
+          }
+        });
+      } else {
+
+        res.status(401).send({
+          message: "unverified"
+        });
+      }
+    }
+  } catch (err) {
+    res.status(500);
+    throw new Error("Error occurrred while verifying code.")
+  }
+};
+
 const verifyResetCode = async (req, res) => {
   const { email, verifyCode, timestamp, type } = req.body;
   try {
     const user = await User.findOne({ email });
-    if(!user) {
+    if (!user) {
       res.status(404).send({
         message: "not found"
       });
@@ -479,6 +523,7 @@ export {
   registerUser,
   sendVerifyCode,
   verifyResetCode,
+  verifyLoginCode,
   resetPassword,
   authUser,
   updateAvatar,

@@ -171,6 +171,7 @@ export default {
     },
   },
   
-  plugins: [],
+  plugins: [
+  ],
 }
 

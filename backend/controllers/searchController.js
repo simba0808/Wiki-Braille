@@ -208,7 +208,8 @@ const rateDescription = async (req, res) => {
     if (data) {
       curRate = data.rate;
       curRatedCount = data.ratedCount;
-      data.rate = ((data.rate * data.ratedCount + rate) / (data.ratedCount + 1)).toFixed(2);
+      data.totalRate = data.totalRate + rate;
+      data.rate = ((data.totalRate) / (data.ratedCount + 1)).toFixed(2);
       data.ratedCount = data.ratedCount + 1;
       if(comment !== "") {
         await data.comments.push({
@@ -229,6 +230,36 @@ const rateDescription = async (req, res) => {
     throw new Error("failed rating");
   }
 };
+
+const deleteComment = async (req, res) => {
+  const { title_id, comment_id } = req.body;
+  try {
+    const comment = await Data.findOne(
+      { title_id },
+      { comments: { $elemMatch: { _id: comment_id } } }
+    );
+    
+    const data = await Data.findOne({ title_id });
+    data.totalRate = data.totalRate - comment.comments[0].rate;
+    data.rate = data.totalRate ? (data.totalRate)/(data.ratedCount-1):0;
+    data.ratedCount = data.ratedCount - 1;
+    await data.save();
+
+    const result = await Data.findOneAndUpdate(
+      { title_id },
+      { $pull: { comments: { _id: comment_id } } },
+      { new: true }
+    );
+    if(result) {
+      res.status(200).send({
+        message: "removed"
+      });
+    }
+  } catch (err) {
+    res.status(500);
+    throw new Error("Failed to delete comment")
+  }
+}
 
 const deleteDescription = async (req, res) => {
   const { user } = req.body;
@@ -265,5 +296,6 @@ export {
   updateDescription,
   updateImageDescription,
   rateDescription,
+  deleteComment,
   deleteDescription,
 };

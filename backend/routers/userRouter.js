@@ -7,6 +7,7 @@ import {
   registerUser, 
   sendVerifyCode,
   verifyResetCode,
+  verifyLoginCode,
   resetPassword,
   authUser,
   updateAvatar, 
@@ -27,6 +28,7 @@ router.post('/register', registerUser);
 router.post('/login', authUser);
 router.post('/resetPasswordRequest', sendVerifyCode);
 router.post('/verify', verifyResetCode);
+router.post('/verifylogin', verifyLoginCode);
 router.post('/resetPassword', resetPassword);
 router.post('/avatar', gridMiddleware.single("file"), updateAvatar);
 router.get('/avatar/:id', getAvatar);

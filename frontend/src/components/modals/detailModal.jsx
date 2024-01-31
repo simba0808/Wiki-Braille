@@ -37,7 +37,6 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
       });
     };
     createLog();
-    console.log(descData)
   }, []);
 
   const handleCloseClick = () => {
@@ -332,7 +331,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
       }
       {
         reviewModalShow &&
-          <ReviewModal data={descData} closeHandle={setReviewModalShow}/>
+          <ReviewModal data={descData} closeHandle={setReviewModalShow} userInfo={userInfo} />
       }
     </>
   );

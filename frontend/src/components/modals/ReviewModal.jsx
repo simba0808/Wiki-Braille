@@ -1,13 +1,30 @@
 import { defaultUserIcon } from "../../assets";
+import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
 
-const ReviewModal = ({ data, closeHandle }) => {
+const ReviewModal = ({ data, closeHandle, userInfo }) => {
   const handleCloseClick = () => {
     closeHandle(false);
-  }
+  };
+
+  const handleDeleteComment = async (index) => {
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
+      const response = await axios.post("/api/data/deletecomment", { title_id: data.title_id, comment_id: data.comments[index]._id });
+      if (response.data.message === "removed") {
+        toast.success("Comentário removido com sucesso", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, theme: "dark" });
+        window.location.reload(false);
+      }
+    } catch (err) {
+      toast.error("Falha ao excluir o comentário", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, theme: "dark" });
+    }
+  };
+
   return (
     <div
       className="main-modal fixed w-full px-2 h-100 inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster"
     >
+      <ToastContainer />
       <div className="absolute inset-0 bg-black bg-opacity-80 transition-opacity"></div>
       <div className="relative w-full md:w-2/3 xl:w-1/2 max-h-[80%] bg-white rounded-md shadow-xl p-6 overflow-y-auto">
         <p className="text-[25px] font-semibold text-left">Comentários</p>
@@ -29,9 +46,9 @@ const ReviewModal = ({ data, closeHandle }) => {
               return (
                 <div key={index} className="w-full rounded-xl border shadow-md">
                   <div className="w-full bg-slate-100 flex items-center rounded-t-xl">
-                    <div className="px-2 sm:px-10 py-1 flex items-center gap-2 sm:gap-6">
+                    <div className="w-full relative px-2 sm:px-10 py-1 flex items-center gap-2 sm:gap-6">
                       <img className="w-10 sm:w-14 rounded-full" src={defaultUserIcon} />
-                      <div className="flex items-center divide-x-2 divide-slate-300 text-md sm:text-lg font-semibold">
+                      <div className="relative flex items-center divide-x-2 divide-slate-300 text-md sm:text-lg font-semibold">
                         <p className="px-2 sm:px-6">{comment.user}</p>
                         <div className="flex px-2 sm:px-6 gap-1 sm:gap-4">
                           <span>{parseFloat(comment.rate).toFixed(1)}</span>
@@ -53,6 +70,13 @@ const ReviewModal = ({ data, closeHandle }) => {
                             }
                           </span>
                         </div>
+                      </div>
+                      <div className="absolute top-4 right-4">
+                        <button className="" onClick={() => handleDeleteComment(index)}>
+                          <svg className="w-[24px] h-[24px] text-[#6c2bd9] hover:text-[#ff699d]" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z" />
+                          </svg>
+                        </button>
                       </div>
                     </div>
                   </div>

@@ -2,11 +2,12 @@ import {
   searchData, 
   updateDescription, 
   updateImageDescription,
+  deleteComment,
   rateDescription, 
   deleteDescription 
 } from "../controllers/searchController.js";
 import { extractDataFromWord } from "../controllers/parserController.js";
-import { authEditMiddleware } from "../middleware/authMiddleware.js";
+import { authAdminMiddleware, authEditMiddleware } from "../middleware/authMiddleware.js";
 import express from "express";
 const router = express.Router();
 
@@ -20,6 +21,7 @@ router.post('/getdata', searchData);
 router.post('/edit', authEditMiddleware,  updateDescription);
 router.post('/editimage', authEditMiddleware, imageUpload.single("image"), updateImageDescription);
 router.post('/rate', rateDescription);
+router.post('/deletecomment', authEditMiddleware, deleteComment);
 router.post('/delete/:id', deleteDescription);
 
 export default router;
