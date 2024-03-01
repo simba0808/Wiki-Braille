@@ -1,8 +1,3 @@
-<<<<<<< HEAD
 <svg width="24px" height="24px" class="text-[#375DA8] dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="#375DA8" viewBox="0 0 24 24">
     <path stroke="#76a9fa" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M12 6v13m0-13 4 4m-4-4-4 4"/>
-=======
-<svg width="24px" height="24px" class="text-[#375DA8] dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="#375DA8" viewBox="0 0 24 24">
-    <path stroke="#76a9fa" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M12 6v13m0-13 4 4m-4-4-4 4"/>
->>>>>>> 85823ee (Upgrade to version 1)
   </svg>
