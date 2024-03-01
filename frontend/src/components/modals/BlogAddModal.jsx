@@ -8,8 +8,8 @@ const BlogAddModal = ({closeHandle}) => {
   const { userInfo } = useSelector((state) => state.auth);
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
-  const [selectedImage, setSelectedImage] = useState(null);
   const [isInvalidInput, setInvalidInput] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const handleModalClose = () => {
     closeHandle(false);
@@ -25,41 +25,23 @@ const BlogAddModal = ({closeHandle}) => {
     setText(e.target.value);
   };
 
-  const handleChangeFile = (e) => {
-    const allowedExtensions = ["jpg", "jpeg", "png"];
-    console.log(e.target.files[0]);
-    const fileExtension = e.target.files[0].name.split(".").pop().toLowerCase();
-    const isAllowedExtension = allowedExtensions.includes(fileExtension);
-    console.log(isAllowedExtension);
-    if (isAllowedExtension) {
-      setInvalidInput(false);
-      setSelectedImage(e.target.files[0]);
-    } else {
-      setInvalidInput(true);
-      return;
-    }
-  };
-
   const handleSubmit = async () => {
-    if(title === "" || text === "" || selectedImage === null) {
+    if(title === "" || text === "") {
       setInvalidInput(true);
       return;
     }
 
-    const formData = new FormData();
-    formData.append("blog", "blog");
-    formData.append("image", selectedImage);
-    formData.append("title", title);
-    formData.append("text", text);
-
+    setLoading(true);
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
-      const response  = await axios.post("/api/blog/add", formData);
+      const response  = await axios.post("/api/blog/add", { title, text });
       if(response.data.message === "success") {
+        setLoading(false);
         toast.success("Blog adicionado com sucesso", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
         window.location.reload(false);
       }
     } catch (err) {
+      setLoading(false);
       toast.error("Erro ao adicionar blog", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
     }
   };
@@ -68,6 +50,7 @@ const BlogAddModal = ({closeHandle}) => {
     <div
       className="main-modal fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster"
     >
+      {isLoading && <Loading />}
       <div className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
       <ToastContainer />
       <div className="relative bg-white rounded-md shadow-xl p-6 w-full  md:w-2/3 xl:w-1/2 z-50">
@@ -85,7 +68,7 @@ const BlogAddModal = ({closeHandle}) => {
           </label>
         </div>
         <div className="mb-2">
-          <label className="block  text-sm text-left">
+          <label className="block text-sm text-left">
             <span className="text-lg text-gray-700">Descrição: </span>
             <textarea
               className={`block w-full min-h-[100px] max-h-[250px] mt-1 text-sm border px-2 py-3 rounded-md focus:ring-2 focus:ring-purple-200 focus:border-purple-600 focus:outline-none focus:shadow-outline-purple form-input `}
@@ -94,41 +77,6 @@ const BlogAddModal = ({closeHandle}) => {
               onChange={handleTextChange}
             >
             </textarea>
-          </label>
-        </div>
-        <div className="mb-4">
-          <p className="py-1 text-lg text-gray-700 text-left">Adicionar imagens:</p>
-          <label
-            htmlFor="dropzone-file"
-            className="py-2 w-full flex flex-col items-center justify-center border border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-1  00"
-          >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <svg
-                className="w-8 h-8 mb-4 text-gray-500"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 20 16"
-              >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                />
-              </svg>
-              <p className="mb-2 px-4 text-xl text-gray-500">
-                <span className="font-semibold">Faça upload de sua imagem</span>
-              </p>
-              <p className="text-md text-gray-500">( JPEG, PNG )</p>
-            </div>
-            <input
-              id="dropzone-file"
-              type="file"
-              className="hidden"
-              onChange={handleChangeFile}
-            />
           </label>
         </div>
         <div>

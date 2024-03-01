@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 const BlogPost = ({ blog, deleteHandle, selectHandle, selectedBlog, role, index }) => {
 
   const handleSelected = () => {
@@ -9,13 +7,10 @@ const BlogPost = ({ blog, deleteHandle, selectHandle, selectedBlog, role, index 
   const handleDeleteClick = () => {
     deleteHandle(blog._id);
   };
- 
+
   return (
-    <div className={`min-w-[300px] max-w-[350px] h-[350px] mx-auto bg-white border rounded-lg shadow-md transform transition-transform duration-200 hover:translate-y-[-10px]  ${selectedBlog==blog._id?"ring-4 border-2 border-purple-400 ring-purple-200":""}`} onClick={handleSelected}>
-      <div className="w-full h-[35%] rounded-t-lg">
-        <img src={blog ? blog.image : ""} alt={blog ? blog.title : ""} className="w-full h-full object-cover rounded-t-lg" />
-      </div>
-      <div className="h-[65%] relative px-4 py-2 text-left">
+    <div className={`w-[300px] h-[280px] mx-auto bg-white border rounded-lg shadow-md hover:cursor-pointer transform transition-transform duration-200 hover:translate-y-[-10px]  ${selectedBlog==blog._id?"ring-4 border-2 border-purple-400 ring-purple-200":""}`} onClick={handleSelected}>
+      <div className="relative h-full px-4 py-2 text-left">
         <p className="py-1 text-md font-semibold">{blog ? blog.title : ""}</p>
         <div className="py-2">
           <p className="text-sm">{blog ? (blog.text.length>200 ? blog.text.substring(0, 200)+"...":blog.text) : ""}</p>

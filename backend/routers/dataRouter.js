@@ -2,12 +2,12 @@ import {
   searchData, 
   updateDescription, 
   updateImageDescription,
+  rateDescription,
   deleteComment,
-  rateDescription, 
   deleteDescription 
 } from "../controllers/searchController.js";
 import { extractDataFromWord } from "../controllers/parserController.js";
-import { authAdminMiddleware, authEditMiddleware } from "../middleware/authMiddleware.js";
+import { authEditMiddleware } from "../middleware/authMiddleware.js";
 import express from "express";
 const router = express.Router();
 

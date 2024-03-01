@@ -37,15 +37,14 @@ const getLogs = async (req, res) => {
       }
     }
     if (dateRange.startDate !== null && dateRange.endDate !== null) {
-      
-    let endTime = new Date(`${dateRange.endDate}T23:59:59.999Z`);
-    endTime.setUTCHours(endTime.getUTCHours()+3);
-    
-    query = {
+      let endTime = new Date(`${dateRange.endDate}T23:59:59.999Z`);
+      endTime.setUTCHours(endTime.getUTCHours() + 3);
+
+      query = {
         ...query, time: {
-           $gte: new Date(`${dateRange.startDate}T03:00:00.000Z`),
-           $lte: endTime,
-         }
+          $gte: new Date(`${dateRange.startDate}T03:00:00.000Z`),
+          $lte: endTime,
+        }
       };
     }
     datas = await Logger.find(query).sort({ time: -1 }).skip((pageIndex - 1) * 20).limit(pagePerNumber);

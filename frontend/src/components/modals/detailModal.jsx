@@ -50,7 +50,6 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
     }
     setEditable(false);
     setLoading(true);
-
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
       let response = null;
@@ -66,10 +65,9 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
         formData.append("title_id", title_id);
         response = await axios.post("/api/data/editimage", formData);
       }
+      setLoading(false);
       if (response.data.message === "success") {
-
         updateHandle({ text, tag: newTag, image: selectedImage ? response.data.path : null });
-        setLoading(false);
         toast.success('Atualizado com sucesso!', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
       }
     } catch (err) {
@@ -111,8 +109,10 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
 
   const deleteDescription = async () => {
     axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
+    setLoading(true);
     try {
-      const response = await axios.post(`/api/data/delete/${title_id}`, { user: userInfo.name });;
+      const response = await axios.post(`/api/data/delete/${title_id}`, { user: userInfo.name });
+      setLoading(false)
       if (response.data.message === "success") {
         toast.success('Excluído com sucesso', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
         setTimeout(() => {
@@ -120,6 +120,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
         }, 200);
       }
     } catch (err) {
+      setLoading(false);
       toast.error('Falha ao excluir a descrição', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
     }
   };
@@ -131,15 +132,15 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
         className="main-modal fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster"
       >
         <ToastContainer />
-        <div className="w-[96%] md:w-[80%] xl:w-[60%] mx-auto xs:h-[700px] h-[95%] border border-teal-500 shadow-lg modal-container bg-white rounded shadow-lg z-50 overflow-y-auto">
+        <div className="w-[96%] md:w-[80%] xl:w-[60%] mx-auto xs:h-[700px] h-[95%] border border-teal-500 shadow-lg modal-container bg-white rounded shadow-lg z-50 overflow-y-hidden">
           <div className="modal-content xs:h-[700px] h-[100%] py-6 text-left px-6 flex flex-col justify-around overflow-y-hidden">
             <div className="flex justify-end items-center pb-3">
               <div className="modal-close cursor-pointer z-50 " onClick={handleCloseClick}>
                 <svg
                   className="fill-current text-black"
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
+                  width="18"
+                  height="18"
                   viewBox="0 0 18 18"
                 >
                   <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
@@ -241,7 +242,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
                   </div>
                 </div>
                 <textarea
-                  className={`w-full grow overflow-y-auto bg-gray-100 p-2 pt-6 rounded-md text-sm lg:text-lg ${editable ? "rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none" : ""}`}
+                  className={`w-full grow overflow-y-auto bg-gray-100 p-2 pt-10 rounded-md text-sm lg:text-lg ${editable ? "rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none" : ""}`}
                   disabled={editable ? false : true}
                   value={text}
                   onChange={handleTextChange}

@@ -86,7 +86,7 @@ const extractDataFromWord = async (req, res) => {
             const content = await image.async("nodebuffer");
             const timeStamp = new Date().toISOString().replace(/[-T:Z.]/g, '');
             await sharp(content).webp({ quality: 20 }).toFile("./images/" + `${timeStamp}-${orignalName}`);
-            dataSet[index-1].image = `http://localhost:3000/${timeStamp}-${orignalName}`;
+            dataSet[index-1].image = `${timeStamp}-${orignalName}`;
           }
 
           const document = await Data.aggregate([

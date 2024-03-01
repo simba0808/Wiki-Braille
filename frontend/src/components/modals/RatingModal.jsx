@@ -1,4 +1,5 @@
 import FaStar from "../star/FaStar";
+import Loading from "../Loading";
 import { ToastContainer, toast } from "react-toastify";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -8,21 +9,23 @@ const RatingModal = ({ onClick, title_id }) => {
   const { userInfo } = useSelector((state) => state.auth);
   const [currentScore, setCurrentScore] = useState([false, false, false]);
   const [comment, setComment] = useState("");
+  const [isLoading, setLoading] = useState(false);
 
   const handleClickClose = () => {
     onClick(false);
   };
 
   const handleClickRate =  async () => {
+    setLoading(true);
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
       const response = await axios.post("/api/data/rate", {
         title_id: title_id,
-        rate: currentScore.filter((item) => item === true).length,
         comment: comment,
+        rate: currentScore.filter((item) => item === true).length,
         user: userInfo.name,
       });
-
+      setLoading(false);
       if(response.data === "success") {
         toast.success("Classificado com sucesso", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
         onClick(false);
@@ -31,12 +34,14 @@ const RatingModal = ({ onClick, title_id }) => {
         }, 200);
       }
     } catch (err) {
+      setLoading(false);
       toast.error("Classificação de reprovação", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
     }
   };
 
   return (
     <div className="min-w-screen h-screen animated fadeIn faster  fixed  left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-none bg-no-repeat bg-center bg-cover" id="modal-id">
+      { isLoading && <Loading />}
       <div className="absolute bg-black opacity-80 inset-0 z-0"></div>
       <ToastContainer />
       <div className="w-full  max-w-md relative mx-auto my-auto rounded-xl shadow-lg  bg-white ">
@@ -49,7 +54,7 @@ const RatingModal = ({ onClick, title_id }) => {
             <FaStar  handleRate={setCurrentScore} />
           </div>
           <div className="w-3/4 flex flex-col">
-            <textarea 
+          <textarea 
               className="p-4 text-gray-500 rounded-xl resize-none outline-none border focus:border-purple-300 focus:ring-2 focus:ring-purple-200"
               maxLength={200}
               rows="3"

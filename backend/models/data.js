@@ -22,7 +22,7 @@ const commentSchema = new mongoose.Schema(
   }
 );
 
-const dataSchema =  mongoose.Schema(
+const dataSchema = mongoose.Schema(
   {
     title_id: {
       type: String,

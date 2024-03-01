@@ -18,11 +18,9 @@ const addNewBlog = async (req, res) => {
     const blog = await Blog.create({
       title,
       text,
-      image: `http://localhost:3000/${req.file.filename}`,
     });
     res.status(200).send({
       message: "success",
-      image: `http://localhost:3000/${req.file.filename}`,
     });
   } catch (err) {
     res.status(500);

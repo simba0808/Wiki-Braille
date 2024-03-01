@@ -1,8 +1,9 @@
+import Loading from "../components/Loading";
+import { RegisterImage } from "../assets";
 import { useState } from "react";
+import { useRegisterMutation } from "../slices/userApiSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import { RegisterImage } from "../assets";
-import { useRegisterMutation } from "../slices/userApiSlice";
 import axios from "axios";
 
 const Register = () => {
@@ -18,6 +19,7 @@ const Register = () => {
   const [emailStatus, setEmailStatus] = useState("");
   const [passwordStatus, setPasswordStatus] = useState("");
   const [verifyShow, setVerifyShow] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
@@ -65,9 +67,12 @@ const Register = () => {
       setPasswordStatus("");
     }
     try {
+      setLoading(true);
       const res = await register({ name, email, password }).unwrap();
       setVerifyShow(true);
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       if(err.data.message === "User already exists") {
         toast.error("O usuário já existe", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
       } else {
@@ -259,6 +264,9 @@ const Register = () => {
           </div>
         </div>
       </div>
+      {
+        loading && <Loading />
+      }
     </>
   );
 };

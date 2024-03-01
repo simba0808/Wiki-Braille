@@ -1,7 +1,6 @@
 import Loading from "../components/Loading";
 import DetailModal from "../components/modals/detailModal";
 import { emptyImage, NotExistIcon, ArrowUp, ArrowDown } from "../assets";
-import CustomSelect from "../components/CustomSelect";
 import { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -101,7 +100,7 @@ const Dashboard = () => {
 
       const response = await axios.post("/api/data/getdata", searcher);
       dispatch(setFilterGroup({
-        ...filterGroup, word, advance, searchin, pageIndex, filteredCount
+        ...filterGroup, word, advance, searchin, pageIndex, filteredCount:response.data.count,
       }));
 
       setFilteredCount(response.data.count);
