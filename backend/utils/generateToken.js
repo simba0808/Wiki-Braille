@@ -5,7 +5,7 @@ const generateToken = (userId, role) => {
       userId, role
     }, 
     process.env.TOKEN_SECRET, {
-      expiresIn: '1h',
+      expiresIn: '24h',
     }
   );
   

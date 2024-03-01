@@ -26,20 +26,9 @@ const ActivityManage = () => {
   const typeRef = useRef(null);
 
   useEffect(() => {
-    const fetchAuthData = async () => {
-      if (userInfo.role !== 2) {
-        navigate("/");
-      } else {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
-        try {
-          const res = await axios.get("/api/user/");
-          dispatch(setCredentials({ ...res.data }));
-        } catch (err) {
-          navigate("/");
-        }
-      }
-    };
-    fetchAuthData();
+    if (userInfo.role !== 2) {
+      navigate("/");
+    }
   }, []);
 
   useEffect(() => {
@@ -47,17 +36,24 @@ const ActivityManage = () => {
   }, [currentPageIndex]);
 
   const fetchData = async (dateRange, searchType, searchText) => {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
-    const response = await axios.post("/api/log/getlogs", {
-      dateRange: dateRange,
-      searchType: searchType,
-      searchText: searchText,
-      pagePerNumber: 20,
-      pageIndex: currentPageIndex,
-    });
-    if (response.data.data) {
-      setFilteredData(response.data.data);
-      setFilteredCount(response.data.totalCount);
+    setIsLoading(true);
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
+      const response = await axios.post("/api/log/getlogs", {
+        dateRange: dateRange,
+        searchType: searchType,
+        searchText: searchText,
+        pagePerNumber: 20,
+        pageIndex: currentPageIndex,
+      });
+      setIsLoading(false);
+      if (response.data.data) {
+        setFilteredData(response.data.data);
+        setFilteredCount(response.data.totalCount);
+      }
+    } catch (err) {
+      setIsLoading(false)
+      toast.error("Failed to fetch logs", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
     }
   };
 
@@ -66,24 +62,24 @@ const ActivityManage = () => {
   };
 
   const backButtonHandle = () => {
-    if(currentPageIndex < 2) {
+    if (currentPageIndex < 2) {
       return;
     }
-    if(currentPageIndex === startPageIndex) {
-      setStartPageIndex(startPageIndex-1);
-    } 
-    setCurrentPageIndex(currentPageIndex-1);
+    if (currentPageIndex === startPageIndex) {
+      setStartPageIndex(startPageIndex - 1);
+    }
+    setCurrentPageIndex(currentPageIndex - 1);
   };
 
   const forwardButtonHandle = () => {
-    if(currentPageIndex > filteredCount/20) {
+    if (currentPageIndex > filteredCount / 20) {
       return;
     }
-    if(currentPageIndex === startPageIndex+4) {
-      setStartPageIndex(startPageIndex+1);
+    if (currentPageIndex === startPageIndex + 4) {
+      setStartPageIndex(startPageIndex + 1);
     }
-    
-    setCurrentPageIndex(currentPageIndex+1);
+
+    setCurrentPageIndex(currentPageIndex + 1);
   };
 
   const handleSearchClick = () => {
@@ -109,6 +105,7 @@ const ActivityManage = () => {
     typeRef.current.value = "name";
     setCurrentPageIndex(1);
     setStartPageIndex(1);
+    fetchData({ startDate: null, endDate: null }, "name", "");
   };
 
   return (
@@ -123,7 +120,7 @@ const ActivityManage = () => {
         <ToastContainer />
         <div className="w-full py-4 shadow-xs">
           <div className="flex xl:flex-row flex-col xl:items-center items-start mb-4 gap-4 text-sm">
-            <button 
+            <button
               className="w-[150px] py-2 border border-purple-600 border-purple-600 rounded-md bg-white text-purple-600 text-sm hover:bg-purple-600 hover:text-white active:bg-purple-900 transition:colors duration-500"
               onClick={handleShowAllClick}
             >
@@ -192,7 +189,9 @@ const ActivityManage = () => {
                         </td>
                         <td className="px-4 py-1">
                           {
-                            new Date(new Date(item.time).toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" })).toString()
+                            new Date(new Date(item.time).toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" })).toLocaleString("en-GB", {
+                              day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'
+                            })
                           }
                         </td>
                         <td className="px-4 py-1">
@@ -241,7 +240,7 @@ const ActivityManage = () => {
               <li className="flex items-center">
                 <button
                   aria-label="Next"
-                  onClick={ forwardButtonHandle}
+                  onClick={forwardButtonHandle}
                 >
                   <svg
                     className="w-4 h-4 fill-current"

@@ -19,23 +19,12 @@ const UserManage  = () => {
   const [isLoading, setLoading] = useState(false);
   
   useEffect(() => {
+    if (userInfo.role !== 2) {
+      navigate("/");
+    }
+
     const fetchUserData = async () => {
       setLoading(true);
-      const fetchAuthData = async () => {
-        if (userInfo.role !== 2) {
-          navigate("/");
-        } else {
-          axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
-          try {
-            const res = await axios.get("/api/user/");
-            dispatch(setCredentials({ ...res.data }));
-          } catch (err) {
-            navigate("/");
-          }
-        }
-      };
-      fetchAuthData();
-
       try {
         axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
         const response = await axios.post("/api/user/getallusers", { email: userInfo.email });

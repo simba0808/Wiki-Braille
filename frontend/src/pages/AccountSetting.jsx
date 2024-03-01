@@ -94,9 +94,9 @@ const AccountSetting = () => {
       formData.append("file", uploadFile);
 
       const response = await axios.post("/api/user/avatar", formData);
+      setLoading(false);
       if(response.data.message === "uploaded") {
         dispatch(setCredentials({...userInfo, avatar: response.data.id}));
-        setLoading(false);
         toast.success("Atualizado com sucesso", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
         setSelectedAvatar("");
         setUploadFile("");
@@ -113,9 +113,9 @@ const AccountSetting = () => {
     try {
       axios.defaults.headers.common["Authorization"] =`Bearer ${userInfo.token}`;
       const response = await axios.post("/api/user/updateinfo", { username, email: userInfo.email });
+      setLoading(false);
       if(response.data.message === "success") {
         dispatch(setCredentials({...userInfo, name: username }));
-        setLoading(false);
         toast.success('Atualizado com sucesso', {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
       }
     } catch (err) {
@@ -142,9 +142,9 @@ const AccountSetting = () => {
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
       const response = await axios.post("/api/user/updatepassword", { email:userInfo.email, currentPassword, newPassword });
+      setLoading(false);
       if(response.data.message === "success") {
-        setLoading(false);
-         toast.success("Senha atualizada com sucesso", {autoClose:100, hideProgressBar:true, pauseOnHover:false, closeOnClick:true, theme:"dark"})
+        toast.success("Senha atualizada com sucesso", {autoClose:100, hideProgressBar:true, pauseOnHover:false, closeOnClick:true, theme:"dark"})
       }
     } catch (err) {
       setLoading(false);

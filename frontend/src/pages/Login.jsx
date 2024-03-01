@@ -1,4 +1,5 @@
 import { LoginImage } from '../assets'
+import Loading from "../components/Loading";
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../slices/userApiSlice';
@@ -20,6 +21,7 @@ const Login = () => {
   const [verifyStatus, setVerifyStatus] = useState("");
   const [verifyShow, setVerifyShow] = useState(false);
   const [seconds, setSeconds] = useState(40);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if(verifyShow) {
@@ -32,7 +34,7 @@ const Login = () => {
       }
       return () => clearInterval(interval);
     }
-  }, [seconds]);
+  }, [verifyShow, seconds]);
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
@@ -93,24 +95,15 @@ const Login = () => {
     setPasswordStatus("");
 
     try {
+      setLoading(true);
       const res = await login({ email, password }).unwrap();
-      // if(res.data.message === "sent") {
-      //   setVerifyShow(true);
-      // }
-      
-      toast.success('Logado com sucesso!', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
-      dispatch(setCredentials({ ...res }));
-      const { role } = res;
-      console.log(role)
-      if (role === 2) {
-        navigate("/adminGuide");
-      } else if (role === 1) {
-        navigate("/editorGuide");
-      } else if (role === 0) {
-        navigate("/guide");
+      if(res.message === "sent") {
+        setVerifyShow(true);
       }
+      setLoading(false);
     } catch (err) {
       setPassword("");
+      setLoading(false);
       if (err.data.message === "inactive") {
         toast.error("O usuário não está ativo", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
       } else {
@@ -140,14 +133,14 @@ const Login = () => {
         }
       }
     } catch (err) {
-      if (err.data.message === "expired") {
+      if (err.response.data.message === "expired") {
         setVerifyStatus("Código expirado");
         toast.error("Código expirado", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        window.location.reload(false);
       } else {
         setVerifyStatus("Código inválido");
         toast.error("Código inválido", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
       }
-      window.location.reload(false);
     }
   };
 
@@ -234,7 +227,7 @@ const Login = () => {
                     <label className="block mt-4 text-sm">
                       <span className="text-gray-700">Verificar código: {verifyStatus}</span>
                       <input
-                        className={`block w-full mt-1 text-sm border p-2 rounded-md focus:ring-2 focus:ring-purple-200 focus:border-purple-600 focus:outline-none focus:shadow-outline-purple form-input ${verifyStatus === "" ? "border-grey-200" : "border-red-400 ring-2 ring-red-100"}`}
+                        className={`block w-full mt-1 text-sm border p-2 rounded-md focus:ring-2 focus:ring-purple-200 focus:border-purple-600 focus:outline-none focus:shadow-outline-purple form-input ${verifyStatus === "" ? "border-grey-200" : "focus:border-red-400 focus:ring-2 focus:ring-red-100"}`}
                         placeholder="123456"
                         autoFocus={true}
                         value={verifyCode}
@@ -248,6 +241,9 @@ const Login = () => {
           </div>
         </div>
       </div>
+      {
+        loading && <Loading />
+      }
     </>
   );
 };

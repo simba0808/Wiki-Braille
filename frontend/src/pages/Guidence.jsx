@@ -3,15 +3,18 @@ import BlogAddModal from "../components/modals/BlogAddModal";
 import Loading from "../components/Loading";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 
 const Guidence = () => {
   const { userInfo } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   const [editable, setEditable] = useState(false);
   const [title, setTitle] = useState("Everyone can cook.");
   const [text, setText] = useState("It's important to provide accessibility, inclusion, and resources that empower them to participate fully in society and pursue their goals.");
   const [isAddBlog, setAddBlog] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [blogs, setBlogs] = useState([]);
   const [selectedBlog, setSelectedBlog] = useState(null);
   const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -20,13 +23,14 @@ const Guidence = () => {
     if (!userInfo) {
       navigate("/");
     }
-
     const fetchBlogs = async () => {
+      setLoading(true);
       try {
         axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
         const response = await axios.get("/api/blog");
-        const blogs = response.data.blogs;
-        blogs.map((blog) => {
+        setLoading(false);
+        const tempBlogs = response.data.blogs;
+        tempBlogs.map((blog) => {
           if (blog.selected === true) {
             setSelectedBlog(blog);
             return;
@@ -34,6 +38,7 @@ const Guidence = () => {
         });
         setBlogs(response.data.blogs);
       } catch (err) {
+        setLoading(false);
         toast.error("Falha ao obter blogs.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
       }
     };
@@ -41,87 +46,92 @@ const Guidence = () => {
   }, []);
 
   useEffect(() => {
-    console.log(selectedBlog)
-    if(selectedBlog !== null) {
+    if (selectedBlog !== null) {
       setTitle(selectedBlog.title);
       setText(selectedBlog.text);
-      console.log(selectedBlog.text)
     }
   }, [selectedBlog]);
 
   const selectBlog = async (id, index) => {
-    if(userInfo.role === 2) {
+    if (userInfo.role === 2) {
+      setLoading(true);
       try {
         axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
-        const response = await axios.post(`/api/blog`, {id});
-        if(response.data.message === "success") {
+        const response = await axios.post(`/api/blog`, { id });
+        if (response.data.message === "success") {
           setSelectedBlog(response.data.blog);
         }
+        setLoading(false);
       } catch (err) {
-  
-      }   
-    } else {
-      setSelectedBlog(blogs[index])
+        setLoading(false);
+      }
+    } else{
+      setSelectedBlog(blogs[index]);
     }
   };
 
   const updateBlog = async (id) => {
+    setLoading(true);
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
-      const response = await axios.post("/api/blog/update", {id, title, text});
-      if(response.data.message === "success") {
+      const response = await axios.post("/api/blog/update", { id, title, text });
+      if (response.data.message === "success") {
         toast.success("Blog atualizado com sucesso.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
         setSelectedBlog(response.data.blog);
-        
       }
-    } catch(err) {
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
       toast.error("Falha ao atualizar blog.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
     }
   };
 
   const deleteBlog = async (id) => {
+    setLoading(true);
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
       await axios.delete(`/api/blog/${id}`);
       const response = await axios.get("/api/blog");
       setBlogs(response.data.blogs);
+      setLoading(false);
       toast.success("Blog deletado com sucesso.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
     } catch (err) {
+      setLoading(false);
       toast.error("Falha ao deletar blog.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
     }
   };
 
   return (
     <main className="relative flex item-center justify-center md:overflow-hidden">
+      {isLoading && <Loading />}
       <div className="container xs:px-6">
         <ToastContainer />
         <div className="relative text-left w-full sm:max-w-[70%] mx-auto py-10 bg">
           <div className="mb-4">
             {
-              selectedBlog ? `${months[parseInt(selectedBlog.createdAt.split("T")[0].split("-")[1])-1]} ${selectedBlog.createdAt.split("T")[0].split("-")[2]}, ${selectedBlog.createdAt.split("T")[0].split("-")[0]}`: "2022-11-11"
+              selectedBlog ? `${months[parseInt(selectedBlog.createdAt.split("T")[0].split("-")[1]) - 1]} ${selectedBlog.createdAt.split("T")[0].split("-")[2]}, ${selectedBlog.createdAt.split("T")[0].split("-")[0]}` : "2022-11-11"
             }
-            &nbsp; by  Elias Sperandio  
+            &nbsp; by  Elias Sperandio
           </div>
-          <div className="w-full">
-            <p className="text-pretty py-2 text-2xl sm:text-[40px] font-semibold leading-[150%] text-orange-400">
+          <div className="w-full px-4">
+            <p className="text-pretty py-2 text-2xl sm:text-[40px]  font-semibold leading-[150%] text-orange-400">
               {title}
             </p>
             <p className="leading-[150%] whitespace-pre-line mt-10 font-[500] text-md sm:text-lg text-slate-800 text-pretty">
               {text}
             </p>
-          </div>  
+          </div>
         </div>
-
         <div className="w-full mt-8 py-4 flex flex-col">
           <div className="max-w-[1000px] mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
             {
               blogs.map((blog, index) => (
                 <BlogPost
                   key={blog._id}
+                  index={index}
                   blog={blog}
-                  id={index}
                   selectHandle={selectBlog}
-                  selectedBlog={selectedBlog._id}
+                  selectedBlog={selectedBlog ? selectedBlog._id : null}
                   deleteHandle={deleteBlog}
                   role={userInfo.role}
                 />

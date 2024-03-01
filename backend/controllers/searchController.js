@@ -6,6 +6,7 @@ const searchData = async (req, res) => {
   if (!await indexExists("title")) {
     await Data.collection.createIndex({ title_id: "text", title: "text", tag: "text", description: "text" }, { name: "title" }, { default_language: "portuguese" });
   }
+
   let { word, advance, searchin, pageIndex, numberPerPage, sortMethod, descending } = req.body;
   let query = {};
   let pluralWord = word;
@@ -165,12 +166,12 @@ const updateImageDescription = async (req, res) => {
   try {
     const data = await Data.findOne({ title_id });
     if (data) {
-      fs.unlink(`images/${data.image.split("http://localhost:3000/")[1]}`, (err) => {
+      fs.unlink(`images/${data.image}`, (err) => {
       });
       data.text = text;
       data.catagory = category;
       data.tag = tag;
-      data.image = "http://localhost:3000/" + req.file.filename;
+      data.image = req.file.filename;
       await data.save();
 
       await Logger.create({
@@ -183,7 +184,7 @@ const updateImageDescription = async (req, res) => {
 
       res.status(200).send({
         message: "success",
-        path: "http://localhost:3000/" + req.file.filename,
+        path: req.file.filename,
       });
     }
   } catch (err) {
@@ -204,10 +205,7 @@ const rateDescription = async (req, res) => {
 
   try {
     let data = await Data.findOne({ title_id });
-    let curRate = 0, curRatedCount = 0;
     if (data) {
-      curRate = data.rate;
-      curRatedCount = data.ratedCount;
       data.totalRate = data.totalRate + rate;
       data.rate = ((data.totalRate) / (data.ratedCount + 1)).toFixed(2);
       data.ratedCount = data.ratedCount + 1;
@@ -259,7 +257,7 @@ const deleteComment = async (req, res) => {
     res.status(500);
     throw new Error("Failed to delete comment")
   }
-}
+};
 
 const deleteDescription = async (req, res) => {
   const { user } = req.body;

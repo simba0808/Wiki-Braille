@@ -12,8 +12,8 @@ import Dashboard from "../pages/Dashboard";
 import AccountSetting from "../pages/AccountSetting";
 import AddData from "../pages/admin/AddData";
 import UserManage from "../pages/admin/UserManage";
-import ActivityManage from "../pages/admin/activityManage.jsx";
-import Guidence from "../pages/Guidence.jsx";
+import ActivityManage from "../pages/admin/ActivityManage";
+import Guidence from "../pages/Guidence";
 
 const Router = () => {
   return(

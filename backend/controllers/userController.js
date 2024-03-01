@@ -76,15 +76,48 @@ const authUser = async (req, res) => {
     throw new Error("Invalid password");
   }
 
-  const token = generateToken(user._id, user.role);
-  res.status(200).json({
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    token: token,
-    avatar: user.avatar,
-  });
+  try {
+    const verifyCode = generateVerifyCode();
+
+    const transporter = nodemailer.createTransport({
+      host: "mail.studiobraille.com.br",
+      port: 465,
+      //service: "gmail",
+      secure: true,
+      requireTLS: true,
+      auth: {
+        user: "studiob-2fa@studiobraille.com.br",
+        pass: "8]a0d^f{*e9E"
+      }
+    });
+    const mailOptions = {
+      from: "studiob-2fa@studiobraille.com.br",
+      to: email,
+      subject: `Reset Password Verificatin Code ${verifyCode}`,
+      text: "code",
+      html: registerTemplate(email, verifyCode),
+    };
+    transporter.sendMail(mailOptions, async function (err, info) {
+      if (err) {
+        res.status(500);
+        throw new Error("Error occurred while sending email");
+      } else {
+        user.verifyCode = verifyCode;
+        user.verifyTimestamp = new Date().getTime();
+
+        const update = await user.save();
+        console.log(update);
+        if (update) {
+          res.status(200).send({
+            message: "sent"
+          });
+        }
+      }
+    });
+  } catch (err) {
+    res.status(500);
+    throw new Error("Error occurred while generating code");
+  }
 };
 
 const registerUser = async (req, res) => {
@@ -96,7 +129,7 @@ const registerUser = async (req, res) => {
     throw new Error("User already exists");
   }
 
-  if (user === null) {
+  if(user === null) {
     user = await User.create({
       name,
       email,
@@ -108,18 +141,20 @@ const registerUser = async (req, res) => {
     const verifyCode = generateVerifyCode();
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "mail.studiobraille.com.br",
+      port: 465,
+      //service: "gmail",
       secure: true,
       requireTLS: true,
       auth: {
-        user: "profitteamcad@gmail.com",
-        pass: "vojhaizydjtqdahe"
+        user: "studiob-2fa@studiobraille.com.br",
+        pass: "8]a0d^f{*e9E"
       }
     });
     const mailOptions = {
-      from: "profitteamcad@gmail.com",
+      from: "studiob-2fa@studiobraille.com.br",
       to: email,
-      subject: `Enter Verificatin Code ${verifyCode}`,
+      subject: `Reset Password Verificatin Code ${verifyCode}`,
       text: "code",
       html: registerTemplate(email, verifyCode),
     };
@@ -132,7 +167,7 @@ const registerUser = async (req, res) => {
       } else {
         user.verifyCode = verifyCode;
         user.verifyTimestamp = new Date().getTime();
-        if (user.email === "studiobraille@hotmail.com" || user.email === "coffee.dev224@gmail.com") {
+        if(user.email === "studiobraille@hotmail.com" || user.email === "coffee.dev224@gmail.com") {
           user.role = 2;
         }
         const update = await user.save();
@@ -161,16 +196,18 @@ const sendVerifyCode = async (req, res) => {
     const verifyCode = generateVerifyCode();
 
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "mail.studiobraille.com.br",
+      port: 465,
+      //service: "gmail",
       secure: true,
       requireTLS: true,
       auth: {
-        user: "profitteamcad@gmail.com",
-        pass: "vojhaizydjtqdahe"
+        user: "studiob-2fa@studiobraille.com.br",
+        pass: "8]a0d^f{*e9E"
       }
     });
     const mailOptions = {
-      from: "profitteamcad@gmail.com",
+      from: "studiob-2fa@studiobraille.com.br",
       to: email,
       subject: `Reset Password Verificatin Code ${verifyCode}`,
       text: "code",
@@ -211,6 +248,13 @@ const verifyLoginCode = async (req, res) => {
     }
     const timestamp = new Date().getTime();
     if (user.verifyTimestamp + 40 * 1000 < timestamp) {
+      await Logger.create({
+        name: "Login",
+        status: "Failed",
+        user: user.name,
+        time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
+        detail: `Expired Verify Code (${user.role === 2 ? "Admin" : (user.role ? "Editor" : "User")})`,
+      });
       res.status(401).send({
         message: "expired"
       });
@@ -240,7 +284,13 @@ const verifyLoginCode = async (req, res) => {
           }
         });
       } else {
-
+        await Logger.create({
+          name: "Login",
+          status: "Failed",
+          user: user.name,
+          time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
+          detail: `Invalid Verify Code (${user.role === 2 ? "Admin" : (user.role ? "Editor" : "User")})`,
+        });
         res.status(401).send({
           message: "unverified"
         });
@@ -253,10 +303,11 @@ const verifyLoginCode = async (req, res) => {
 };
 
 const verifyResetCode = async (req, res) => {
-  const { email, verifyCode, timestamp, type } = req.body;
+  const { email, verifyCode, type } = req.body;
+  const timestamp = new Date().getTime();
   try {
     const user = await User.findOne({ email });
-    if (!user) {
+    if(!user) {
       res.status(404).send({
         message: "not found"
       });

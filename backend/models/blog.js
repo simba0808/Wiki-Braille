@@ -6,9 +6,6 @@ const blogSchema = mongoose.Schema({
   text: {
     type: String,
   },
-  image: {
-    type: String,
-  },
   selected: {
     type: Boolean,
     default: false,
