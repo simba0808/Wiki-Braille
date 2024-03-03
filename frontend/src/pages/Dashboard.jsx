@@ -156,7 +156,7 @@ const Dashboard = () => {
         <span className="absolute right-2 xs:w-20 xs:px-4 py-1 px-2 rounded-xl xs:text-md text-sm bg-purple-200 text-purple-600">{item.title_id}</span>
         <h2 className="p-0 pl-2 my-0 lg:text-[22px] md:text-lg sm:text-[22px] text-[18px] font-semibold">{item.title}</h2>
         <div className="flex w-full items-center justify-center flex-1">
-          <div className="w-full h-full flex flex-col justify-center justify-between pl-2 pt-4">
+          <div className="w-full h-full flex flex-col justify-between pl-2 pt-4">
             {
               item.catagory !== "Descrição" ? <p className="xl:text-lg text-sm text-left font-semibold">{`Tag: ${item.tag}`}</p> : <></>
             }
@@ -224,7 +224,7 @@ const Dashboard = () => {
         </div>
         <div className="md:flex md:justify-between">
           <div className="md:w-[48%] w-full relative my-2 px-2 text-gray-500 flex bg-white rounded-md border-2 border-slate-200">
-            <label className="block px-2 xs:pr-4 border-r-2 md:text-md text-sm flex items-center">
+            <label className="px-2 xs:pr-4 border-r-2 md:text-md text-sm flex items-center">
               Pesquisa avançada:
             </label>
             <select
@@ -240,7 +240,7 @@ const Dashboard = () => {
             </select>
           </div>
           <div className="md:w-[48%] w-full relative my-2 px-2 text-gray-500 flex bg-white rounded-md border-2 border-slate-200">
-            <label className="block px-2 pr-4 border-r-2 md:text-md text-sm flex items-center">
+            <label className="px-2 pr-4 border-r-2 md:text-md text-sm flex items-center">
               Pesquisar em
             </label>
             <select
@@ -323,7 +323,7 @@ const Dashboard = () => {
                   [1, 2, 3, 4, 5].map((item, index) => {
                     return <li key={index} className="mx-1">
                       <button
-                        className={`xs:w-10 xs:h-10 w-8 h-8 rounded-md text-purple-600 focus:outline-none focus:shadow-outline-purple border border-purple-600 focus:outline-none focus:shadow-outline-purple ${currentPageIndex === startPageIndex + index ? "bg-purple-600 text-white" : ""} ${(startPageIndex + index) > (filteredCount % numberPerPage ? filteredCount / numberPerPage + 1 : filteredCount / numberPerPage) ? "opacity-50 cursor-not-allowed" : ""}}`}
+                        className={`xs:w-10 xs:h-10 w-8 h-8 rounded-md text-purple-600 focus:shadow-outline-purple border border-purple-600 focus:outline-none focus:shadow-outline-purple ${currentPageIndex === startPageIndex + index ? "bg-purple-600 text-white" : ""} ${(startPageIndex + index) > (filteredCount % numberPerPage ? filteredCount / numberPerPage + 1 : filteredCount / numberPerPage) ? "opacity-50 cursor-not-allowed" : ""}}`}
                         onClick={() => setCurrentPageIndex(startPageIndex + index)}
                         disabled={(startPageIndex + index) > (filteredCount % numberPerPage ? filteredCount / numberPerPage + 1 : filteredCount / numberPerPage) ? true : false}
                       >
