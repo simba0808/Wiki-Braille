@@ -1,6 +1,6 @@
 import Loading from "../components/Loading";
-import DetailModal from "../components/modals/detailModal";
-import { emptyImage, NotExistIcon, ArrowUp, ArrowDown } from "../assets";
+import DetailModal from "../components/modals/DetailModal";
+import { NotExistIcon, ArrowUp, ArrowDown } from "../assets";
 import { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -62,17 +62,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod);
-  }, [currentPageIndex]);
-
-  useEffect(() => {
-    fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod);
-  }, [numberPerPage])
-
-  useEffect(() => {
-    if (filteredCount !== 0) {
-      fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod);
-    }
-  }, [sortMethod, isDescending]);
+  }, [currentPageIndex, numberPerPage, sortMethod, isDescending]);
 
   useEffect(() => {
     if (Object.keys(updateDescription).length !== 0 && filteredData) {
@@ -166,12 +156,12 @@ const Dashboard = () => {
               <p className="pt-2 text-sm text-left lg:block xl:hidden hidden">{item.description.length > 80 ? item.description.substring(0, 80) + "..." : item.description}</p>
               <p className="pt-2 text-sm text-left md:block lg:hidden hidden">{item.description.length > 80 ? item.description.substring(0, 80) + "..." : item.description}</p>
               <p className="pt-2 text-md text-left sm:block md:hidden hidden">{item.description.length > 150 ? item.description.substring(0, 150) + "..." : item.description}</p>
-              <p className=" pt-2 text-sm text-left sm:hidden block">{item.description.length > 100 ? item.description.substring(0, 100) + "..." : item.description}</p>
+              <p className="pt-2 text-sm text-left sm:hidden block">{item.description.length > 100 ? item.description.substring(0, 100) + "..." : item.description}</p>
             </div>
           </div>
           <img
             className="max-h-[140px] max-w-[50%]"
-            src={item.image ? item.image : NotExistIcon}
+            src={item.image ? `http://localhost:3000/${item.image}` : NotExistIcon}
             alt=""
           />
         </div>
@@ -265,7 +255,7 @@ const Dashboard = () => {
               <div className="flex items-center gap-2 mt-2">
                 <div className="bg-gray-200 text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">
                   <button
-                    className={`${!screenSize.isSmall?"w-[120px]":""} px-2 relative inline-flex items-center justify-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full py-2 ${sortMethod ? "active" : ""}`}
+                    className={`${!screenSize.isSmall?"w-[120px]":""} px-2 relative inline-flex items-center justify-between transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full py-2 ${sortMethod ? "active" : ""}`}
                     id="list"
                     onClick={() => {
                       if (sortMethod) setDescending([!isDescending[0], isDescending[1]]);
@@ -277,7 +267,7 @@ const Dashboard = () => {
                     { !screenSize.isSmall && <img className="absolute right-0" src={isDescending[0] ? ArrowDown : ArrowUp} />}
                   </button>
                   <button
-                    className={`${!screenSize.isSmall?"w-[120px]":""} px-2 relative inline-flex items-center  transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full  py-2 ${!sortMethod ? "active" : ""}`}
+                    className={`${!screenSize.isSmall?"w-[120px]":""} px-2 relative inline-flex items-center justify-between transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full  py-2 ${!sortMethod ? "active" : ""}`}
                     id="grid"
                     onClick={() => {
                       if (!sortMethod) setDescending([isDescending[0], !isDescending[1]]);
@@ -366,7 +356,7 @@ const Dashboard = () => {
                         <div key={item.image} className="p-2 pt-8 mx-auto">
                           <img
                             srcSet={`${item.image}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                            src={`${item.image ? item.image : emptyImage}?w=248&fit=crop&auto=format`}
+                            src={`${item.image ? `http://localhost:3000/${item.image}` : "src/assets/img/empty.svg"}?w=248&fit=crop&auto=format`}
                             className="sm:max-h-[200px]"
                             alt={item.title}
                             loading="lazy"
@@ -383,7 +373,8 @@ const Dashboard = () => {
             </Box> :
             <div className={`p-2 pt-0 ${filteredData.length ? `grid gap-2 md:grid-cols-2 grid-cols-1 rounded-b-xl` : ""}`}>
               {
-                filteredData.length ? searchResult : <img src={emptyImage} className="mx-auto py-4 sm:py-14 2xl:py-24" />
+                //filteredData.length ? searchResult : <img src="src/assets/img/empty.svg" className="mx-auto py-4 sm:py-14 2xl:py-24" />
+                searchResult
               }
             </div>
         }

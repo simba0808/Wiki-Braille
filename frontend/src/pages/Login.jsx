@@ -99,6 +99,17 @@ const Login = () => {
       const res = await login({ email, password }).unwrap();
       if(res.message === "sent") {
         setVerifyShow(true);
+      } else if(res.message === "verified"){
+        toast.success('Logado com sucesso!', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        dispatch(setCredentials({ ...res.authInfo }));
+        const { role } = res.authInfo;
+        if (role === 2) {
+          navigate("/adminGuide");
+        } else if (role === 1) {
+          navigate("/editorGuide");
+        } else if (role === 0) {
+          navigate("/guide");
+        }
       }
       setLoading(false);
     } catch (err) {

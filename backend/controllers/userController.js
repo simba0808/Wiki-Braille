@@ -57,7 +57,7 @@ const authUser = async (req, res) => {
       status: "Failed",
       user: user.name,
       time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
-      detail: `Login Not Allowd by Admin)`,
+      detail: `Login Not Allowd by Admin`,
     });
     res.status(401);
     throw new Error("inactive");

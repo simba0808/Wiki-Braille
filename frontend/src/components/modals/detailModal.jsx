@@ -11,9 +11,8 @@ import copy from "copy-to-clipboard";
 import { AiOutlineCloudUpload } from "react-icons/ai";
 import "react-medium-image-zoom/dist/styles.css";
 
-const detailModal = ({ descData, handleClick, updateHandle }) => {
+const DetailModal = ({ descData, handleClick, updateHandle }) => {
   const { userInfo } = useSelector((state) => state.auth);
-  const { filterGroup } = useSelector((state) => state.search);
   const { title_id, title, catagory, tag, description, image, rate, ratedCount } = descData;
 
   const [editable, setEditable] = useState(false);
@@ -30,7 +29,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
   useEffect(() => {
     const createLog = async () => {
       axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
-      const response = await axios.post("/api/log/createlogs", {
+      await axios.post("/api/log/createlogs", {
         type: "Consult",
         user: userInfo.name,
         title_id
@@ -94,7 +93,7 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
 
   const handleCopyToClipboard = async () => {
     axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
-    const response = await axios.post("/api/log/createlogs", {
+    await axios.post("/api/log/createlogs", {
       type: "Copy",
       user: userInfo.name,
       title_id,
@@ -338,4 +337,4 @@ const detailModal = ({ descData, handleClick, updateHandle }) => {
   );
 };
 
-export default detailModal;
+export default DetailModal;

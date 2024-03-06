@@ -84,13 +84,13 @@ const BlogAddModal = ({closeHandle}) => {
         </div>
         <div className="flex gap-4 justify-end">
           <button 
-            className="bg-white rounded-md px-3 py-2 text-purple-600 text-md border border-purple-600 rounded-lg transition:colors duration-500 hover:bg-purple-500 hover:text-white active:bg-purple-700 "
+            className="bg-white px-3 py-2 text-purple-600 text-md border border-purple-600 rounded-lg transition:colors duration-500 hover:bg-purple-500 hover:text-white active:bg-purple-700 "
             onClick={handleModalClose}
           >
             Cancelar
           </button>
           <button 
-            className="bg-purple-600 rounded-md px-6 py-2 text-white text-md transition:colors duration-500 border rounded-lg hover:border-purple-600 hover:bg-white hover:text-purple-600 active:bg-purple-700"
+            className="bg-purple-600 px-6 py-2 text-white text-md transition:colors duration-500 border rounded-lg hover:border-purple-600 hover:bg-white hover:text-purple-600 active:bg-purple-700"
             onClick={handleSubmit}
           >
             Salvar
