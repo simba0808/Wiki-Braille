@@ -50,7 +50,7 @@ const AccountSetting = () => {
             setFetchedAvatar(response.data);
           }
         } catch (err) {
-          
+          setFetchedAvatar(defaultUserIcon);
         }
       }
     };
@@ -192,7 +192,7 @@ const AccountSetting = () => {
                   <div className="flex items-center">
                     <input type="file" accept="image/*" id="avatar-image-upload" hidden onChange={handleFileChange}/>
                     <label htmlFor="avatar-image-upload" className="relative hover:cursor-pointer">
-                      <img src={selectedAvatar  ? selectedAvatar : (fetchedAvatar!==undefined  && fetchedAvatar!=="" ? `data: image/jpeg;base64,${fetchedAvatar}`:defaultUserIcon) } className="w-[100px] h-[100px] rounded-full" />
+                      <img src={selectedAvatar  ? selectedAvatar : (fetchedAvatar!==undefined && fetchedAvatar!=="" ? `data: image/jpeg;base64,${fetchedAvatar}`:defaultUserIcon) } className="w-[100px] h-[100px] rounded-full" />
                       <div className="z-10 absolute left-0 top-0 w-[100px] h-[100px] flex items-center justify-center">
                         <AiOutlineCloudUpload className="w-10 h-10 text-white"/>
                       </div>

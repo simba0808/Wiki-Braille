@@ -10,7 +10,6 @@ import { ToastContainer, toast } from "react-toastify";
 const Guidence = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const [editable, setEditable] = useState(false);
   const [title, setTitle] = useState("Everyone can cook.");
   const [text, setText] = useState("It's important to provide accessibility, inclusion, and resources that empower them to participate fully in society and pursue their goals.");
   const [isAddBlog, setAddBlog] = useState(false);

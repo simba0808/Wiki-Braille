@@ -121,7 +121,7 @@ const ActivityManage = () => {
         <div className="w-full py-4 shadow-xs">
           <div className="flex xl:flex-row flex-col xl:items-center items-start mb-4 gap-4 text-sm">
             <button
-              className="w-[150px] py-2 border border-purple-600 border-purple-600 rounded-md bg-white text-purple-600 text-sm hover:bg-purple-600 hover:text-white active:bg-purple-900 transition:colors duration-500"
+              className="w-[150px] py-2 border border-purple-600 rounded-md bg-white text-purple-600 text-sm hover:bg-purple-600 hover:text-white active:bg-purple-900 transition:colors duration-500"
               onClick={handleShowAllClick}
             >
               Show all logs
@@ -153,7 +153,7 @@ const ActivityManage = () => {
                   ref={textRef}
                 />
                 <button
-                  className="px-6 py-2 border border-purple-600 border-purple-600 rounded-md bg-white text-purple-600 text-sm hover:bg-purple-600 hover:text-white active:bg-purple-900 transition:colors duration-500"
+                  className="px-6 py-2 border border-purple-600 rounded-md bg-white text-purple-600 text-sm hover:bg-purple-600 hover:text-white active:bg-purple-900 transition:colors duration-500"
                   onClick={handleSearchClick}
                 >
                   Search
@@ -228,7 +228,7 @@ const ActivityManage = () => {
                 [1, 2, 3, 4, 5].map((item, index) => {
                   return <li key={index} className="mx-1">
                     <button
-                      className={`xs:w-8 xs:h-8 w-8 h-8 rounded-md text-purple-600 focus:outline-none focus:shadow-outline-purple border border-purple-600 focus:outline-none focus:shadow-outline-purple ${currentPageIndex === startPageIndex + index ? "bg-purple-600 text-white" : ""} ${(startPageIndex + index) > (filteredCount % 20 ? filteredCount / 20 + 1 : filteredCount / 20) ? "opacity-50 cursor-not-allowed" : ""}`}
+                      className={`xs:w-8 xs:h-8 w-8 h-8 rounded-md text-purple-600 focus:shadow-outline-purple border border-purple-600 focus:outline-none focus:shadow-outline-purple ${currentPageIndex === startPageIndex + index ? "bg-purple-600 text-white" : ""} ${(startPageIndex + index) > (filteredCount % 20 ? filteredCount / 20 + 1 : filteredCount / 20) ? "opacity-50 cursor-not-allowed" : ""}`}
                       onClick={() => setCurrentPageIndex(startPageIndex + index)}
                       disabled={(startPageIndex + index) > (filteredCount % 20 ? filteredCount / 20 + 1 : filteredCount / 20) ? true : false}
                     >
