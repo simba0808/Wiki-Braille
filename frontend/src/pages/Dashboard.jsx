@@ -1,16 +1,16 @@
-import Loading from "../components/Loading";
-import DetailModal from "../components/modals/DetailModal";
-import { NotExistIcon, ArrowUp, ArrowDown } from "../assets";
 import { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import { useTheme, useMediaQuery } from "@mui/material";
+
+import Loading from "../components/Loading";
+import DetailModal from "../components/modals/DetailModal";
+import DescriptionContainer from "../components/containers/DescriptionContainer";
+import { ArrowUp, ArrowDown } from "../assets";
 import { setCredentials } from "../slices/authSlice";
 import { setFilterGroup } from "../slices/searchSlice";
-import { ToastContainer, toast } from "react-toastify";
-import axios from "axios";
-import Box from '@mui/material/Box';
-import ImageList from '@mui/material/ImageList';
-import { useTheme, useMediaQuery } from "@mui/material";
 
 const Dashboard = () => {
   const theme = useTheme();
@@ -139,35 +139,6 @@ const Dashboard = () => {
       fetchFilteredData(searchWord, refAdvance.current.value, refSearchIn.current.value, currentPageIndex, numberPerPage, sortMethod);
     }
   };
-
-  const searchResult = filteredData.map((item, index) => {
-    return (
-      <div className="relative h-[190px] col-span-1 flex flex-col items-start bg-slate-100 p-2 border-2 shadow-md rounded-md hover:cursor-pointer" onClick={() => handleClick(index)} key={index}>
-        <span className="absolute right-2 xs:w-20 xs:px-4 py-1 px-2 rounded-xl xs:text-md text-sm bg-purple-200 text-purple-600">{item.title_id}</span>
-        <h2 className="p-0 pl-2 my-0 lg:text-[22px] md:text-lg sm:text-[22px] text-[18px] font-semibold">{item.title}</h2>
-        <div className="flex w-full items-center justify-center flex-1">
-          <div className="w-full h-full flex flex-col justify-between pl-2 pt-4">
-            {
-              item.catagory !== "Descrição" ? <p className="xl:text-lg text-sm text-left font-semibold">{`Tag: ${item.tag}`}</p> : <></>
-            }
-            <div className="flex-1 flex items-center">
-              <p className="pt-2 text-md text-left 2xl:block hidden">{item.description.length > 150 ? item.description.substring(0, 150) + "..." : item.description}</p>
-              <p className="pt-2 text-sm text-left xl:block 2xl:hidden hidden">{item.description.length > 130 ? item.description.substring(0, 130) + "..." : item.description}</p>
-              <p className="pt-2 text-sm text-left lg:block xl:hidden hidden">{item.description.length > 80 ? item.description.substring(0, 80) + "..." : item.description}</p>
-              <p className="pt-2 text-sm text-left md:block lg:hidden hidden">{item.description.length > 80 ? item.description.substring(0, 80) + "..." : item.description}</p>
-              <p className="pt-2 text-md text-left sm:block md:hidden hidden">{item.description.length > 150 ? item.description.substring(0, 150) + "..." : item.description}</p>
-              <p className="pt-2 text-sm text-left sm:hidden block">{item.description.length > 100 ? item.description.substring(0, 100) + "..." : item.description}</p>
-            </div>
-          </div>
-          <img
-            className="max-h-[140px] max-w-[50%]"
-            src={item.image ? `http://localhost:3000/${item.image}` : NotExistIcon}
-            alt=""
-          />
-        </div>
-      </div>
-    );
-  });
 
   return (
     <main className="w-full">
@@ -344,40 +315,9 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        {
-          viewMode ?
-            <Box sx={{ width: "100%", overflowY: 'none', py: 2 }}>
-              <ImageList variant={screenSize.isSmall ? "masonry" : ""} cols={screenSize.isSmall ? 2 : 4} gap={10}>
-                {
-                  filteredData.map((item, index) => {
-                    return (
-                      <div className="sm:h-[260px] h-auto relative flex flex-col justify-center my-2 border-2 border-t-0 shadow-md bg-white rounded-lg  hover:cursor-pointer" key={item.image} onClick={() => handleClick(index)}>
-                        <span className="absolute xs:right-2 xs:top-2 right-1 top-1 xs:w-20 xs:px-4 py-1 px-2 rounded-xl text-xs md:text-sm bg-purple-200 text-purple-600">{item.title_id}</span>
-                        <div key={item.image} className="p-2 pt-8 mx-auto">
-                          <img
-                            srcSet={`${item.image}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                            src={`${item.image ? `http://localhost:3000/${item.image}` : "src/assets/img/empty.svg"}?w=248&fit=crop&auto=format`}
-                            className="sm:max-h-[200px]"
-                            alt={item.title}
-                            loading="lazy"
-                          />
-                        </div>
-                        <div className="px-2 py-2">
-                          <p className="absolute bottom-0 w-[90%] text-center overflow-hidden whitespace-nowrap text-overflow-ellipsis text-sm sm:text-md sm:font-semibold ">{item.title}</p>
-                        </div>
-                      </div>
-                    );
-                  })
-                }
-              </ImageList>
-            </Box> :
-            <div className={`p-2 pt-0 ${filteredData.length ? `grid gap-2 md:grid-cols-2 grid-cols-1 rounded-b-xl` : ""}`}>
-              {
-                //filteredData.length ? searchResult : <img src="src/assets/img/empty.svg" className="mx-auto py-4 sm:py-14 2xl:py-24" />
-                searchResult
-              }
-            </div>
-        }
+
+        <DescriptionContainer viewMode={viewMode} screenSize={screenSize} filteredData={filteredData} handleClick={handleClick} />
+        
         {
           modalShow && selectedIndex !== -1 ? <DetailModal descData={{ ...filteredData[selectedIndex] }} handleClick={setModalShow} updateHandle={setUpdateDescription} /> : ""
         }

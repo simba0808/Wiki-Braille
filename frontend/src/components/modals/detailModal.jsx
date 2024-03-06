@@ -131,7 +131,7 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
         className="main-modal fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster"
       >
         <ToastContainer />
-        <div className="w-[96%] md:w-[80%] xl:w-[60%] mx-auto xs:h-[700px] h-[95%] border border-teal-500 shadow-lg modal-container bg-white rounded shadow-lg z-50 overflow-y-hidden">
+        <div className="w-[96%] md:w-[80%] xl:w-[60%] mx-auto xs:h-[700px] h-[95%] border border-teal-500 modal-container bg-white rounded shadow-lg z-50 overflow-y-hidden">
           <div className="modal-content xs:h-[700px] h-[100%] py-6 text-left px-6 flex flex-col justify-around overflow-y-hidden">
             <div className="flex justify-end items-center pb-3">
               <div className="modal-close cursor-pointer z-50 " onClick={handleCloseClick}>
