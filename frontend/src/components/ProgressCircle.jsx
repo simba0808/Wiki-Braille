@@ -29,9 +29,9 @@ const ProgressCircle = ({ progress, name }) => {
         </svg>
         <span className="absolute text-2xl text-blue-700">{`${parseInt(progress)}%`}</span>
       </div>
-      <div className="flex hidden sm:block">
-          <p className="ml-10 font-medium text-gray-600 sm:text-sm">{name}</p>
-        </div>
+      <div className="hidden sm:block">
+        <p className="ml-10 font-medium text-gray-600 sm:text-sm">{name.split("\\").pop()}</p>
+      </div>
     </div>
   );
 };

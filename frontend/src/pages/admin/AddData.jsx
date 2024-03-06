@@ -127,7 +127,7 @@ const AddData = () => {
         <div className="flex flex-col items-center justify-center p-4 mt-10 xs:mt-20" onDrop={handleDrop} onDragOver={handleDragOver}>
           <label
             htmlFor="dropzone-file"
-            className="md:w-[60%] py-2 w-full flex flex-col items-center justify-center w-full border border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50   hover:bg-gray-200"
+            className="md:w-[60%] py-2 w-full flex flex-col items-center justify-center border border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50   hover:bg-gray-200"
           >
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
               <svg
