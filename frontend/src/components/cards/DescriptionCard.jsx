@@ -10,7 +10,7 @@ const DescriptionCard = ({ onClick, item, index, isPossibleDelete }) => {
   const { indexesToDelete } = useSelector(state => state.delete);
   //const { filterGroup } = useSelector(state => state.search)
 
-  const [isChecked, setChecked] = useState(false);
+  const [isChecked, setChecked] = useState(indexesToDelete.includes(item.title_id));
   const checkRef = useRef(true);
 
   useEffect(() => {

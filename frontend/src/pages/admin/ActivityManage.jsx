@@ -2,13 +2,15 @@ import Loading from "../../components/Loading";
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import useToast from "../../hook/useToast";
 import DatePicker from "react-tailwindcss-datepicker";
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
 
 const ActivityManage = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const customToast = useToast();
+
   const [isLoading, setIsLoading] = useState(false);
   const [dateRange, setDateRange] = useState({
     startDate: null,
@@ -52,8 +54,8 @@ const ActivityManage = () => {
         setFilteredCount(response.data.totalCount);
       }
     } catch (err) {
-      setIsLoading(false)
-      toast.error("Failed to fetch logs", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+      setIsLoading(false);
+      customToast("failed", "Falha ao buscar os registros");
     }
   };
 
@@ -117,7 +119,6 @@ const ActivityManage = () => {
             Registro de atividades
           </h2>
         </div>
-        <ToastContainer />
         <div className="w-full py-4 shadow-xs">
           <div className="flex xl:flex-row flex-col xl:items-center items-start mb-4 gap-4 text-sm">
             <button

@@ -3,12 +3,13 @@ import { RegisterImage } from "../assets";
 import { useState } from "react";
 import { useRegisterMutation } from "../slices/userApiSlice";
 import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import useToast from "../hook/useToast";
 import axios from "axios";
 
 const Register = () => {
   const navigate = useNavigate();
   const [register, { isLoading }] = useRegisterMutation();
+  const customToast = useToast();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -74,9 +75,9 @@ const Register = () => {
     } catch (err) {
       setLoading(false);
       if(err.data.message === "User already exists") {
-        toast.error("O usuário já existe", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        customToast("failed", "O usuário já existe");
       } else {
-        toast.error("Falha ao registrar o usuário", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        customToast("failed", "Falha ao registrar o usuário");
       }
     }
   };
@@ -95,7 +96,7 @@ const Register = () => {
     try {
       const res = await axios.post("/api/user/verify", { email, verifyCode: code, timestamp: new Date().getTime(), type: "register" });
       if (res.data.message === "verified") {
-        toast.success('Registrado com sucesso!', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        customToast("success", "Registrado com sucesso");
         setTimeout(() => {
           setVerifyShow(false);
           navigate("/");
@@ -104,15 +105,15 @@ const Register = () => {
     } catch (err) {
       const message = err.response.data.message;
       if (message === "not found") {
-        toast.error("Esse usuário não foi encontrado. Registre-se novamente", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        customToast("failed", "Esse usuário não foi encontrado. Registre-se novamente");
         setVerifyShow(false);
         setCode("");
       } else if (message === "expired") {
-        toast.error("Código expirado. Registre-se novamente", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        customToast("failed", "Código expirado. Registre-se novamente");
         setVerifyShow(false);
         setCode("");
       } else {
-        toast.error("Código inválido. Por favor, tente novamente", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        customToast("failed", "Código inválido. Por favor, tente novamente");
         setCode("");       
       }
     }
@@ -157,7 +158,6 @@ const Register = () => {
                 src={RegisterImage}
                 alt="Office"
               />
-              <ToastContainer />
             </div>
             <div className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
               {

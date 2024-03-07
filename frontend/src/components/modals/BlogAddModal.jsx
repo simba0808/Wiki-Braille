@@ -1,11 +1,14 @@
 import { useState } from "react";
-import axios from "axios";
 import { useSelector } from "react-redux";
-import { toast, ToastContainer } from "react-toastify";
+import useToast from "../../hook/useToast";
+import axios from "axios";
+
 import Loading from "../Loading";
 
 const BlogAddModal = ({closeHandle}) => {
   const { userInfo } = useSelector((state) => state.auth);
+  const customToast = useToast();
+
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
   const [isInvalidInput, setInvalidInput] = useState(false);
@@ -37,12 +40,12 @@ const BlogAddModal = ({closeHandle}) => {
       const response  = await axios.post("/api/blog/add", { title, text });
       if(response.data.message === "success") {
         setLoading(false);
-        toast.success("Blog adicionado com sucesso", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+        customToast("success", "Blog adicionado com sucesso");
         window.location.reload(false);
       }
     } catch (err) {
       setLoading(false);
-      toast.error("Erro ao adicionar blog", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+      customToast("failed", "Erro ao adicionar blog");
     }
   };
 
@@ -52,7 +55,6 @@ const BlogAddModal = ({closeHandle}) => {
     >
       {isLoading && <Loading />}
       <div className="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
-      <ToastContainer />
       <div className="relative bg-white rounded-md shadow-xl p-6 w-full  md:w-2/3 xl:w-1/2 z-50">
         <p className="text-xl font-semibold text-left">Adicionar novo blog</p>
         <div className="mb-2">

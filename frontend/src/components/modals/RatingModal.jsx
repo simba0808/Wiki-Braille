@@ -1,12 +1,15 @@
 import FaStar from "../star/FaStar";
 import Loading from "../Loading";
-import { ToastContainer, toast } from "react-toastify";
+
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import useToast from "../../hook/useToast";
 import axios from "axios";
 
 const RatingModal = ({ onClick, title_id }) => {
   const { userInfo } = useSelector((state) => state.auth);
+  const customToast = useToast();
+
   const [currentScore, setCurrentScore] = useState([false, false, false]);
   const [comment, setComment] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -27,7 +30,7 @@ const RatingModal = ({ onClick, title_id }) => {
       });
       setLoading(false);
       if(response.data === "success") {
-        toast.success("Classificado com sucesso", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+        customToast("success", "Classificado com sucesso");
         onClick(false);
         setTimeout(() => {
           window.location.reload(false);
@@ -35,7 +38,7 @@ const RatingModal = ({ onClick, title_id }) => {
       }
     } catch (err) {
       setLoading(false);
-      toast.error("Classificação de reprovação", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+      customToast("failed", "Classificação de reprovação");
     }
   };
 
@@ -43,7 +46,6 @@ const RatingModal = ({ onClick, title_id }) => {
     <div className="min-w-screen h-screen animated fadeIn faster  fixed  left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-none bg-no-repeat bg-center bg-cover" id="modal-id">
       { isLoading && <Loading />}
       <div className="absolute bg-black opacity-80 inset-0 z-0"></div>
-      <ToastContainer />
       <div className="w-full  max-w-md relative mx-auto my-auto rounded-xl shadow-lg  bg-white ">
         <div className="px-12 py-5">
           <h2 className="text-gray-800 text-xl font-semibold">Sua opinião é importante para nós!</h2>

@@ -2,12 +2,13 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useToast from "../hook/useToast";
 import { ResetImage } from "../assets";
-import { ToastContainer, toast } from "react-toastify";
 import Loading from "../components/Loading";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
+  const customToast = useToast();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -79,14 +80,14 @@ const ResetPassword = () => {
       const response = await axios.post("/api/user/resetPassword", { email, password });
       if(response.data.message === "success") {
         setLoading(false);
-        toast.success("Redefinição de senha bem-sucedida", {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+        customToast("success", "Redefinição de senha bem-sucedida");
         setTimeout(() => {
           navigate("/login");
         }, 1000);
       }
     } catch (err) {
       setLoading(false);
-      toast.error("Falha ao redefinir a senha. Tente novamente", {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+      customToast("failed", "Falha ao redefinir a senha. Tente novamente");
     }
   };
  
@@ -111,7 +112,7 @@ const ResetPassword = () => {
       }
     } catch (err) {
       setLoading(false);
-      toast.error("E-mail não encontrado", {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+      customToast("failed", "E-mail não encontrado");
     }
   };
 
@@ -125,7 +126,7 @@ const ResetPassword = () => {
       setLoading(false);
     } else {
       setLoading(false);
-      toast.error("O código de verificação é inválido", {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+      customToast("failed", "O código de verificação é inválido");
       return;
     }
   }
@@ -226,13 +227,14 @@ const ResetPassword = () => {
                     >
                       Inserir código de verificação
                     </h1>
-                    <div className="max-w-md mx-auto border max-w-sm mt-20 rounded">
+                    <div className="max-w-md mx-auto border mt-20 rounded">
                       <div className="shadow-md px-4 py-6">
                           <div className="flex justify-center gap-2 mb-6">
                             {
                               [1,2,3,4,5,6].map((element, index) => {
                                 return (
-                                  <input 
+                                  <input
+                                    key={index}
                                     className={`w-12 h-12 text-center border rounded-md shadow-sm focus:border-teal-500 focus:ring-teal-500`} 
                                     type="text" maxLength="1" pattern="[0-9]" inputMode="numeric" autoComplete="one-time-code" 
                                     value={verifyCode[index]} 
@@ -265,7 +267,6 @@ const ResetPassword = () => {
                 src={ResetImage}
                 alt="Office"
               />
-              <ToastContainer  />
             </div>
           </div>
         </div>
