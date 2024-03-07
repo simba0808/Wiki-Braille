@@ -53,7 +53,7 @@ const DescriptionContainer = ({ viewMode, screenSize, filteredData, handleClick 
                       <div key={item.image} className="p-2 pt-8 mx-auto">
                         <img
                           srcSet={`${item.image}?w=248&fit=crop&auto=format&dpr=2 2x`}
-                          src={`${item.image ? `http://localhost:3000/${item.image}` : "src/assets/img/empty.svg"}?w=248&fit=crop&auto=format`}
+                          src={`${item.image ? item.image : "src/assets/img/empty.svg"}?w=248&fit=crop&auto=format`}
                           className="sm:max-h-[200px]"
                           alt={item.title}
                           loading="lazy"

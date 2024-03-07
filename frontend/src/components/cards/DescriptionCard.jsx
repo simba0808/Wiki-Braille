@@ -97,7 +97,7 @@ const DescriptionCard = ({ onClick, item, index, isPossibleDelete }) => {
         <img
           className="max-h-[140px] max-w-[50%]"
           src={
-            item.image ? `http://localhost:3000/${item.image}` : NotExistIcon
+            item.image ? item.image : NotExistIcon
           }
           alt=""
         />
