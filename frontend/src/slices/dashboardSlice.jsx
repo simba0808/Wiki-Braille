@@ -10,6 +10,10 @@ const initialState = {
   filteredCount: null,}
 };
 
+const initialDeleteState = {
+  indexesToDelete: []
+};
+
 const searchSlice = createSlice({
   name: "search",
   initialState,
@@ -20,7 +24,20 @@ const searchSlice = createSlice({
   },
 });
 
+const deleteDescSlice = createSlice({
+  name: "delete",
+  initialState: initialDeleteState,
+  reducers: {
+    setIndexesToDelete: (state, action) => {
+      state.indexesToDelete = action.payload;
+    }
+  }
+})
+
 export const { setFilterGroup } = searchSlice.actions;
+export const { setIndexesToDelete } = deleteDescSlice.actions;
 
 const searchReducer = searchSlice.reducer;
-export default searchReducer;
+const deleteDescReducer = deleteDescSlice.reducer;
+
+export { searchReducer, deleteDescReducer };

@@ -261,7 +261,7 @@ const UserManage  = () => {
                     [1,2,3,4,5].map((item, index) => {
                       return <li key={index} className="mx-1">
                               <button 
-                                className={`w-[35px] h-[35px] rounded-md focus:outline-none focus:shadow-outline-purple border border-purple-600 focus:outline-none focus:shadow-outline-purple ${currentPageIndex === startPageIndex+index ? "bg-purple-600 text-white":""} ${(startPageIndex+index)>(filteredData.length%10?filteredData.length/10+1:filteredData.length/10)?"opacity-50 cursor-not-allowed":""}`}
+                                className={`w-[35px] h-[35px] rounded-md focus:shadow-outline-purple border border-purple-600 focus:outline-none focus:shadow-outline-purple ${currentPageIndex === startPageIndex+index ? "bg-purple-600 text-white":""} ${(startPageIndex+index)>(filteredData.length%10?filteredData.length/10+1:filteredData.length/10)?"opacity-50 cursor-not-allowed":""}`}
                                 onClick={() => setCurrentPageIndex(startPageIndex+index)}
                                 disabled={(startPageIndex+index)>(filteredData.length%10?filteredData.length/10+1:filteredData.length/10)?true:false}
                               >

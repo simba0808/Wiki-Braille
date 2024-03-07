@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../slices/authSlice";
-import { setFilterGroup } from "../../slices/searchSlice";
+import { setFilterGroup } from "../../slices/dashboardSlice";
 import axios from "axios";
 import { defaultUserIcon } from "../../assets";
 import { LogoImage } from "../../assets";

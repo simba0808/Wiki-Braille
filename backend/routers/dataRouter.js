@@ -4,7 +4,8 @@ import {
   updateImageDescription,
   rateDescription,
   deleteComment,
-  deleteDescription 
+  deleteDescription,
+  deleteDescriptionWithBatch
 } from "../controllers/searchController.js";
 import { extractDataFromWord } from "../controllers/parserController.js";
 import { authEditMiddleware } from "../middleware/authMiddleware.js";
@@ -22,6 +23,7 @@ router.post('/edit', authEditMiddleware,  updateDescription);
 router.post('/editimage', authEditMiddleware, imageUpload.single("image"), updateImageDescription);
 router.post('/rate', rateDescription);
 router.post('/deletecomment', authEditMiddleware, deleteComment);
-router.post('/delete/:id', deleteDescription);
+router.post('/delete/:id', authEditMiddleware, deleteDescription);
+router.post('/batchdelete', authEditMiddleware, deleteDescriptionWithBatch);
 
 export default router;
