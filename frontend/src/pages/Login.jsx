@@ -9,13 +9,14 @@ import useToast from '../hook/useToast';
 import { setCredentials } from '../slices/authSlice';
 
 import axios from 'axios';
+import { ToastContainer } from 'react-toastify';
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const customToast = useToast();
 
-  const [login, { isLoading }] = useLoginMutation();
+  const [login] = useLoginMutation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
@@ -257,6 +258,7 @@ const Login = () => {
       {
         loading && <Loading />
       }
+      <ToastContainer />
     </>
   );
 };

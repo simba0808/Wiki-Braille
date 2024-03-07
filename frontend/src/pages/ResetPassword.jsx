@@ -1,10 +1,13 @@
-import axios from "axios";
+import { ResetImage } from "../assets";
+import Loading from "../components/Loading";
+
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useToast from "../hook/useToast";
-import { ResetImage } from "../assets";
-import Loading from "../components/Loading";
+
+import axios from "axios";
+import { ToastContainer } from "react-toastify";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -271,6 +274,7 @@ const ResetPassword = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 };

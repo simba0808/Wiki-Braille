@@ -1,14 +1,17 @@
 import Loading from "../components/Loading";
 import { RegisterImage } from "../assets";
+
 import { useState } from "react";
 import { useRegisterMutation } from "../slices/userApiSlice";
 import { Link, useNavigate } from "react-router-dom";
 import useToast from "../hook/useToast";
+
 import axios from "axios";
+import { ToastContainer } from "react-toastify";
 
 const Register = () => {
   const navigate = useNavigate();
-  const [register, { isLoading }] = useRegisterMutation();
+  const [register] = useRegisterMutation();
   const customToast = useToast();
 
   const [name, setName] = useState("");
@@ -69,7 +72,7 @@ const Register = () => {
     }
     try {
       setLoading(true);
-      const res = await register({ name, email, password }).unwrap();
+      await register({ name, email, password }).unwrap();
       setVerifyShow(true);
       setLoading(false);
     } catch (err) {
@@ -267,6 +270,7 @@ const Register = () => {
       {
         loading && <Loading />
       }
+      <ToastContainer />
     </>
   );
 };
