@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
+import useToast from "../hook/useToast";
 import { useTheme, useMediaQuery } from "@mui/material";
+import axios from "axios";
 
 import Loading from "../components/Loading";
 import DetailModal from "../components/modals/DetailModal";
@@ -19,6 +19,7 @@ const Dashboard = () => {
     isMedium: useMediaQuery(theme.breakpoints.between("md", "xl")),
     isLarge: useMediaQuery(theme.breakpoints.up("xl")),
   };
+  const customToast = useToast();
 
   const { userInfo } = useSelector((state) => state.auth);
   const { filterGroup } = useSelector((state) => state.search);
@@ -52,7 +53,7 @@ const Dashboard = () => {
           const res = await axios.get("/api/user/");
           dispatch(setCredentials({ ...res.data }));
         } catch (err) {
-          toast.error("Falha ao buscar dados", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: 'dark' });
+          customToast("failed", "Falha ao buscar dados");
           navigate("/");
         }
       }
@@ -98,7 +99,7 @@ const Dashboard = () => {
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      toast.error("Falha ao buscar dados", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: 'dark' })
+      customToast("failed", "Falha ao buscar dados");
     }
   };
 
@@ -147,7 +148,6 @@ const Dashboard = () => {
         <h2 className="my-6 text-2xl text-left font-semibold text-gray-700">
           Banco de dados
         </h2>
-        <ToastContainer />
         <div className="h-[40px] relative my-2 text-gray-500 focus-within:text-purple-600">
           <input
             className="block w-full h-[100%] pl-14 pr-20 text-md text-black border-2 rounded-md focus:border focus:border-purple-400 focus:ring-2 focus:ring-purple-200 focus:outline-none form-input"

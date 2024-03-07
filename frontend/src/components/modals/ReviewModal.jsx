@@ -1,8 +1,9 @@
 import { defaultUserIcon } from "../../assets";
-import { ToastContainer, toast } from "react-toastify";
+import useToast from "../../hook/useToast";
 import axios from "axios";
 
 const ReviewModal = ({ data, closeHandle, userInfo }) => {
+  const customToast = useToast();
   const handleCloseClick = () => {
     closeHandle(false);
   };
@@ -12,11 +13,11 @@ const ReviewModal = ({ data, closeHandle, userInfo }) => {
       axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
       const response = await axios.post("/api/data/deletecomment", { title_id: data.title_id, comment_id: data.comments[index]._id });
       if (response.data.message === "removed") {
-        toast.success("Comentário removido com sucesso", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, theme: "dark" });
+        customToast("success", "Comentário removido com sucesso");
         window.location.reload(false);
       }
     } catch (err) {
-      toast.error("Falha ao excluir o comentário", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, theme: "dark" });
+      customToast("failed", "Falha ao excluir o comentário");
     }
   };
 
@@ -24,7 +25,6 @@ const ReviewModal = ({ data, closeHandle, userInfo }) => {
     <div
       className="main-modal fixed w-full px-2 h-100 inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster"
     >
-      <ToastContainer />
       <div className="absolute inset-0 bg-black bg-opacity-80 transition-opacity"></div>
       <div className="relative w-full md:w-2/3 xl:w-1/2 max-h-[80%] bg-white rounded-md shadow-xl p-6 overflow-y-auto">
         <p className="text-[25px] font-semibold text-left">Comentários</p>

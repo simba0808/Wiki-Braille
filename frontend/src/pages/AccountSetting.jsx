@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import useToast from "../hook/useToast"
+
 import axios from "axios";
-import { setCredentials, logout } from "../slices/authSlice";
-import { ToastContainer, toast } from "react-toastify";
 import { AiOutlineCloudUpload } from 'react-icons/ai'
+import { setCredentials, logout } from "../slices/authSlice";
+
 import { defaultUserIcon } from "../assets";
 import Loading from "../components/Loading";
 
@@ -12,6 +14,8 @@ const AccountSetting = () => {
   const {userInfo} = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const customToast = useToast();
 
   const [username, setUserName] = useState(userInfo.name);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -81,7 +85,7 @@ const AccountSetting = () => {
 
   const updateAvatar = async () => {
     if(uploadFile === "" || uploadFile === undefined) {
-      toast.error("Selecione uma imagem", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, theme: "dark" }); 
+      customToast("failed", "Selecione uma imagem");
       return;
     }
     setLoading(true);
@@ -97,14 +101,14 @@ const AccountSetting = () => {
       setLoading(false);
       if(response.data.message === "uploaded") {
         dispatch(setCredentials({...userInfo, avatar: response.data.id}));
-        toast.success("Atualizado com sucesso", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+        customToast("success", "Atualizado com sucesso");
         setSelectedAvatar("");
         setUploadFile("");
       }
       
     } catch (err) {
       setLoading(false);
-      toast.err('Falha na atualização do Avatar', {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+      customToast("failed", "Falha na atualização do Avatar");
     }
   }
 
@@ -116,22 +120,22 @@ const AccountSetting = () => {
       setLoading(false);
       if(response.data.message === "success") {
         dispatch(setCredentials({...userInfo, name: username }));
-        toast.success('Atualizado com sucesso', {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+        customToast("success", "Atualizado com sucesso");
       }
     } catch (err) {
       setLoading(false);
-      toast.error('Falha na atualização', {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+      customToast("failed", "Falha na atualização");
     }
   }
 
   const updatePassword = async () => {
     const isPassword = checkPassword(newPassword, confirmPassword);
     if(isPassword < 0) {
-      toast.error("A senha deve ter pelo menos 6 caracteres", {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+      customToast("failed", "A senha deve ter pelo menos 6 caracteres");
       return;
     } else {
       if(isPassword == 0) {
-        toast.error("As senhas não são correspondentes", {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+        customToast("failed", "As senhas não são correspondentes");
         return;
       }
       setNewPassword("");
@@ -144,11 +148,11 @@ const AccountSetting = () => {
       const response = await axios.post("/api/user/updatepassword", { email:userInfo.email, currentPassword, newPassword });
       setLoading(false);
       if(response.data.message === "success") {
-        toast.success("Senha atualizada com sucesso", {autoClose:100, hideProgressBar:true, pauseOnHover:false, closeOnClick:true, theme:"dark"})
+        customToast("success", "Senha atualizada com sucesso");
       }
     } catch (err) {
       setLoading(false);
-      toast.error("A senha está incorreta", {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+      customToast("failed", "A senha está incorreta");
     }
   }
 
@@ -159,23 +163,22 @@ const AccountSetting = () => {
       const response = await axios.post("/api/user/delete", { email: userInfo.email, password: deletePassword });
       if(response.data.message === "success") {
         setLoading(false);
-        toast.success("Conta excluída", {autoClose:100, hideProgressBar:true, pauseOnHover:false, closeOnClick:true, theme:"dark"});
+        customToast("success", "Conta excluída");
         dispatch(logout({}));
         navigate("/");
       } else {
         setLoading(false);
-        toast.error("A senha está incorreta", {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+        customToast("failed", "A senha está incorreta");
       }
     } catch (err) {
       setLoading(false);
-      toast.error("A senha está incorreta", {autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark",});
+      customToast("failed", "A senha está incorreta");
     }
   }
 
   return (
     <main>
       { isLoading && <Loading /> }
-      <ToastContainer  />
       <div className="container xs:px-6 mx-auto grid divide divide-y-2 divide-slate-300">
         <h2 className="my-6 text-2xl text-left font-semibold text-gray-700">
           Configuração da conta

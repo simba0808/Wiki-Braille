@@ -2,10 +2,12 @@ import Loading from "../Loading";
 import { NotExistIcon } from "../../assets";
 import RatingModal from "./RatingModal";
 import ReviewModal from "./ReviewModal";
+
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import useToast from "../../hook/useToast";
+
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
 import copy from "copy-to-clipboard";
 import { AiOutlineCloudUpload } from "react-icons/ai";
@@ -13,6 +15,8 @@ import "react-medium-image-zoom/dist/styles.css";
 
 const DetailModal = ({ descData, handleClick, updateHandle }) => {
   const { userInfo } = useSelector((state) => state.auth);
+  const customToast = useToast();
+
   const { title_id, title, catagory, tag, description, image, rate, ratedCount } = descData;
 
   const [editable, setEditable] = useState(false);
@@ -44,7 +48,7 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
 
   const editConfirm = async () => {
     if ((tag === newTag && text === description && catagory === newCategory) && selectedImage === null) {
-      toast.error('Nenhuma atualização', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+      customToast("failed", "Nenhuma atualização");
       return;
     }
     setEditable(false);
@@ -67,11 +71,11 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
       setLoading(false);
       if (response.data.message === "success") {
         updateHandle({ text, tag: newTag, image: selectedImage ? response.data.path : null });
-        toast.success('Atualizado com sucesso!', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+        customToast("success", "Atualizado com sucesso");
       }
     } catch (err) {
       setLoading(false);
-      toast.error('Falha ao atualizar a descrição', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+      customToast("failed", "Falha ao atualizar a descrição");
     }
   };
 
@@ -113,14 +117,14 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
       const response = await axios.post(`/api/data/delete/${title_id}`, { user: userInfo.name });
       setLoading(false)
       if (response.data.message === "success") {
-        toast.success('Excluído com sucesso', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+        customToast("success", "Excluído com sucesso");
         setTimeout(() => {
           window.location.reload(false);
         }, 200);
       }
     } catch (err) {
       setLoading(false);
-      toast.error('Falha ao excluir a descrição', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+      customToast("failed", "Falha ao excluir a descrição");
     }
   };
 
@@ -130,7 +134,6 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
       <div
         className="main-modal fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster"
       >
-        <ToastContainer />
         <div className="w-[96%] md:w-[80%] xl:w-[60%] mx-auto xs:h-[700px] h-[95%] border border-teal-500 modal-container bg-white rounded shadow-lg z-50 overflow-y-hidden">
           <div className="modal-content xs:h-[700px] h-[100%] py-6 text-left px-6 flex flex-col justify-around overflow-y-hidden">
             <div className="flex justify-end items-center pb-3">

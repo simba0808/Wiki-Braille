@@ -2,13 +2,15 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import useToast from "../../hook/useToast";
 import { defaultUserIcon } from "../../assets";
-import { ToastContainer, toast } from "react-toastify";
 import Loading from "../../components/Loading";
 
 const UserManage  = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const customToast = useToast();
+
   const [filteredData, setFilteredData] = useState([]);
   const [avatars, setAvatars] = useState([]);
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
@@ -95,7 +97,7 @@ const UserManage  = () => {
     });
     if(data.length === 0) {
       setLoading(false);
-      toast.error("Não foram feitas alterações.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark"});
+      customToast("failed", "Não foram feitas alterações");
       return;
     }
     setLoading(true);
@@ -111,11 +113,11 @@ const UserManage  = () => {
           return newData;
         });
         setLoading(false);
-        toast.success("Função de usuário atualizada com sucesso.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark"});
+        customToast("success", "Função de usuário atualizada com sucesso");
       }
     } catch (err) {
       setLoading(false);
-      toast.error("Falha ao atualizar a função do usuário. Tente novamente.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark"});
+      customToast("failed", "Falha ao atualizar a função do usuário. Tente novamente");
     }
   };
 
@@ -126,14 +128,14 @@ const UserManage  = () => {
       const response = await axios.post("/api/user/deleteUserByAdmin", { email: filteredData[deleteUserIndex].email });
       setLoading(false);
       if(response.data.message === "success") {
-        toast.success("Conta de usuário excluída com sucesso.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark"});
+        customToast("success", "Conta de usuário excluída com sucesso");
         filteredData.splice(deleteUserIndex, 1);
         setDeleteModalShow(false);
         setDeleteUserIndex(-1);
       }
     } catch (err) {
       setLoading(false);
-      toast.error("Falha ao excluir a conta do usuário.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark"});
+      customToast("failed", "Falha ao excluir a conta do usuário");
     }
   };
 
@@ -149,7 +151,6 @@ const UserManage  = () => {
             <button className="px-6 py-2 bg-purple-600 rounded-xl text-white" onClick={updateUserRole}>Salvar</button>
           </div>
         </div>
-        <ToastContainer />
         <div className="w-full overflow-hidden shadow-xs">
           <div className="w-full overflow-x-hidden">
             <table className="w-full border whitespace-no-wrap">
@@ -310,7 +311,7 @@ const UserManage  = () => {
                   <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
                 </svg>
                 <h2 className="text-2xl font-bold py-4 ">Tem certeza?</h2>
-                <p className="text-md text-gray-700 px-8">Você realmente deseja excluir <span className="font-semibold text-md">{filteredData[deleteUserIndex].name} </span>'s conta? Esse processo não pode ser desfeito</p>    
+                <p className="text-md text-gray-700 px-8">Você realmente deseja excluir <span className="font-semibold text-md">{filteredData[deleteUserIndex].name} </span>&apos;conta? Esse processo não pode ser desfeito</p>    
               </div>
               <div className="p-3  mt-2 text-center space-x-4 md:block">
                 <button 

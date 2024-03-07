@@ -1,18 +1,22 @@
 import { LoginImage } from '../assets'
 import Loading from "../components/Loading";
+
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../slices/userApiSlice';
 import { useDispatch } from 'react-redux';
+import useToast from '../hook/useToast';
 import { setCredentials } from '../slices/authSlice';
-import { ToastContainer, toast } from "react-toastify";
+
 import axios from 'axios';
+import { ToastContainer } from 'react-toastify';
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const customToast = useToast();
 
-  const [login, { isLoading }] = useLoginMutation();
+  const [login] = useLoginMutation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
@@ -100,7 +104,7 @@ const Login = () => {
       if(res.message === "sent") {
         setVerifyShow(true);
       } else if(res.message === "verified"){
-        toast.success('Logado com sucesso!', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        customToast("success", "Logado com sucesso");
         dispatch(setCredentials({ ...res.authInfo }));
         const { role } = res.authInfo;
         if (role === 2) {
@@ -116,9 +120,9 @@ const Login = () => {
       setPassword("");
       setLoading(false);
       if (err.data.message === "inactive") {
-        toast.error("O usuário não está ativo", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        customToast("failed", "O usuário não está ativo");
       } else {
-        toast.error("Credencial inválida", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        customToast("failed", "Credencial inválida");
       }
     }
   };
@@ -132,7 +136,7 @@ const Login = () => {
     try {
       const res = await axios.post("/api/user/verifylogin", { email, verifyCode });
       if(res.data.message === "verified") {
-        toast.success('Logado com sucesso!', { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        customToast("success", "Logado com sucesso");
         dispatch(setCredentials({ ...res.data.authInfo }));
         const { role } = res.data.authInfo;
         if (role === 2) {
@@ -146,11 +150,11 @@ const Login = () => {
     } catch (err) {
       if (err.response.data.message === "expired") {
         setVerifyStatus("Código expirado");
-        toast.error("Código expirado", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        customToast("failed", "Código expirado");
         window.location.reload(false);
       } else {
         setVerifyStatus("Código inválido");
-        toast.error("Código inválido", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        customToast("failed", "Código inválido");
       }
     }
   };
@@ -169,7 +173,6 @@ const Login = () => {
                 src={LoginImage}
                 alt="Office"
               />
-              <ToastContainer />
             </div>
             <div className="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
               {
@@ -255,6 +258,7 @@ const Login = () => {
       {
         loading && <Loading />
       }
+      <ToastContainer />
     </>
   );
 };

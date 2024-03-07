@@ -1,11 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import useToast from "../../hook/useToast";
+
 import { setCredentials } from "../../slices/authSlice";
 import axios from "axios";
 import BadListModal from "../../components/modals/BadListModal";
 import Loading from "../../components/Loading";
-import { ToastContainer, toast } from "react-toastify";
 import ProgressCircle from "../../components/ProgressCircle";
 
 const AddData = () => {
@@ -13,6 +14,7 @@ const AddData = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const inputFile = useRef(null);
+  const customToast = useToast();
 
   const [progress, setProgress] = useState(0);
   const [showUploadResult, setShowUploadResult] = useState(false);
@@ -60,14 +62,14 @@ const AddData = () => {
             setProgress(progress);
           }
         });
-        if (res.data.message === "success") {   
-          toast.success(`${res.data.data} registros adicionados com sucesso`, { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+        if (res.data.message === "success") { 
+          customToast("success", `${res.data.data} registros adicionados com sucesso`);
         } else if (res.data.message === "invalid image") {
-          toast.error("O documento tem imagens inválidas (EMF ou WMF)", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+          customToast("failed", "O documento tem imagens inválidas (EMF ou WMF)");
           setInvalidImages(res.data.data);
           setModalShow(true);
         } else {
-          toast.error("Falha ao salvar documentos", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+          customToast("failed", "Falha ao salvar documentos");
         }
         inputFile.current.value = "";
         setProgress(0);
@@ -78,7 +80,7 @@ const AddData = () => {
         setLoading(false);
         setFile(null);
         setProgress(0);
-        toast.error("Falha ao salvar documentos", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+        customToast("failed", "Falha ao salvar documentos.");
       }
     }
     sendData();
@@ -93,7 +95,7 @@ const AddData = () => {
     if (isAllowedExtension) {
       setFile(file);
     } else {
-      toast.error("Arquivo inválido", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+      customToast("failed", "Arquivo inválido");
       return;
     }
   };
@@ -110,7 +112,7 @@ const AddData = () => {
     if (isAllowedExtension) {
       setFile(file);
     } else {
-      toast.error("Arquivo inválido", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark" });
+      customToast("failed", "Arquivo inválido");
       return;
     }
   };
@@ -123,7 +125,6 @@ const AddData = () => {
         <h2 className="my-6 text-2xl text-left font-semibold text-gray-700">
           Adicionar novos dados
         </h2>
-        <ToastContainer />
         <div className="flex flex-col items-center justify-center p-4 mt-10 xs:mt-20" onDrop={handleDrop} onDragOver={handleDragOver}>
           <label
             htmlFor="dropzone-file"

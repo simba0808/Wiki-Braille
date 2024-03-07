@@ -1,15 +1,19 @@
 import BlogPost from "../components/BlogPost";
 import BlogAddModal from "../components/modals/BlogAddModal";
 import Loading from "../components/Loading";
+
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import useToast from "../hook/useToast";
+
 import axios from "axios";
-import { ToastContainer, toast } from "react-toastify";
 
 const Guidence = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const customToast = useToast();
+
   const [title, setTitle] = useState("Everyone can cook.");
   const [text, setText] = useState("It's important to provide accessibility, inclusion, and resources that empower them to participate fully in society and pursue their goals.");
   const [isAddBlog, setAddBlog] = useState(false);
@@ -38,7 +42,7 @@ const Guidence = () => {
         setBlogs(response.data.blogs);
       } catch (err) {
         setLoading(false);
-        toast.error("Falha ao obter blogs.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        customToast("failed", "Falha ao obter blogs");
       }
     };
     fetchBlogs();
@@ -75,13 +79,13 @@ const Guidence = () => {
       axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
       const response = await axios.post("/api/blog/update", { id, title, text });
       if (response.data.message === "success") {
-        toast.success("Blog atualizado com sucesso.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+        customToast("success", "Blog atualizado com sucesso");
         setSelectedBlog(response.data.blog);
       }
       setLoading(false);
     } catch (err) {
       setLoading(false);
-      toast.error("Falha ao atualizar blog.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+      customToast("failed", "Falha ao atualizar blog");
     }
   };
 
@@ -93,10 +97,10 @@ const Guidence = () => {
       const response = await axios.get("/api/blog");
       setBlogs(response.data.blogs);
       setLoading(false);
-      toast.success("Blog deletado com sucesso.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+      customToast("success", "Blog deletado com sucesso");
     } catch (err) {
       setLoading(false);
-      toast.error("Falha ao deletar blog.", { autoClose: 1000, hideProgressBar: true, pauseOnHover: false, closeOnClick: true, theme: "dark", });
+      customToast("failed", "Falha ao deletar blog");
     }
   };
 
@@ -104,7 +108,6 @@ const Guidence = () => {
     <main className="relative flex item-center justify-center md:overflow-hidden">
       {isLoading && <Loading />}
       <div className="container xs:px-6">
-        <ToastContainer />
         <div className="relative text-left w-full sm:max-w-[70%] mx-auto py-10 bg">
           <div className="mb-4">
             {
