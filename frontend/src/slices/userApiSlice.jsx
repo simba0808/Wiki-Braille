@@ -1,4 +1,3 @@
-import { data } from "autoprefixer";
 import { apiSlice } from "./apiSlice";
 
 const BASE_URL = "/api/user";

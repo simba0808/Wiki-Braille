@@ -1,8 +1,8 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import { persistStore, persistReducer, createMigrate } from "redux-persist";
+import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authReducer from "./slices/authSlice";
-import searchReducer from "./slices/searchSlice";
+import { searchReducer, deleteDescReducer } from "./slices/dashboardSlice";
 import { apiSlice } from "./slices/apiSlice";
 
 
@@ -15,6 +15,7 @@ const persistedReducer = persistReducer(persistConfig, combineReducers(
   {
     auth: authReducer,
     search: searchReducer,
+    delete: deleteDescReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   })
 );

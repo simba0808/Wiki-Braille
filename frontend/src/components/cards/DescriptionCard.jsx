@@ -1,26 +1,52 @@
 import { NotExistIcon } from "../../assets";
 
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setIndexesToDelete } from "../../slices/dashboardSlice";
 
-const DescriptionCard = ({ onClick, item, index }) => {
-  const [posX, setPosX] = useState(0);
-  const [posY, setPosY] = useState(0);
-  const [isMenuShow, setIsMenuShow] = useState(false);
+const DescriptionCard = ({ onClick, item, index, isPossibleDelete }) => {
 
-  const handleRightClick = (e) => {
-    e.preventDefault();
-    setPosX(e.clientX - document.getElementById(`top-card-${index}`).getBoundingClientRect().left);
-    setPosY(e.clientY - document.getElementById(`top-card-${index}`).getBoundingClientRect().top);
-    console.log(posX, posY);
-    setIsMenuShow(true);
+  const dispatch = useDispatch();
+  const { indexesToDelete } = useSelector(state => state.delete);
+  //const { filterGroup } = useSelector(state => state.search)
+
+  const [isChecked, setChecked] = useState(false);
+  const checkRef = useRef(true);
+
+  useEffect(() => {
+    if(checkRef.current) {
+      checkRef.current = false;
+    } else {
+      if(indexesToDelete.length === 0) {
+        const newArray = [...indexesToDelete];
+        newArray.push(item.title_id);  
+        dispatch(setIndexesToDelete(newArray));
+      } else {
+        const filteredArray = [...indexesToDelete].filter((itemToDelete) => itemToDelete !== item.title_id);
+        if(filteredArray.length === indexesToDelete.length) {
+          const newArray = [...indexesToDelete];
+          newArray.push(item.title_id); 
+          dispatch(setIndexesToDelete(newArray));
+        } else {
+          dispatch(setIndexesToDelete(filteredArray));
+        }
+      }
+    }
+  }, [isChecked]);
+
+  const handleLeftClick = () => {
+    if(isPossibleDelete) {
+      return;
+    } else {
+      onClick(index);
+    }
   }
 
   return (
     <div
       className="relative h-[190px] col-span-1 flex flex-col items-start bg-slate-100 p-2 border-2 shadow-md rounded-md hover:cursor-pointer"
       id={`top-card-${index}`}
-      onClick={() => onClick(index)}
-      onContextMenu={handleRightClick}
+      onClick={handleLeftClick}
     >
       <span className="absolute right-2 xs:w-20 xs:px-4 py-1 px-2 rounded-xl xs:text-md text-sm bg-purple-200 text-purple-600">
         {item.title_id}
@@ -77,14 +103,17 @@ const DescriptionCard = ({ onClick, item, index }) => {
         />
       </div>
       {
-        isMenuShow && (
-          <div className="absolute px-4 py-2 bg-white" style={{left: posX, top: posY}}>
-            <button onClick={(e) => {
-              e.preventDefault();
-              alert(index)}
-              }>{index}</button>
+        isPossibleDelete && 
+          <div className="absolute left-0 top-0 flex w-full h-full bg-slate-100 bg-opacity-85">
+            <input
+              className="absolute bottom-2 right-2 w-6 h-6 border-2 border-purple-700"
+              id={`checkbox-${index}`}
+              checked={isChecked} 
+              type="checkbox"
+              onChange={() => setChecked(!isChecked)}
+            /> 
+            <label htmlFor={`checkbox-${index}`} className="w-full"></label>
           </div>
-        )
       }
     </div>
   );

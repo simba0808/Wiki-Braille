@@ -289,6 +289,30 @@ const deleteDescription = async (req, res) => {
   }
 };
 
+const deleteDescriptionWithBatch = async (req, res) => {
+  const { user, indexesToDelete} = req.body;
+  console.log(user, indexesToDelete)
+  try {
+    indexesToDelete.map(async (index) => {
+      await Data.deleteOne({ title_id: index });
+      await Logger.create({
+        name: "Delete Description",
+        status: "Success",
+        user: user,
+        time: new Date().toLocaleString("en-US", { timeZone: "America/Sao_Paulo", timeZoneName: "short" }),
+        detail: `Delete Description(${index})`,
+      });
+    });
+
+    res.status(200).send({
+      message: "success",
+    });
+  } catch(err) {
+    res.status(500);
+    throw new Error("Failed deleting descriptions")
+  }
+};
+
 export {
   searchData,
   updateDescription,
@@ -296,4 +320,5 @@ export {
   rateDescription,
   deleteComment,
   deleteDescription,
+  deleteDescriptionWithBatch
 };
