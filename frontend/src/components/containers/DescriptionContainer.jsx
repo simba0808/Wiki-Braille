@@ -19,6 +19,10 @@ const DescriptionContainer = ({ viewMode, screenSize, filteredData, handleClick 
   const customToast = useToast();
 
   const handleDeleteConfirmClick = async () => {
+    if(indexesToDelete.length === 0) {
+      customToast("failed", "Selecione os itens a serem excluídos")
+      return;
+    }
     try {
       axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
       const response = await axios.post("/api/data/batchdelete", { user: userInfo.name, indexesToDelete });
@@ -68,7 +72,7 @@ const DescriptionContainer = ({ viewMode, screenSize, filteredData, handleClick 
               }
             </ImageList>
           </Box> :
-          <div className={`p-2 pt-0 ${filteredData.length ? `grid gap-2 md:grid-cols-4 grid-cols-1 rounded-b-xl` : ""}`}>
+          <div className={`p-2 pt-0 ${filteredData.length ? `grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 grid-cols-1 rounded-b-xl` : ""}`}>
             {
               filteredData.length 
                 ? filteredData.map((item, index) => {
@@ -90,22 +94,22 @@ const DescriptionContainer = ({ viewMode, screenSize, filteredData, handleClick 
             </button> :
             <div className="flex">
               <button 
-                className="px-4 py-2 flex items-center bg-purple-500 text-white rounded-l-xl hover:scale-105 focus:ring-offset-1 focus:ring-2 focus:ring-purple-500" 
+                className="px-4 py-2 flex items-center bg-purple-500 text-white rounded-l-xl hover:scale-105 active:ring-offset-1 active:ring-2 active:ring-purple-500" 
                 onClick={handleDeleteCancelClick}
               >
                 <svg className="inline pr-1" fill="white" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 30 30">
                   <path d="M 7 4 C 6.744125 4 6.4879687 4.0974687 6.2929688 4.2929688 L 4.2929688 6.2929688 C 3.9019687 6.6839688 3.9019687 7.3170313 4.2929688 7.7070312 L 11.585938 15 L 4.2929688 22.292969 C 3.9019687 22.683969 3.9019687 23.317031 4.2929688 23.707031 L 6.2929688 25.707031 C 6.6839688 26.098031 7.3170313 26.098031 7.7070312 25.707031 L 15 18.414062 L 22.292969 25.707031 C 22.682969 26.098031 23.317031 26.098031 23.707031 25.707031 L 25.707031 23.707031 C 26.098031 23.316031 26.098031 22.682969 25.707031 22.292969 L 18.414062 15 L 25.707031 7.7070312 C 26.098031 7.3170312 26.098031 6.6829688 25.707031 6.2929688 L 23.707031 4.2929688 C 23.316031 3.9019687 22.682969 3.9019687 22.292969 4.2929688 L 15 11.585938 L 7.7070312 4.2929688 C 7.5115312 4.0974687 7.255875 4 7 4 z"></path>
                 </svg>
-                Cancel
+                Cancelar
               </button>
               <button 
-                className="px-2 py-2 flex items-center  bg-red-600 text-white rounded-r-xl hover:scale-105 focus:ring-offset-1 focus:ring-2 focus:ring-red-500" 
+                className="px-2 py-2 flex items-center  bg-red-600 text-white rounded-r-xl hover:scale-105 active:ring-offset-1 active:ring-2 active:ring-red-500" 
                 onClick={handleDeleteConfirmClick}
               >
                 <svg className="inline" fill="white" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="20" height="20" viewBox="0 0 26 26">
                   <path d="M 22.566406 4.730469 L 20.773438 3.511719 C 20.277344 3.175781 19.597656 3.304688 19.265625 3.796875 L 10.476563 16.757813 L 6.4375 12.71875 C 6.015625 12.296875 5.328125 12.296875 4.90625 12.71875 L 3.371094 14.253906 C 2.949219 14.675781 2.949219 15.363281 3.371094 15.789063 L 9.582031 22 C 9.929688 22.347656 10.476563 22.613281 10.96875 22.613281 C 11.460938 22.613281 11.957031 22.304688 12.277344 21.839844 L 22.855469 6.234375 C 23.191406 5.742188 23.0625 5.066406 22.566406 4.730469 Z"></path>
                 </svg>
-                Confirm
+                Confirmar
               </button>
             </div>
         }

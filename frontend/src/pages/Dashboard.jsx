@@ -37,7 +37,7 @@ const Dashboard = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [sortMethod, setSortMethod] = useState(filterGroup.sortMode);
   const [isDescending, setDescending] = useState([true, true]);
-  const [viewMode, setViewMode] = useState(filterGroup.numberPerPage === 12 ? true : false);
+  const [viewMode, setViewMode] = useState(filterGroup.viewMode ? true : false);
   const [updateDescription, setUpdateDescription] = useState({});
   const [isLoading, setLoading] = useState(false);
 
@@ -156,10 +156,10 @@ const Dashboard = () => {
   };
 
   return (
-    <main className="w-full">
+    <main className="w-full py-4">
       {isLoading && <Loading />}
       <div className="container mx-auto">
-        <h2 className="my-6 text-2xl text-left font-semibold text-gray-700">
+        <h2 className="mt-2 mb-6 text-2xl text-left font-semibold text-gray-700">
           Banco de dados
         </h2>
         <div className="h-[40px] relative my-2 text-gray-500 focus-within:text-purple-600">
@@ -249,7 +249,7 @@ const Dashboard = () => {
               <div className="flex items-center gap-2 mt-2">
                 <div className="bg-gray-200 text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">
                   <button
-                    className={`${!screenSize.isSmall?"w-[120px]":""} px-2 relative inline-flex items-center justify-between transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full py-2 ${sortMethod ? "active" : ""}`}
+                    className={`${!screenSize.isSmall?"w-[100px]":""} px-2 relative inline-flex items-center justify-between transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full py-2 ${sortMethod ? "active" : ""}`}
                     id="list"
                     onClick={() => {
                       if (sortMethod) setDescending([!isDescending[0], isDescending[1]]);
@@ -257,11 +257,11 @@ const Dashboard = () => {
                       dispatch(setFilterGroup({ ...filterGroup, sortMode: true }));
                     }}
                   >
-                    <span className="w-[80%]">numérica</span>
+                    <span className="w-[80%]">Numérica</span>
                     { !screenSize.isSmall && <img className="absolute right-0" src={isDescending[0] ? ArrowDown : ArrowUp} />}
                   </button>
                   <button
-                    className={`${!screenSize.isSmall?"w-[120px]":""} px-2 relative inline-flex items-center justify-between transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full  py-2 ${!sortMethod ? "active" : ""}`}
+                    className={`${!screenSize.isSmall?"w-[100px]":""} px-2 relative inline-flex items-center justify-between transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full  py-2 ${!sortMethod ? "active" : ""}`}
                     id="grid"
                     onClick={() => {
                       if (!sortMethod) setDescending([isDescending[0], !isDescending[1]]);
@@ -274,7 +274,7 @@ const Dashboard = () => {
                   </button>
                 </div>
                 <div className="bg-gray-200 text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">
-                  <button className={`inline-flex items-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full px-4 py-2 ${!viewMode ? "active" : ""}`} id="list" onClick={() => { setViewMode(false); setNumberPerPage(10) }}>
+                  <button className={`inline-flex items-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full px-4 py-2 ${!viewMode ? "active" : ""}`} id="list" onClick={() => { setViewMode(false); setNumberPerPage(12) }}>
                     { !screenSize.isSmall &&  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="fill-current w-4 h-4 mr-2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg> }
                     <span>Lista</span>
                   </button>
