@@ -549,6 +549,20 @@ const deleteAccountByAdmin = async (req, res) => {
   }
 }
 
+const getUsersBySearch = async (req, res) => {
+  const { searchWord } = req.body;
+  console.log(searchWord)
+  try {
+    const users = await User.find({ name: {$regex: searchWord} });
+    res.status(200).send({
+      users
+    });
+  } catch(err) {
+    res.status(500);
+    throw new Error("Error occured while finding users");
+  }
+}
+
 const getAllUsers = async (req, res) => {
   const { email } = req.body;
 
@@ -579,6 +593,7 @@ export {
   authUser,
   updateAvatar,
   getAvatar,
+  getUsersBySearch,
   getAllUsers,
   updateUserInfo,
   updatePassword,

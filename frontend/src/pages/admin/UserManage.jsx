@@ -13,6 +13,7 @@ const UserManage  = () => {
   const navigate = useNavigate();
   const customToast = useToast();
 
+  const [searchWord, setSearchWord] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [avatars, setAvatars] = useState([]);
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
@@ -104,6 +105,12 @@ const UserManage  = () => {
     setCurrentPageIndex(currentPageIndex+1);
   };
 
+  const handleSearchInputChange = async (e) => {
+    setSearchWord(e.target.value);
+    const response = await axios.post("/api/user/getuserbysearch", { searchWord: e.target.value });
+    setFilteredData(response.data.users);
+  }
+
   const updateUserRole = async () => {
     const data = [];
     updatedRole.map((item, index) => {
@@ -167,11 +174,41 @@ const UserManage  = () => {
             Gerenciamento de usuários
           </h2>
           <div className="flex items-center">
-            <button className="px-6 py-2 bg-purple-600 rounded-xl text-white" onClick={updateUserRole}>Salvar</button>
+            <button 
+              className="px-6 py-2 bg-purple-600 hover:bg-white hover:text-purple-900 border border-purple-600  rounded-lg text-white transition-colors duration-300" 
+              onClick={updateUserRole}
+            >
+              Salvar
+            </button>
           </div>
         </div>
         <div className="w-full overflow-hidden shadow-xs">
           <div className="w-full overflow-x-hidden">
+            <div className="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t bg-gray-50 sm:grid-cols-9">
+              <span className="col-span-3 flex items-center">
+                <input 
+                  type="text"
+                  className="w-full px-2 py-2 border border-gray-400 text-[16px] font-normal rounded-md focus:border focus:border-purple-400 focus:ring-2 focus:ring-purple-200 outline-none"
+                  placeholder="Pesquisar nome aqui"
+                  value={searchWord}
+                  onChange={handleSearchInputChange}
+                />
+              </span>
+              <span className="col-span-2"></span>
+              <span className="flex justify-center col-span-4 mt-2 sm:mt-auto sm:justify-end">
+                <Pagination 
+                  currentPageIndex={currentPageIndex}
+                  startPageIndex={startPageIndex}
+                  filteredCount={filteredData.length}
+                  numberPerPage={10}
+                  backButtonHandle={backButtonHandle}
+                  forwardButtonHandle={forwardButtonHandle}
+                  goToFirstHandle={goToFirstHandle}
+                  goToLastHandle={goToLastHandle}
+                  handlePageClick={setCurrentPageIndex}
+                />
+              </span>
+            </div>
             <table className="w-full border whitespace-no-wrap">
               <thead>
                 <tr className="text-xs font-semibold tracking-wide text-left text-gray-500 uppercase border-b bg-gray-50">
@@ -185,11 +222,12 @@ const UserManage  = () => {
               </thead>
               <tbody className="bg-white divide-y">
                 {
+                  filteredData.length > 0 &&
                   filteredData.slice(10*(currentPageIndex-1), 10*currentPageIndex).map((item, index) => {
                     const curIndex = 10*(currentPageIndex-1)+index;
                     return (
                       <tr key={index} className={`text-gray-700 ${filteredData[curIndex].role<0 ? "bg-slate-200":""}`}>
-                        <td className="xs:px-4 px-2 py-3 flex justify-center">
+                        <td className="xs:px-4 px-2 py-2.5 flex justify-center">
                           <img src={avatars[curIndex]!==""&&avatars[curIndex]!==undefined? `data: image/jpeg;base64, ${avatars[curIndex]}`:defaultUserIcon  } className="w-[40px] rounded-full" alt={`user${index+1}`} />
                         </td>
                         <td className="xs:px-4 px-2 py-3 text-sm">
@@ -251,25 +289,6 @@ const UserManage  = () => {
                 }
               </tbody>
             </table>
-            <div className="grid px-4 py-3 text-xs font-semibold tracking-wide text-gray-500 uppercase border-t bg-gray-50 sm:grid-cols-9">
-              <span className="flex items-center col-span-3 text-sm">
-                {`Exibição ${10*(currentPageIndex-1)+1}-${10*(currentPageIndex-1)+10>filteredData.length?filteredData.length:10*(currentPageIndex-1)+10} de ${filteredData.length}`} 
-              </span>
-              <span className="col-span-2"></span>
-              <span className="flex justify-center col-span-4 mt-2 sm:mt-auto sm:justify-end">
-                <Pagination 
-                  currentPageIndex={currentPageIndex}
-                  startPageIndex={startPageIndex}
-                  filteredCount={filteredData.length}
-                  numberPerPage={10}
-                  backButtonHandle={backButtonHandle}
-                  forwardButtonHandle={forwardButtonHandle}
-                  goToFirstHandle={goToFirstHandle}
-                  goToLastHandle={goToLastHandle}
-                  handlePageClick={setCurrentPageIndex}
-                />
-              </span>
-            </div>
           </div>
         </div>
       </div>
