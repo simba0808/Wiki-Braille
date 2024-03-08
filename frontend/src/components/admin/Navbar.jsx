@@ -52,8 +52,7 @@ const Navbar = ({ handleSlide }) => {
         advance: "Descrição",
         searchin: 0,
         pageIndex: 1,
-        viewMode: 0,
-        numberPerPage: 12,
+        numberPerPage: 10,
         filteredCount: null,
         sortMode: true,
       })

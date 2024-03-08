@@ -119,8 +119,8 @@ const DescriptionCard = ({ onClick, item, index, isPossibleDelete }) => {
     //       </div>
     //   }
     // </div>
-    <div
-      className="relative max-w-[360px] text-left text-gray-500 bg-white border-2 border-slate rounded-lg shadow-xl hover:-translate-y-2 hover:transition-transform duration-200 hover:cursor-pointer"
+    <div 
+      className="relative max-w-[360px] bg-white border-2 border-slate rounded-lg shadow-xl"
       id={`top-card-${index}`}
       onClick={handleLeftClick}
     >
@@ -160,7 +160,7 @@ const DescriptionCard = ({ onClick, item, index, isPossibleDelete }) => {
           }
         />
       </div>
-      <div className="w-full px-4 py-2 text-left divide-y-[1px] divide-slate-200">
+      <div className="w-full px-4 py-2 text-left divide-y-2 divide-slate-200">
         <div className="relative py-2">
           <p className="text-md text-gray-700 whitespace-pre-line min-h-[100px] max-h-[100px] overflow-hidden">
           {item.description.length > 120
@@ -184,7 +184,6 @@ const DescriptionCard = ({ onClick, item, index, isPossibleDelete }) => {
             </div>
         }
       </div>
-
       {
         isPossibleDelete && (
           <div className="absolute left-0 top-0 w-full h-full flex bg-gray-100 bg-opacity-85">

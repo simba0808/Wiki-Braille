@@ -73,6 +73,22 @@ const Guidence = () => {
     }
   };
 
+  const updateBlog = async (id) => {
+    setLoading(true);
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${userInfo.token}`;
+      const response = await axios.post("/api/blog/update", { id, title, text });
+      if (response.data.message === "success") {
+        customToast("success", "Blog atualizado com sucesso");
+        setSelectedBlog(response.data.blog);
+      }
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      customToast("failed", "Falha ao atualizar blog");
+    }
+  };
+
   const deleteBlog = async (id) => {
     setLoading(true);
     try {
@@ -92,7 +108,7 @@ const Guidence = () => {
     <main className="relative flex item-center justify-center md:overflow-hidden">
       {isLoading && <Loading />}
       <div className="container xs:px-6 max-w-screen-lg">
-        <div className="relative text-left w-full mx-auto py-10">
+        <div className="relative text-left w-full mx-auto py-10">     
           <div className="mb-4">
             {
               selectedBlog ? `${months[parseInt(selectedBlog.createdAt.split("T")[0].split("-")[1]) - 1]} ${selectedBlog.createdAt.split("T")[0].split("-")[2]}, ${selectedBlog.createdAt.split("T")[0].split("-")[0]}` : "2022-11-11"
@@ -109,7 +125,7 @@ const Guidence = () => {
           </div>
         </div>
         <div className="w-full mt-8 py-4 flex flex-col">
-          <div className="mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div className="max-w-[1000px] mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
             {
               blogs.map((blog, index) => (
                 <BlogPost
