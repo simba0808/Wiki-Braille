@@ -6,7 +6,8 @@ const initialState = {
   advance: "Descrição",
   searchin: 0,
   pageIndex: 1,
-  numberPerPage: 10,
+  viewMode: 0,
+  numberPerPage: 12,
   filteredCount: null,}
 };
 
