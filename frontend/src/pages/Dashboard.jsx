@@ -284,6 +284,7 @@ const Dashboard = () => {
                   </button>
                 </div>
               </div>
+
               <Pagination 
                 currentPageIndex={currentPageIndex}
                 startPageIndex={startPageIndex}
@@ -295,6 +296,7 @@ const Dashboard = () => {
                 goToLastHandle={goToLastHandle}
                 handlePageClick={setCurrentPageIndex}
               />
+              
             </div>
           </div>
         </div>

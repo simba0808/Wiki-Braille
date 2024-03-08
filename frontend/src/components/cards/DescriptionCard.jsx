@@ -151,7 +151,7 @@ const DescriptionCard = ({ onClick, item, index, isPossibleDelete }) => {
         &nbsp;
         <span className="hover:cursor-pointer">({item.ratedCount})</span>
       </div>
-      
+
       <div className="w-full h-[120px] bg-gray-200 border-t-[1px] border-gray-50 shadow-md">
         <img
           className="mx-auto h-[100%]"
@@ -163,7 +163,7 @@ const DescriptionCard = ({ onClick, item, index, isPossibleDelete }) => {
       <div className="w-full px-4 py-2 text-left divide-y-[1px] divide-slate-200">
         <div className="relative py-2">
           <p className="text-md text-gray-700 whitespace-pre-line min-h-[100px] max-h-[100px] overflow-hidden">
-            {item.description.length > 120
+          {item.description.length > 120
               ? item.description.substring(0, 120)
               : item.description}
           </p>
@@ -184,18 +184,21 @@ const DescriptionCard = ({ onClick, item, index, isPossibleDelete }) => {
             </div>
         }
       </div>
-      {isPossibleDelete && (
-        <div className="absolute left-0 top-0 w-full h-full flex bg-gray-100 bg-opacity-85">
-          <input
-            className="absolute bottom-2 right-2 w-6 h-6 border-2 border-purple-700"
-            id={`checkbox-${index}`}
-            checked={isChecked}
-            type="checkbox"
-            onChange={() => setChecked(!isChecked)}
-          />
-          <label htmlFor={`checkbox-${index}`} className="w-full"></label>
-        </div>
-      )}
+
+      {
+        isPossibleDelete && (
+          <div className="absolute left-0 top-0 w-full h-full flex bg-gray-100 bg-opacity-85">
+            <input
+              className="absolute bottom-2 right-2 w-6 h-6 border-2 border-purple-700"
+              id={`checkbox-${index}`}
+              checked={isChecked}
+              type="checkbox"
+              onChange={() => setChecked(!isChecked)}
+            />
+            <label htmlFor={`checkbox-${index}`} className="w-full"></label>
+          </div>
+        )
+      }
     </div>
   );
 };
