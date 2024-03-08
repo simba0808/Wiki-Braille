@@ -8,6 +8,7 @@ import axios from "axios";
 import Loading from "../components/Loading";
 import DetailModal from "../components/modals/DetailModal";
 import DescriptionContainer from "../components/containers/DescriptionContainer";
+import Pagination from "../components/pagination/Pagination";
 import { ArrowUp, ArrowDown } from "../assets";
 import { setCredentials } from "../slices/authSlice";
 import { setFilterGroup } from "../slices/dashboardSlice";
@@ -28,7 +29,7 @@ const Dashboard = () => {
 
   const [modalShow, setModalShow] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [startPageIndex, setStartPageIndex] = useState(1);
+  const [startPageIndex, setStartPageIndex] = useState(filterGroup.pageIndex>=5 ? filterGroup.pageIndex-4:1);
   const [currentPageIndex, setCurrentPageIndex] = useState(filterGroup.pageIndex);
   const [numberPerPage, setNumberPerPage] = useState(filterGroup.numberPerPage);
   const [searchWord, setSearchWord] = useState(filterGroup.word);
@@ -107,6 +108,19 @@ const Dashboard = () => {
     setSelectedIndex(index);
     setModalShow(true);
   };
+
+  const goToFirstHandle = () => {
+    setCurrentPageIndex(1);
+    setStartPageIndex(1);
+  }
+
+  const goToLastHandle = () => {
+    const numOfPages = filteredCount % numberPerPage
+      ? Math.floor(filteredCount / numberPerPage) + 1
+      : Math.floor(filteredCount / numberPerPage)
+    setCurrentPageIndex(numOfPages);
+    setStartPageIndex(numOfPages >= 5 ? numOfPages-4 : 1);
+  }
 
   const backButtonHandle = () => {
     if (currentPageIndex < 2) {
@@ -219,8 +233,17 @@ const Dashboard = () => {
         </div>
         <div className="px-2 py-2 rounded-t-xl">
           <div className="w-full flex xl:flex-row flex-col items-center justify-between">
-            <p className="w-full text-lg text-left">
-              <b className="text-xl">{filteredCount}</b>&nbsp;registros pesquisados
+            <p className="w-full text-lg text-gray-800 text-left font-semibold">
+              EXIBIÇÃO&nbsp;
+              <b>
+                {`${(currentPageIndex-1)*numberPerPage+1}-${
+                  (currentPageIndex-1)*numberPerPage+numberPerPage > filteredCount
+                   ? filteredCount
+                   : (currentPageIndex-1)*numberPerPage+numberPerPage
+                }`}
+              </b>
+              &nbsp;DE&nbsp;
+              <b>{filteredCount}</b>
             </p>
             <div className="w-full flex md:p-1 md:flex-row flex-col gap-4 justify-end items-end">
               <div className="flex items-center gap-2 mt-2">
@@ -261,57 +284,17 @@ const Dashboard = () => {
                   </button>
                 </div>
               </div>
-              <ul className="inline-flex sm:items-center">
-                <li className="flex items-center">
-                  <button
-                    aria-label="Previous"
-                    onClick={backButtonHandle}
-                  >
-                    <svg
-                      aria-hidden="true"
-                      className="w-4 h-4 fill-current"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                        fillRule="evenodd"
-                      ></path>
-                    </svg>
-                  </button>
-                </li>
-                {
-                  [1, 2, 3, 4, 5].map((item, index) => {
-                    return <li key={index} className="mx-1">
-                      <button
-                        className={`xs:w-10 xs:h-10 w-8 h-8 rounded-md text-purple-600 focus:shadow-outline-purple border border-purple-600 focus:outline-none focus:shadow-outline-purple ${currentPageIndex === startPageIndex + index ? "bg-purple-600 text-white" : ""} ${(startPageIndex + index) > (filteredCount % numberPerPage ? filteredCount / numberPerPage + 1 : filteredCount / numberPerPage) ? "opacity-50 cursor-not-allowed" : ""}}`}
-                        onClick={() => setCurrentPageIndex(startPageIndex + index)}
-                        disabled={(startPageIndex + index) > (filteredCount % numberPerPage ? filteredCount / numberPerPage + 1 : filteredCount / numberPerPage) ? true : false}
-                      >
-                        {startPageIndex + index}
-                      </button>
-                    </li>
-                  })
-                }
-                <li className="flex items-center">
-                  <button
-                    aria-label="Next"
-                    onClick={forwardButtonHandle}
-                  >
-                    <svg
-                      className="w-4 h-4 fill-current"
-                      aria-hidden="true"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clipRule="evenodd"
-                        fillRule="evenodd"
-                      ></path>
-                    </svg>
-                  </button>
-                </li>
-              </ul>
+              <Pagination 
+                currentPageIndex={currentPageIndex}
+                startPageIndex={startPageIndex}
+                filteredCount={filteredCount}
+                numberPerPage={numberPerPage}
+                backButtonHandle={backButtonHandle}
+                forwardButtonHandle={forwardButtonHandle}
+                goToFirstHandle={goToFirstHandle}
+                goToLastHandle={goToLastHandle}
+                handlePageClick={setCurrentPageIndex}
+              />
             </div>
           </div>
         </div>

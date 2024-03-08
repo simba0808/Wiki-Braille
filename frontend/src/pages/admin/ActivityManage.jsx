@@ -1,4 +1,5 @@
 import Loading from "../../components/Loading";
+import Pagination from "../../components/pagination/Pagination";
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -63,6 +64,19 @@ const ActivityManage = () => {
     setDateRange(newVal);
   };
 
+  const goToFirstHandle = () => {
+    setCurrentPageIndex(1);
+    setStartPageIndex(1);
+  }
+
+  const goToLastHandle = () => {
+    const numOfPages = filteredCount % 20
+      ? Math.floor(filteredCount / 20) + 1
+      : Math.floor(filteredCount / 20)
+    setCurrentPageIndex(numOfPages);
+    setStartPageIndex(numOfPages >= 5 ? numOfPages-4 : 1);
+  }
+
   const backButtonHandle = () => {
     if (currentPageIndex < 2) {
       return;
@@ -74,7 +88,11 @@ const ActivityManage = () => {
   };
 
   const forwardButtonHandle = () => {
-    if (currentPageIndex > filteredCount / 20) {
+    const numOfPages = filteredCount % 20
+      ? Math.floor(filteredCount / 20) + 1
+      : Math.floor(filteredCount / 20)
+    
+    if (currentPageIndex >= numOfPages) {
       return;
     }
     if (currentPageIndex === startPageIndex + 4) {
@@ -206,57 +224,17 @@ const ActivityManage = () => {
             </table>
           </div>
           <div className="float-right mt-4">
-            <ul className="inline-flex sm:items-center">
-              <li className="flex items-center">
-                <button
-                  aria-label="Previous"
-                  onClick={backButtonHandle}
-                >
-                  <svg
-                    aria-hidden="true"
-                    className="w-4 h-4 fill-current"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                      fillRule="evenodd"
-                    ></path>
-                  </svg>
-                </button>
-              </li>
-              {
-                [1, 2, 3, 4, 5].map((item, index) => {
-                  return <li key={index} className="mx-1">
-                    <button
-                      className={`xs:w-8 xs:h-8 w-8 h-8 rounded-md text-purple-600 focus:shadow-outline-purple border border-purple-600 focus:outline-none focus:shadow-outline-purple ${currentPageIndex === startPageIndex + index ? "bg-purple-600 text-white" : ""} ${(startPageIndex + index) > (filteredCount % 20 ? filteredCount / 20 + 1 : filteredCount / 20) ? "opacity-50 cursor-not-allowed" : ""}`}
-                      onClick={() => setCurrentPageIndex(startPageIndex + index)}
-                      disabled={(startPageIndex + index) > (filteredCount % 20 ? filteredCount / 20 + 1 : filteredCount / 20) ? true : false}
-                    >
-                      {startPageIndex + index}
-                    </button>
-                  </li>
-                })
-              }
-              <li className="flex items-center">
-                <button
-                  aria-label="Next"
-                  onClick={forwardButtonHandle}
-                >
-                  <svg
-                    className="w-4 h-4 fill-current"
-                    aria-hidden="true"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                      fillRule="evenodd"
-                    ></path>
-                  </svg>
-                </button>
-              </li>
-            </ul>
+            <Pagination 
+              currentPageIndex={currentPageIndex}
+              startPageIndex={startPageIndex}
+              filteredCount={filteredCount}
+              numberPerPage={20}
+              backButtonHandle={backButtonHandle}
+              forwardButtonHandle={forwardButtonHandle}
+              goToFirstHandle={goToFirstHandle}
+              goToLastHandle={goToLastHandle}
+              handlePageClick={setCurrentPageIndex}
+            />
           </div>
         </div>
       </div>

@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useToast from "../../hook/useToast";
+
+import Pagination from "../../components/pagination/Pagination";
 import { defaultUserIcon } from "../../assets";
 import Loading from "../../components/Loading";
 
@@ -65,6 +67,19 @@ const UserManage  = () => {
     }
   }, [filteredData]);
 
+  const goToFirstHandle = () => {
+    setCurrentPageIndex(1);
+    setStartPageIndex(1);
+  }
+
+  const goToLastHandle = () => {
+    const numOfPages = filteredData.length % 10
+      ? Math.floor(filteredData.length / 10) + 1
+      : Math.floor(filteredData.length / 10)
+    setCurrentPageIndex(numOfPages);
+    setStartPageIndex(numOfPages >= 5 ? numOfPages-4 : 1);
+  }
+
   const backButtonHandle = () => {
     if(currentPageIndex < 2) {
       return;
@@ -76,7 +91,11 @@ const UserManage  = () => {
   };
 
   const forwardButtonHandle = () => {
-    if(currentPageIndex > filteredData.length/10) {
+    const numOfPages = filteredData.length % 10
+      ? Math.floor(filteredData.length / 10) + 1
+      : Math.floor(filteredData.length / 10)
+    
+    if (currentPageIndex >= numOfPages) {
       return;
     }
     if(currentPageIndex === startPageIndex+4) {
@@ -238,59 +257,17 @@ const UserManage  = () => {
               </span>
               <span className="col-span-2"></span>
               <span className="flex justify-center col-span-4 mt-2 sm:mt-auto sm:justify-end">
-                <ul className="inline-flex sm:items-center">
-                  <li className="my-auto">
-                    <button
-                      className="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple"
-                      aria-label="Previous"
-                      onClick={backButtonHandle}
-                    >
-                      <svg
-                        aria-hidden="true"
-                        className="w-4 h-4 fill-current"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                          fillRule="evenodd"
-                        ></path>
-                      </svg>
-                    </button>
-                  </li>
-                  {
-                    [1,2,3,4,5].map((item, index) => {
-                      return <li key={index} className="mx-1">
-                              <button 
-                                className={`w-[35px] h-[35px] rounded-md focus:shadow-outline-purple border border-purple-600 focus:outline-none focus:shadow-outline-purple ${currentPageIndex === startPageIndex+index ? "bg-purple-600 text-white":""} ${(startPageIndex+index)>(filteredData.length%10?filteredData.length/10+1:filteredData.length/10)?"opacity-50 cursor-not-allowed":""}`}
-                                onClick={() => setCurrentPageIndex(startPageIndex+index)}
-                                disabled={(startPageIndex+index)>(filteredData.length%10?filteredData.length/10+1:filteredData.length/10)?true:false}
-                              >
-                                {startPageIndex+index}
-                              </button>
-                            </li>
-                    })
-                  }
-                  <li className="my-auto">
-                    <button
-                      className="xs:w-10 xs:h-10 w-8 h-8 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
-                      aria-label="Next"
-                      onClick={forwardButtonHandle}
-                    >
-                      <svg
-                        className="w-4 h-4 fill-current"
-                        aria-hidden="true"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                          clipRule="evenodd"
-                          fillRule="evenodd"
-                        ></path>
-                      </svg>
-                    </button>
-                  </li>
-                </ul>
+                <Pagination 
+                  currentPageIndex={currentPageIndex}
+                  startPageIndex={startPageIndex}
+                  filteredCount={filteredData.length}
+                  numberPerPage={10}
+                  backButtonHandle={backButtonHandle}
+                  forwardButtonHandle={forwardButtonHandle}
+                  goToFirstHandle={goToFirstHandle}
+                  goToLastHandle={goToLastHandle}
+                  handlePageClick={setCurrentPageIndex}
+                />
               </span>
             </div>
           </div>
