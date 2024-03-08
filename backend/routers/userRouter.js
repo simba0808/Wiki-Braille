@@ -2,7 +2,8 @@ import express from "express";
 const router = express.Router();
 
 import { 
-  getUserInfo, 
+  getUserInfo,
+  getUsersBySearch,
   getAllUsers, 
   registerUser, 
   sendVerifyCode,
@@ -23,6 +24,7 @@ import { authUserMiddleware, authAdminMiddleware } from "../middleware/authMiddl
 import gridMiddleware from "../middleware/gridMiddleware.js";
 
 router.get('/', authUserMiddleware, getUserInfo);
+router.post('/getuserbysearch', getUsersBySearch);
 router.post('/getallusers', authAdminMiddleware, getAllUsers);
 router.post('/register', registerUser);
 router.post('/login', authUser);

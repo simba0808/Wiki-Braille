@@ -167,9 +167,14 @@ const ActivityManage = () => {
               <div className="grow flex gap-4 justify-between">
                 <input
                   type="text"
-                  className="xs:w-[300px] grow px-2 py-2 border border-slate-300 rounded-md focus:outline-none"
-                  placeholder="Search text..."
+                  className="xs:w-[300px] grow px-2 py-2 border border-slate-300 focus:border focus:border-purple-400 focus:ring-2 focus:ring-purple-200 rounded-md focus:outline-none"
+                  placeholder="Pesquisar texto aqui"
                   ref={textRef}
+                  onKeyDown={(e) => {
+                    if(e.keyCode === 13) {
+                      handleSearchClick()
+                    }
+                  }}
                 />
                 <button
                   className="px-6 py-2 border border-purple-600 rounded-md bg-white text-purple-600 text-sm hover:bg-purple-600 hover:text-white active:bg-purple-900 transition:colors duration-500"

@@ -2,7 +2,7 @@
   margin: 0 auto;
   text-align: center;
   --mainWidth: calc(100% - 250px);
-  --mainHeight: calc(100% - 64px);
+  --mainHeight: calc(100% - 80px);
 }
 
 .toast-message {
