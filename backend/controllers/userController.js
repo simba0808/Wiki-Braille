@@ -365,7 +365,7 @@ const generateVerifyCode = () => {
 };
 
 const updateAvatar = async (req, res) => {
-  const { email, currentAvatar } = req.body;
+  const { email, name, currentAvatar } = req.body;
 
   if (req.file === undefined) {
     return res.send('you must select a file.');
@@ -377,6 +377,7 @@ const updateAvatar = async (req, res) => {
     deleteAvatar(currentAvatar);
   }
   user.avatar = req.file.id;
+  user.name = name;
   user.save();
 
   res.send({

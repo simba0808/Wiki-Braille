@@ -166,7 +166,7 @@ const UserManage  = () => {
   };
 
   return (
-    <main className="flex item-center justify-center md:overflow-hidden">
+    <main className="flex items-start justify-center md:overflow-hidden">
       { isLoading && <Loading /> }
       <div className="container xs:px-6">
         <div className="flex justify-between">
