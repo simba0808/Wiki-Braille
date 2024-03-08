@@ -35,12 +35,12 @@ const Sidebar = ({ handleSlide }) => {
               )}
               <Link
                 to={"/editorGuide"}
-                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
+                className="inline-flex items-center w-full text-[16px] font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
               >
                 <svg className="w-[22px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 9H5a1 1 0 0 0-1 1v4c0 .6.4 1 1 1h6m0-6v6m0-6 5.4-3.9A1 1 0 0 1 18 6v12.2a1 1 0 0 1-1.6.8L11 15m7 0a3 3 0 0 0 0-6M6 15h3v5H6v-5Z" />
                 </svg>
-                <span className="ml-4 text-md">Orientações</span>
+                <span className="ml-4">Orientações</span>
               </Link>
             </li>
           </ul>
@@ -56,10 +56,10 @@ const Sidebar = ({ handleSlide }) => {
               )}
               <Link
                 to={"/editorDashboard"}
-                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
+                className="inline-flex items-center w-full text-[16px] font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-[22px]"
                   aria-hidden="true"
                   fill="none"
                   strokeLinecap="round"
@@ -70,7 +70,7 @@ const Sidebar = ({ handleSlide }) => {
                 >
                   <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                 </svg>
-                <span className="ml-4 text-md">Banco de dados</span>
+                <span className="ml-4">Banco de dados</span>
               </Link>
             </li>
           </ul>
@@ -86,10 +86,10 @@ const Sidebar = ({ handleSlide }) => {
               )}
               <Link
                 to={"/editorAddData"}
-                className="inline-flex items-center w-full text-sm font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
+                className="inline-flex items-center w-full text-[16px] font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
               >
                 <svg
-                      className="w-5 h-5"
+                      className="w-[22px]"
                       aria-hidden="true"
                       fill="currentColor"
                       viewBox="0 0 20 20"
@@ -98,7 +98,7 @@ const Sidebar = ({ handleSlide }) => {
                         d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
                       ></path>
                 </svg>
-                <span className="ml-4 text-md">Adicionar dados</span>
+                <span className="ml-4">Adicionar dados</span>
               </Link>
             </li>
           </ul>
@@ -114,10 +114,10 @@ const Sidebar = ({ handleSlide }) => {
               )}
               <Link
                 to={"/editorSetting"}
-                className="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400"
+                className="inline-flex items-center w-full text-[16px] font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-[22px]"
                   aria-hidden="true"
                   fill="none"
                   strokeLinecap="round"
@@ -128,7 +128,7 @@ const Sidebar = ({ handleSlide }) => {
                 >
                   <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                 </svg>
-                <span className="ml-4 text-md">Configuração</span>
+                <span className="ml-4">Configuração</span>
               </Link>
             </li>
           </ul>

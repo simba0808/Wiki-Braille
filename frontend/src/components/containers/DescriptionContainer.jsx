@@ -68,7 +68,7 @@ const DescriptionContainer = ({ viewMode, screenSize, filteredData, handleClick 
               }
             </ImageList>
           </Box> :
-          <div className={`p-2 pt-0 ${filteredData.length ? `grid gap-2 md:grid-cols-2 grid-cols-1 rounded-b-xl` : ""}`}>
+          <div className={`p-2 pt-0 ${filteredData.length ? `grid gap-2 md:grid-cols-4 grid-cols-1 rounded-b-xl` : ""}`}>
             {
               filteredData.length 
                 ? filteredData.map((item, index) => {
