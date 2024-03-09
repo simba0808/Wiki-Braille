@@ -22,6 +22,8 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
   const [editable, setEditable] = useState(false);
   const [text, setText] = useState(description);
   const [newTag, setNewTag] = useState(tag);
+  const [newTagItem, setNewTagItem] = useState("");
+  const [isCategoryClicked, setCategoryClicked] = useState(false);
   const [newCategory, setNewCategory] = useState(catagory);
   const [isCopy, setIsCopy] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -80,7 +82,7 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
   };
 
   const handleTagChange = (e) => {
-    setNewTag(e.target.value);
+    setNewTagItem(e.target.value);
   };
 
   const handleTextChange = (e) => {
@@ -108,6 +110,10 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
       setIsCopy(isCopied);
       setRatingModalShow(true);
     }
+    setTimeout(() => {
+      setIsCopy(false);
+      navigator.clipboard.writeText("");
+    }, 10000)
   };
 
   const deleteDescription = async () => {
@@ -128,6 +134,13 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if(e.keyCode === 13) {
+      setNewTag(newTag + "," + newTagItem);
+      setNewTagItem("");
+    }
+  }
+
   return (
     <>
       {isLoading && <Loading />}
@@ -135,11 +148,11 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
         className="main-modal fixed w-full h-100 inset-0 z-50 overflow-hidden flex justify-center items-center animated fadeIn faster"
       >
         <div className="w-[96%] md:w-[80%] xl:w-[60%] mx-auto xs:h-[700px] h-[95%] border border-teal-500 modal-container bg-white rounded shadow-lg z-50 overflow-y-hidden">
-          <div className="modal-content xs:h-[700px] h-[100%] py-6 text-left px-6 flex flex-col justify-around overflow-y-hidden">
+          <div className="modal-content xs:h-[700px] h-[100%] p-2 px-4 xs:p-6 text-left flex flex-col justify-around overflow-y-hidden">
             <div className="flex justify-end items-center pb-3">
-              <div className="modal-close cursor-pointer z-50 " onClick={handleCloseClick}>
+              <div className="modal-close cursor-pointer z-50 hover:rotate-180 duration-300" onClick={handleCloseClick}>
                 <svg
-                  className="fill-current text-black"
+                  className="fill-current w-8 h-8"
                   xmlns="http://www.w3.org/2000/svg"
                   width="18"
                   height="18"
@@ -152,63 +165,128 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
             <div className="flex justify-between items-center relative">
               <span className="text-xl xs:text-[30px] font-semibold">{` ${title}`}</span>
               <p
-                className="xs:py-2 xs:px-4 py-2 px-3 xs:text-xl text-lg font-semibold rounded-xl bg-purple-200 text-purple-600"
+                className="xs:py-2 xs:px-4 py-2 px-3 xs:text-xl text-lg font-semibold rounded-xl bg-red-200 text-red-600"
               >
                 {` ${title_id}`}
               </p>
 
             </div>
-            <div className="pt-1 flex flex-col sm:flex-row items-start sm:items-center sm:gap-4 gap-0">
-              <p className="lg:text-xl sm:text-md text-sm font-normal">
-                Categoria:
-                <select
-                  className={`ml-2 px-2 bg-white border-2 rounded-md ${editable ? "rounded-md border border-purple-300 ring-2 ring-purple-100 outline-none" : ""}`}
-                  defaultValue={catagory}
-                  disabled={editable ? false : true}
-                  onChange={handleCategoryChange}
+            <div className="py-1 flex flex-col sm:flex-row items-start sm:items-center sm:gap-4 gap-2">
+              <div className="relative lg:text-lg text-md font-normal">
+                <span>Categoria:</span>&nbsp;
+                <span 
+                  className={`font-medium ${editable?"underline underline-offset-4 decoration-purple-600 hover:cursor-pointer":""}`}
+                  onClick={() => setCategoryClicked(!isCategoryClicked)}
                 >
-                  <option value="Descrição">Descrição</option>
-                  <option value="Desenhos em braille">Desenhos em braille</option>
-                  <option value="Grafias em braille">Grafias em braille</option>
-                  <option value="Exemplos da grafia braille">Exemplos da grafia braille</option>
-                </select>
-              </p>
-              {
-                catagory !== "Descrição" ?
-                  <p className="grow w-full sm:w-auto py-1 flex lg:text-xl sm:text-md text-sm font-normal">
-                    Tag:
-                    <input
-                      type="text"
-                      className={`w-full px-2 bg-white ${editable ? "rounded-md border border-purple-300 ring-2 ring-purple-100 outline-none" : ""}`}
-                      value={newTag}
-                      disabled={editable ? false : true}
-                      onChange={handleTagChange}
-                    />
-                  </p> : <></>
-              }
+                  {newCategory}
+                </span>
+                {
+                  isCategoryClicked && editable &&
+                    <ul className="z-30 absolute left-0 min-w-[200px] px-2 py-2 bg-white border-2 lg:text-md text-sm divide-y-[1px] shadow-lg">
+                      <li 
+                        className="px-2 py-1 hover:bg-gray-200" 
+                        onClick={() => {
+                          setNewCategory("Descrição");
+                          setCategoryClicked(false);
+                        }}
+                      >
+                        Descrição
+                      </li>
+                      <li 
+                        className="px-2 py-1 hover:bg-gray-200" 
+                        onClick={() => {
+                          setNewCategory("Desenhos em braille");
+                          setCategoryClicked(false);
+                        }}
+                      >
+                        Desenhos em braille
+                      </li>
+                      <li 
+                        className="px-2 py-1 hover:bg-gray-200" 
+                        onClick={() => {
+                          setNewCategory("Grafias em braille");
+                          setCategoryClicked(false);
+                        }}
+                      >
+                        Grafias em braille
+                      </li>
+                      <li 
+                        className="px-2 py-1 hover:bg-gray-200" 
+                        onClick={() => {
+                          setNewCategory("Exemplos da grafia braille");
+                          setCategoryClicked(false);
+                        }}
+                      >
+                        Exemplos da grafia braille
+                      </li>
+                    </ul>
+                }
+              </div>
+              <div className="flex items-center">
+                {
+                  [1, 2, 3].map((item) => {
+                    return (
+                      <svg
+                        className="w-6 h-6"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill={item <= parseInt(rate) ? "#ffd500" : "grey"}
+                        key={item}
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    )
+                  })
+                }
+                <span className="flex items-center pl-2">{rate}</span>
+                <span className="w-1 h-1 mx-1.5 bg-gray-500 rounded-full"></span>
+                <span className="hover:cursor-pointer" onClick={() => setReviewModalShow(true)}>{ratedCount} reviews</span>
+              </div>
             </div>
-            <div className="flex pt-2 items-center">
-              {
-                [1, 2, 3].map((item) => {
-                  return (
-                    <svg
-                      className="w-6 h-6"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill={item <= parseInt(rate) ? "#ffd500" : "grey"}
-                      key={item}
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  )
-                })
+            {
+                catagory !== "Descrição" &&
+                  <div className={`relative w-full flex flex-wrap sm:w-auto p-1 sm:text-md text-sm font-normal outline-none ${editable ? "rounded-md border border-purple-300 ring-2 ring-purple-100 outline-none" : ""}`}>
+                    <div className={` inset-y-0 flex flex-wrap items-center gap-2`}>
+                      {
+                        newTag.split(",").map((item, index) => {
+                          return (
+                            <span key={index} className="flex gap-2 px-2 py-1 rounded-md bg-purple-500 text-white">
+                              {item}
+                              {
+                                editable &&
+                                  <button>
+                                    <svg
+                                      className="fill-current w-4 h-4"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="18"
+                                      height="18"
+                                      viewBox="0 0 18 18"
+                                    >
+                                      <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+                                    </svg>
+                                  </button>
+                              }
+                            </span>
+                          )
+                        })
+                      }
+                    </div>
+                    {
+                      editable && 
+                        <input
+                          type="text"
+                          className="grow  h-[30px] px-2 py-1 bg-white outline-none"
+                          disabled={editable ? false : true}
+                          value={newTagItem}
+                          onChange={handleTagChange}
+                          onKeyDown={handleKeyDown}
+                        />
+                    }
+                  </div>
               }
-              <span className="flex items-center pl-2">{rate}</span>
-              <span className="w-1 h-1 mx-1.5 bg-gray-500 rounded-full"></span>
-              <span className="hover:cursor-pointer" onClick={() => setReviewModalShow(true)}>{ratedCount} reviews</span>
-            </div>
-            <div className="xs:flex xs:flex-row flex flex-col grow">
-              <div className="xs:flex-1 flex px-2 items-center justify-center hover:cursor-zoom-in">
+            
+            <div className="grow flex xs:flex-row flex-col gap-1 mt-2">
+              <div className="xs:basis-1/2 flex px-2 items-center justify-center hover:cursor-zoom-in">
                 {
                   <div className="flex items-center">
                     <input type="file" accept="image/*" id="avatar-image-upload" hidden disabled={editable ? false : true} onChange={handleChangeImage} />
@@ -216,8 +294,8 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
                       <TransformWrapper initialScale={1} initialPositionX={0} initialPositionY={0} smooth={true}>
                         <TransformComponent>
                           <img
-                            className="max-h-[280px] md:max-h-[450px] w-full mx-auto my-auto py-4"
-                            src={selectedImage === null ? (image ? image : NotExistIcon) : URL.createObjectURL(selectedImage)}
+                            className="min-h-[150px] max-h-[240px] md:max-h-[450px] w-full mx-auto my-auto py-4"
+                            src={selectedImage === null ? (image ? `http://localhost:3000/${image}` : NotExistIcon) : URL.createObjectURL(selectedImage)}
                           />
                         </TransformComponent>
                       </TransformWrapper>
@@ -231,20 +309,9 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
                   </div>
                 }
               </div>
-              <div className="relative xs:flex-1 grow w-full p-2 flex flex-col justify-start items-end gap-2">
-                <div className="absolute right-4 top-4 inline-block group">
-                  <button onClick={handleCopyToClipboard}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className={`w-6 h-6 bi bi-clipboard ${isCopy ? "text-red-500" : ""}`} viewBox="0 0 16 16">
-                      <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z" />
-                      <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z" />
-                    </svg>
-                  </button>
-                  <div className="bg-purple-600 text-white text-sm rounded-md py-1 px-2 absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                    {isCopy ? "copied!" : "copy"}
-                  </div>
-                </div>
+              <div className="relative xs:basis-1/2 grow w-full flex flex-col justify-start items-end gap-2">
                 <textarea
-                  className={`w-full grow overflow-y-auto bg-gray-100 p-2 pt-10 rounded-md text-sm lg:text-lg ${editable ? "rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none" : ""}`}
+                  className={`w-full grow overflow-y-auto bg-gray-100 px-2 rounded-md text-sm lg:text-lg ${editable ? "rounded-md border border-purple-300 ring-4 ring-purple-100 outline-none" : ""}`}
                   disabled={editable ? false : true}
                   value={text}
                   onChange={handleTextChange}
@@ -253,43 +320,59 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
               </div>
             </div>
             {
-              userInfo.role !== 0 ? (
-                <div className="flex justify-end pt-2">
-                  <button
-                    className="w-[90px] focus:outline-none modal-close px-auto py-3 rounded-lg text-purple-700 border border-purple-700 hover:bg-purple-300 active:bg-purple-600 active:text-white"
-                    onClick={() => {
-                      if (editable) setSelectedImage(null);
-                      setEditable(editable ? false : true);
-                    }
-                    }
-                  >
-                    {
-                      editable ? "Cancelar" : "Editar"
-                    }
-                  </button>
+              userInfo.role !== 0 &&
+                <div className="flex justify-between pt-2">
+                  { editable && <span></span>}
                   {
-                    editable ?
+                    userInfo.role === 2 && !editable && 
                       <button
-                        className="w-[90px] focus:outline-none bg-purple-800 py-3 px-auto ml-3 rounded-lg text-white  hover:bg-purple-400 active:border active:border-purple-700 active:bg-white active:text-purple-900"
-                        onClick={editConfirm}
-                        disabled={editable ? false : true}
+                        className="w-[90px] py-2 px-auto focus:outline-none bg-red-600 hover:bg-white border border-red-600 rounded-lg text-white hover:text-red-600 active:bg-red-700 active:text-white"
+                        onClick={() => setDeleteModalShow(true)}
                       >
-                        Confirmar
-                      </button> :
-                      <>
-                        {
-                          userInfo.role === 2 ?
-                            <button
-                              className="w-[90px] focus:outline-none bg-purple-800 py-3 px-auto ml-3 rounded-lg text-white  hover:bg-purple-400 active:border active:border-purple-700 active:bg-white active:text-purple-900"
-                              onClick={() => setDeleteModalShow(true)}
-                            >
-                              Excluir
-                            </button> : <></>
-                        }
-                      </>
+                        Excluir
+                      </button>
                   }
+                  <div>
+                    <button
+                      className="w-[90px] focus:outline-none modal-close px-auto py-2 rounded-lg text-purple-600 border border-purple-600 hover:bg-purple-600 hover:text-white active:bg-purple-700 active:text-white"
+                      onClick={() => {
+                        if (editable) {
+                          setSelectedImage(null);
+                          setCategoryClicked(false);
+                        }
+                        setEditable(editable ? false : true);
+                      }
+                      }
+                    >
+                      {
+                        editable ? "Cancelar" : "Editar"
+                      }
+                    </button>
+                    {
+                      editable ?
+                        <button
+                          className="w-[90px]  py-2 px-auto ml-3 focus:outline-none rounded-lg bg-purple-600 hover:bg-white  text-white  hover:text-purple-600 border border-purple-600 active:bg-purple-700 active:text-white"
+                          onClick={editConfirm}
+                          disabled={editable ? false : true}
+                        >
+                          Confirmar
+                        </button> :
+                        <div className="inline-block group">
+                          <button
+                            className={`w-[90px] py-2 px-auto ml-3 focus:outline-none rounded-lg ${isCopy?"bg-purple-600 text-white":"bg-white text-purple-600"} border border-purple-600 active:bg-purple-700 active:text-white`}
+                            onClick={handleCopyToClipboard}
+                          >
+                            { isCopy ? "Copied" : "Copy" }
+                          </button>
+                          <div className="bg-purple-600 text-white text-sm rounded-md py-1 px-2 absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                            {isCopy ? "copied!" : "copy"}
+                          </div>
+                        </div>
+                    }
+                    
+                  </div>
                 </div>
-              ) : <></>
+              
             }
           </div>
         </div>
