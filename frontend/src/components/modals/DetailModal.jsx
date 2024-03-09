@@ -89,10 +89,6 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
     setText(e.target.value);
   };
 
-  const handleCategoryChange = (e) => {
-    setNewCategory(e.target.value);
-  };
-
   const handleChangeImage = (e) => {
     setSelectedImage(e.target.files[0]);
   };
@@ -254,7 +250,7 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
                               {item}
                               {
                                 editable &&
-                                  <button>
+                                  <button onClick={() => setNewTag((prev) => index ? prev.replace(`,${item}`, ""):prev.replace(`${item},`, ""))}>
                                     <svg
                                       className="fill-current w-4 h-4"
                                       xmlns="http://www.w3.org/2000/svg"

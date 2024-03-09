@@ -46,81 +46,8 @@ const DescriptionCard = ({ onClick, item, index, isPossibleDelete }) => {
   };
 
   return (
-    // <div
-    //   className="relative h-[190px] col-span-1 flex flex-col items-start bg-tranparent  p-2 border-2 shadow-md rounded-md hover:cursor-pointer"
-    //   id={`top-card-${index}`}
-    //   onClick={handleLeftClick}
-    // >
-    //   <span className="absolute right-2 xs:w-20 xs:px-4 py-1 px-2 rounded-xl xs:text-md text-sm bg-purple-200 text-purple-600">
-    //     {item.title_id}
-    //   </span>
-    //   <h2 className="p-0 pl-2 my-0 lg:text-[22px] md:text-lg sm:text-[22px] text-[18px] font-semibold">
-    //     {item.title}
-    //   </h2>
-    //   <div className="flex w-full items-center justify-center flex-1">
-    //     <div className="w-full h-full flex flex-col justify-between pl-2 pt-4">
-    //       {item.catagory !== "Descrição" ? (
-    //         <p className="xl:text-lg text-sm text-left font-semibold">{`Tag: ${item.tag}`}</p>
-    //       ) : (
-    //         <></>
-    //       )}
-    //       <div className="flex-1 flex items-center">
-    //         <p className="pt-2 text-md text-left 2xl:block hidden">
-    //           {item.description.length > 150
-    //             ? item.description.substring(0, 150) + "..."
-    //             : item.description}
-    //         </p>
-    //         <p className="pt-2 text-sm text-left xl:block 2xl:hidden hidden">
-    //           {item.description.length > 130
-    //             ? item.description.substring(0, 130) + "..."
-    //             : item.description}
-    //         </p>
-    //         <p className="pt-2 text-sm text-left lg:block xl:hidden hidden">
-    //           {item.description.length > 80
-    //             ? item.description.substring(0, 80) + "..."
-    //             : item.description}
-    //         </p>
-    //         <p className="pt-2 text-sm text-left md:block lg:hidden hidden">
-    //           {item.description.length > 80
-    //             ? item.description.substring(0, 80) + "..."
-    //             : item.description}
-    //         </p>
-    //         <p className="pt-2 text-md text-left sm:block md:hidden hidden">
-    //           {item.description.length > 150
-    //             ? item.description.substring(0, 150) + "..."
-    //             : item.description}
-    //         </p>
-    //         <p className="pt-2 text-sm text-left sm:hidden block">
-    //           {item.description.length > 100
-    //             ? item.description.substring(0, 100) + "..."
-    //             : item.description}
-    //         </p>
-    //       </div>
-    //     </div>
-    //     <img
-    //       className="max-h-[140px] max-w-[50%]"
-    //       src={
-    //         item.image ? `http://localhost:3000/${item.image}` : NotExistIcon
-    //       }
-    //       alt=""
-    //     />
-    //   </div>
-    //   {
-    //     isPossibleDelete &&
-    //       <div className="absolute left-0 top-0 flex w-full h-full bg-slate-100 bg-opacity-85">
-    //         <input
-    //           className="absolute bottom-2 right-2 w-6 h-6 border-2 border-purple-700"
-    //           id={`checkbox-${index}`}
-    //           checked={isChecked}
-    //           type="checkbox"
-    //           onChange={() => setChecked(!isChecked)}
-    //         />
-    //         <label htmlFor={`checkbox-${index}`} className="w-full"></label>
-    //       </div>
-    //   }
-    // </div>
     <div
-      className="relative max-w-[360px] text-left text-gray-500 bg-white border-2 border-slate rounded-lg shadow-xl hover:-translate-y-2 hover:transition-transform duration-200 hover:cursor-pointer"
+      className="relative text-left text-gray-500 bg-white border-2 border-slate rounded-lg shadow-xl hover:-translate-y-2 hover:transition-transform duration-200 hover:cursor-pointer"
       id={`top-card-${index}`}
       onClick={handleLeftClick}
     >
