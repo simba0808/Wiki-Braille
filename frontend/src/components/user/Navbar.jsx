@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../slices/authSlice";
 import axios from "axios";
+
+import { logout } from "../../slices/authSlice";
+import { setFilterGroup } from "../../slices/dashboardSlice";
+
 import { defaultUserIcon } from "../../assets";
 import { LogoImage } from "../../assets";
 
@@ -45,6 +48,18 @@ const Navbar = ({ handleSlide }) => {
 
   const logoutHandle = () => {
     dispatch(logout({}));
+    dispatch(
+      setFilterGroup({
+        word: "",
+        advance: "Descrição",
+        searchin: 0,
+        pageIndex: 1,
+        viewMode: 0,
+        numberPerPage: 12,
+        filteredCount: null,
+        sortMode: true,
+      })
+    );
     navigate("/");
   };
 

@@ -92,6 +92,10 @@ const AccountSetting = () => {
       customToast("failed", "Insira o nome de usuário");
       return;
     }
+    if((uploadFile === "" || uploadFile === undefined) && username === userInfo.name) {
+      customToast("failed", "Nenhuma alteração");
+      return;
+    }
     setLoading(true);
     try {
       axios.defaults.headers.common[
