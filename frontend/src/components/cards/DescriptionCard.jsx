@@ -98,7 +98,7 @@ const DescriptionCard = ({ onClick, item, index, isPossibleDelete }) => {
         {
           item.catagory === "Desenhos em braille" &&
             <div className="py-2 flex flex-wrap gap-2">
-              {item.tag.split(",").map((item, index) => {
+              {item.tag!=="" && item.tag.split(",").map((item, index) => {
                 return (
                   <span
                     key={index}

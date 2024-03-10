@@ -88,7 +88,7 @@ const searchData = async (req, res) => {
     if (sortMethod) {
       totalQuery.splice(1, 0, { $sort: { title_id: descending ? -1 : 1 } });
     } else {
-      totalQuery.splice(1, 0, { $sort: { rate: descending ? -1 : 1, title_id: 1 } });
+      totalQuery.splice(1, 0, { $sort: { rate: descending ? -1 : 1, ratedCount:-1, title_id: 1 } });
     }
 
     totalQuery.push({

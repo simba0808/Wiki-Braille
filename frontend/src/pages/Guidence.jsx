@@ -92,14 +92,14 @@ const Guidence = () => {
     <main className="relative flex item-center justify-center md:overflow-hidden">
       {isLoading && <Loading />}
       <div className="container xs:px-6 max-w-screen-lg">
-        <div className="relative text-left w-full mx-auto py-10">
-          <div className="mb-4">
+        <div className="relative text-left w-full mx-auto px-4 py-10">
+          <div className="mb-4 font-medium">
             {
               selectedBlog ? `${months[parseInt(selectedBlog.createdAt.split("T")[0].split("-")[1]) - 1]} ${selectedBlog.createdAt.split("T")[0].split("-")[2]}, ${selectedBlog.createdAt.split("T")[0].split("-")[0]}` : "2022-11-11"
             }
             &nbsp; by  Elias Sperandio
           </div>
-          <div className="w-full px-4">
+          <div className="w-full">
             <p className="text-pretty py-2 text-2xl sm:text-[40px]  font-semibold leading-[150%] text-orange-400">
               {title}
             </p>

@@ -49,6 +49,7 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
   };
 
   const editConfirm = async () => {
+    console.log(description, text);
     if ((tag === newTag && text === description && catagory === newCategory) && selectedImage === null) {
       customToast("failed", "Nenhuma atualização");
       return;
@@ -74,6 +75,7 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
       if (response.data.message === "success") {
         updateHandle({ text, tag: newTag, image: selectedImage ? response.data.path : null });
         customToast("success", "Atualizado com sucesso");
+        window.location.reload(false);
       }
     } catch (err) {
       setLoading(false);
@@ -132,9 +134,17 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
 
   const handleKeyDown = (e) => {
     if(e.keyCode === 13) {
-      setNewTag(newTag + "," + newTagItem);
+      if(newTag !== "") {
+        setNewTag(newTag + "," + newTagItem);
+      } else {
+        setNewTag(newTagItem);
+      }
       setNewTagItem("");
     }
+  }
+
+  const handleTagDelete = (item, index) => {
+    setNewTag((prev) => index ? prev.replace(`,${item}`, ""):prev.replace((newTag.split(",").length===1?item:`${item},`), ""))
   }
 
   return (
@@ -168,55 +178,57 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
 
             </div>
             <div className="py-1 flex flex-col sm:flex-row items-start sm:items-center sm:gap-4 gap-2">
-              <div className="relative lg:text-lg text-md font-normal">
+              <div className="relative inline-flex lg:text-lg text-md font-normal">
                 <span>Categoria:</span>&nbsp;
-                <span 
-                  className={`font-medium ${editable?"underline underline-offset-4 decoration-purple-600 hover:cursor-pointer":""}`}
-                  onClick={() => setCategoryClicked(!isCategoryClicked)}
-                >
-                  {newCategory}
-                </span>
-                {
-                  isCategoryClicked && editable &&
-                    <ul className="z-30 absolute left-0 min-w-[200px] px-2 py-2 bg-white border-2 lg:text-md text-sm divide-y-[1px] shadow-lg">
-                      <li 
-                        className="px-2 py-1 hover:bg-gray-200" 
-                        onClick={() => {
-                          setNewCategory("Descrição");
-                          setCategoryClicked(false);
-                        }}
-                      >
-                        Descrição
-                      </li>
-                      <li 
-                        className="px-2 py-1 hover:bg-gray-200" 
-                        onClick={() => {
-                          setNewCategory("Desenhos em braille");
-                          setCategoryClicked(false);
-                        }}
-                      >
-                        Desenhos em braille
-                      </li>
-                      <li 
-                        className="px-2 py-1 hover:bg-gray-200" 
-                        onClick={() => {
-                          setNewCategory("Grafias em braille");
-                          setCategoryClicked(false);
-                        }}
-                      >
-                        Grafias em braille
-                      </li>
-                      <li 
-                        className="px-2 py-1 hover:bg-gray-200" 
-                        onClick={() => {
-                          setNewCategory("Exemplos da grafia braille");
-                          setCategoryClicked(false);
-                        }}
-                      >
-                        Exemplos da grafia braille
-                      </li>
-                    </ul>
-                }
+                <div className="relative">
+                  <span 
+                    className={`font-medium ${editable?"underline underline-offset-4 decoration-purple-600 hover:cursor-pointer":""}`}
+                    onClick={() => setCategoryClicked(!isCategoryClicked)}
+                  >
+                    {newCategory}
+                  </span>
+                  {
+                    isCategoryClicked && editable &&
+                      <ul className="z-30 absolute left-0 min-w-[200px] px-2 py-2 bg-white border-2 lg:text-md text-sm divide-y-[1px] shadow-lg">
+                        <li 
+                          className="px-2 py-1 hover:bg-gray-200" 
+                          onClick={() => {
+                            setNewCategory("Descrição");
+                            setCategoryClicked(false);
+                          }}
+                        >
+                          Descrição
+                        </li>
+                        <li 
+                          className="px-2 py-1 hover:bg-gray-200" 
+                          onClick={() => {
+                            setNewCategory("Desenhos em braille");
+                            setCategoryClicked(false);
+                          }}
+                        >
+                          Desenhos em braille
+                        </li>
+                        <li 
+                          className="px-2 py-1 hover:bg-gray-200" 
+                          onClick={() => {
+                            setNewCategory("Grafias em braille");
+                            setCategoryClicked(false);
+                          }}
+                        >
+                          Grafias em braille
+                        </li>
+                        <li 
+                          className="px-2 py-1 hover:bg-gray-200" 
+                          onClick={() => {
+                            setNewCategory("Exemplos da grafia braille");
+                            setCategoryClicked(false);
+                          }}
+                        >
+                          Exemplos da grafia braille
+                        </li>
+                      </ul>
+                  }
+                </div>
               </div>
               <div className="flex items-center">
                 {
@@ -244,13 +256,13 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
                   <div className={`relative w-full flex flex-wrap sm:w-auto p-1 sm:text-md text-sm font-normal outline-none ${editable ? "rounded-md border border-purple-300 ring-2 ring-purple-100 outline-none" : ""}`}>
                     <div className={` inset-y-0 flex flex-wrap items-center gap-2`}>
                       {
-                        newTag.split(",").map((item, index) => {
+                        newTag !== "" && newTag.split(",").map((item, index) => {
                           return (
                             <span key={index} className="flex gap-2 px-2 py-1 rounded-md bg-purple-500 text-white">
                               {item}
                               {
                                 editable &&
-                                  <button onClick={() => setNewTag((prev) => index ? prev.replace(`,${item}`, ""):prev.replace(`${item},`, ""))}>
+                                  <button onClick={() => handleTagDelete(item, index)}>
                                     <svg
                                       className="fill-current w-4 h-4"
                                       xmlns="http://www.w3.org/2000/svg"
