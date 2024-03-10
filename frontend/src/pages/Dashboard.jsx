@@ -205,7 +205,14 @@ const Dashboard = () => {
       });
       if (response.data.message === "success") {
         customToast("success", "Excluído com sucesso.");
-        location.reload();
+        fetchFilteredData(
+          searchWord,
+          refAdvance.current.value,
+          refSearchIn.current.value,
+          currentPageIndex,
+          parseInt(refNumberPerPage.current.value),
+          sortMethod
+        );
       }
     } catch (err) {
       customToast("failed", "Falha ao excluir descrições");
@@ -217,7 +224,15 @@ const Dashboard = () => {
   const handleDeleteCancelClick = () => {
     setPossibleDelete(false);
     dispatch(setIndexesToDelete([]));
-    location.reload();
+    
+    fetchFilteredData(
+      searchWord,
+      refAdvance.current.value,
+      refSearchIn.current.value,
+      currentPageIndex,
+      parseInt(refNumberPerPage.current.value),
+      sortMethod
+    );
   };
 
   const handleSearchEntered = (e) => {
