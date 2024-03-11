@@ -370,10 +370,10 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
                             className={`w-[90px] py-2 px-auto ml-3 focus:outline-none rounded-lg ${isCopy?"bg-purple-600 text-white":"bg-white text-purple-600"} border border-purple-600 active:bg-purple-700 active:text-white`}
                             onClick={handleCopyToClipboard}
                           >
-                            { isCopy ? "Copied" : "Copy" }
+                            { isCopy ? "Copiado" : "Copiar" }
                           </button>
                           <div className="bg-purple-600 text-white text-sm rounded-md py-1 px-2 absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                            {isCopy ? "copied!" : "copy"}
+                            {isCopy ? "Copiado!" : "Copiar"}
                           </div>
                         </div>
                     }

@@ -534,6 +534,7 @@ const Dashboard = () => {
                       className="outline-none border-spacing-2 border px-2"
                       ref={refNumberPerPage}
                       defaultValue={numberPerPage}
+                      onChange={(e) => setNumberPerPage(e.target.value)}
                     >
                       <option value={8}>8</option>
                       <option value={12}>12</option>
