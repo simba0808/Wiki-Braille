@@ -535,9 +535,10 @@ const Dashboard = () => {
                       ref={refNumberPerPage}
                       defaultValue={numberPerPage}
                     >
-                      <option value={4}>4</option>
                       <option value={8}>8</option>
                       <option value={12}>12</option>
+                      <option value={20}>20</option>
+                      <option value={50}>50</option>
                     </select>
                   </span>
                 </div>
