@@ -10,6 +10,7 @@ import NotExistIcon from "./img/not-exist.svg";
 import BlogImage from "./img/blog.png";
 import ArrowUp from "./img/arrow_up.svg";
 import ArrowDown from "./img/arrow_down.svg";
+import SettingIcon from "./img/setting.svg";
 
 export {
   LoginImage,
@@ -23,5 +24,6 @@ export {
   NotExistIcon,
   BlogImage,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  SettingIcon
 };

@@ -29,15 +29,6 @@ const BlogPost = ({ blog, deleteHandle, selectHandle, selectedBlog, role, index 
           }
         </div>
       </div>
-      {
-        selectedBlog==blog._id &&
-          <div className="absolute right-0 top-0 h-16 w-16">
-            <div
-              className="absolute transform rotate-45 bg-opacity-80 bg-green-600 text-center text-white text-sm font-semibold py-1 right-[-35px] top-[32px] w-[170px]">
-              Selecionado
-            </div>
-          </div>
-      }
     </div>
   );
 }

@@ -17,6 +17,7 @@
     "autoprefixer": "^10.4.16",
     "axios": "^1.6.2",
     "copy-to-clipboard": "^3.3.3",
+    "docx": "^8.5.0",
     "i": "^0.3.7",
     "postcss": "^8.4.32",
     "react": "^18.2.0",

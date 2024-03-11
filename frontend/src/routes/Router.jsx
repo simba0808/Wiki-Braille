@@ -11,6 +11,7 @@ import UserLayout from "../components/user/Layout";
 import Dashboard from "../pages/Dashboard";
 import AccountSetting from "../pages/AccountSetting";
 import AddData from "../pages/admin/AddData";
+import GenerateDescription from "../pages/admin/GenerateDescription";
 import UserManage from "../pages/admin/UserManage";
 import ActivityManage from "../pages/admin/ActivityManage";
 import Guidence from "../pages/Guidence";
@@ -36,6 +37,7 @@ const Router = () => {
             <Route path="/editorAddData" element={ <AddData /> } />
             <Route path="/editorDashboard" element={ <Dashboard /> } />
             <Route path="/editorSetting" element={ <AccountSetting /> } />
+            <Route path="/editorAddin" element={ <GenerateDescription /> } />
           </Route>
         </Route>
         <Route element={<AdminRoute />}>
@@ -46,6 +48,7 @@ const Router = () => {
             <Route path="/adminManage" element={ <UserManage /> } />
             <Route path="/adminDashboard" element={ <Dashboard /> } />
             <Route path="/adminSetting" element={ <AccountSetting /> } />
+            <Route path="/adminAddin" element={ <GenerateDescription /> } />
           </Route>
         </Route>
       </Routes>
