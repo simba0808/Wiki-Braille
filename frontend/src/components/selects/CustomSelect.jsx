@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const CustomSelect = ({ type, values, selectedPrompt, changeSelect }) => {
   const [isExpaned, setExpaned] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [filteredItems, setFilteredItems] = useState(values);
 
+  useEffect(() => {
+    setFilteredItems(values)
+  }, [values]);
+
   return (
-    <ul className="text-sm border rounded-md shadow-md">
+    <ul className="relative text-sm border rounded-md shadow-md">
       <li 
         className="flex justify-between px-2 py-2 hover:bg-gray-200 rounded-md shadow-md hover:cursor-pointer"
         onClick={() => setExpaned(!isExpaned)}
@@ -32,7 +36,7 @@ const CustomSelect = ({ type, values, selectedPrompt, changeSelect }) => {
       </li>
       {
         isExpaned &&
-          <div className={`px-4 py-2 transition ease-in-out  duration-300`}>
+          <div className={`z-20 absolute px-4 py-2 bg-white border ring-1 ring-gray-200 shadow-md w-full`}>
             {
               type &&
                 <span>
@@ -45,7 +49,7 @@ const CustomSelect = ({ type, values, selectedPrompt, changeSelect }) => {
                       setSearchText(e.target.value);
                       let tempArr = [];
                       values.map((item) => {
-                        if(item.includes(e.target.value)) {
+                        if(item.toLowerCase().includes(e.target.value.toLowerCase())) {
                           tempArr.push(item);
                         }
                       });

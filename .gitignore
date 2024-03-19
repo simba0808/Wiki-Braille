@@ -45,6 +45,9 @@ jspm_packages/
 #image directories
 images/
 
+#public/webviewer
+webviewer/
+
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 

@@ -12,6 +12,7 @@ import userRouter from './routers/userRouter.js';
 import dataRouter from './routers/dataRouter.js';
 import logRouter from './routers/logRouter.js';
 import blogRouter from "./routers/blogRouter.js";
+import officeRouter from "./routers/officeRouter.js";
 
 const port = process.env.PORT;
 
@@ -30,9 +31,10 @@ app.use('/api/user', userRouter);
 app.use('/api/data', dataRouter);
 app.use('/api/log', logRouter);
 app.use('/api/blog', blogRouter);
+app.use('/api/office', officeRouter);
 
 app.use(express.static("./images"));
-app.use(express.static("./images/blogs"));
+app.use(express.static("./images/blog"));
 
 if (process.env.NODE_ENV === 'production') {
   const __dirname = path.resolve();
