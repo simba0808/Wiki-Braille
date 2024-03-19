@@ -3,6 +3,9 @@ import fs from "fs";
 import sharp from "sharp";
 import OpenAI from "openai";
 
+import Prompt from "../models/prompt.js";
+import Data from "../models/data.js";
+
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
   dangerouslyAllowBrowser: true,
@@ -85,7 +88,7 @@ const generateDescriptions = async (req, res) => {
 
 const closeDocument = async (req, res) => {
   const { documentPath, imagePath } = req.body;
-  console.log(documentPath, imagePath);
+
   fs.unlink(`images\\${documentPath}`, (err) => {
     if (err) {
       console.log(err);
@@ -94,7 +97,6 @@ const closeDocument = async (req, res) => {
     }
   });
   imagePath.map((image) => {
-    console.log(image)
     fs.unlink(`images\\blog\\${image}`, (err) => {
       console.log(err);
       if (err) {
@@ -108,9 +110,93 @@ const closeDocument = async (req, res) => {
   res.status(200).send("success");
 }
 
+const getPrompts = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const promptObjects = await Prompt.find({
+      user: email
+    });
+    let prompts = [];
+    promptObjects.map((item) => {
+      prompts.push(item.text)
+    });
+    res.status(200).send({
+      prompts
+    })
+  } catch(err) {
+    res.status(500);
+    throw new Error("Failed to fetch prompts");
+  }
+}
+
+const savePrompt = async (req, res) => {
+  const { email, promptText } = req.body;
+  try {
+    const newPrompt = await Prompt.create({
+      text: promptText,
+      user: email
+    });
+    res.status(200).send({
+      message: "success"
+    })
+  } catch(err) {
+    res.status(500);
+    throw new Error("Failed to save prompt");
+  }
+}
+
+const saveDescription = async (req, res) => {
+  const { description } = req.body;
+  try {
+    const document = await Data.aggregate([
+      {
+        $sort: { "title_id": -1 }
+      }, 
+      {
+        $project: {
+          "title_id": 1
+        }
+      },
+      {
+        $limit: 1
+      }
+    ]);    
+    let start_index = 0;
+    if(document.length > 0) {
+      start_index = parseInt(document[0].title_id.replace(/^0+/, ""));
+    } else {
+      start_index = 0;
+    }
+    
+    fs.rename(`images/blog/${description.image}`, `images/${description.image}`, async (err) => {
+      if(err) {
+        console.log(err);
+      } else {
+        const desc = await Data.create({
+          title_id: (start_index+1).toString().padStart(6, "0"),
+          title: description.title,
+          catagory: description.category,
+          description: description.newDescription,
+          image: description.image
+        });
+      }
+    });
+
+    res.status(200).send({
+      message: "success"
+    });
+  } catch(err) {
+    res.status(500);
+    throw new Error("Failed to save description");
+  }
+}
+
 export {
   uploadDocx,
   extractImagesFromDoc,
   closeDocument,
   generateDescriptions,
+  getPrompts,
+  savePrompt,
+  saveDescription,
 }
