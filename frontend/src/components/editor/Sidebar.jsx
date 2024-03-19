@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 
 const Sidebar = ({ handleSlide }) => {
   const [slideShow, setSlideShow] = useState(0);
+  const [dataExpanded, setDataExpanded] = useState(false);
+
   const currentLocation = useLocation().pathname.toString().toLowerCase();
   useEffect(() => {
     if(currentLocation.includes("guide")) {
@@ -13,6 +15,8 @@ const Sidebar = ({ handleSlide }) => {
       setSlideShow(3);
     } else if(currentLocation.includes("data")) {
       setSlideShow(2);
+    } else if(currentLocation.includes("addin")) {
+      setSlideShow(4);
     }
   }, [currentLocation]);
 
@@ -74,33 +78,71 @@ const Sidebar = ({ handleSlide }) => {
               </Link>
             </li>
           </ul>
-          <ul>
-            <li className={`relative px-6 py-3  ${slideShow===2 ? "bg-purple-100 rounded-lg":""}`} onClick={handleSlide}>
-              { slideShow === 2 ? (
-                <span
-                  className="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
-                  aria-hidden="true"
-                ></span>
-                ) : (
-                  <></>
-              )}
-              <Link
-                to={"/editorAddData"}
-                className="inline-flex items-center w-full text-[16px] font-semibold text-gray-800 transition-colors duration-150 hover:text-gray-400"
+          <ul className="relative">
+            <li className={`px-6 ${dataExpanded ? "pt-3":"py-3"}`}>
+              <button
+                className="inline-flex items-center justify-between w-full text-[16px] font-semibold transition-colors duration-150 hover:text-gray-800"
+                onClick={() => setDataExpanded(!dataExpanded)}
               >
+                <span className="flex">
+                  <svg
+                    className="w-[22px]"
+                    aria-hidden="true"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
+                    ></path>
+                  </svg>
+                  <span className="ml-4">Gestão de dados</span>
+                </span>
                 <svg
-                      className="w-[22px]"
-                      aria-hidden="true"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"
-                      ></path>
+                  className="w-[22px]"
+                  aria-hidden="true"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  ></path>
                 </svg>
-                <span className="ml-4">Adicionar dados</span>
-              </Link>
+              </button>
             </li>
+            <ul className={`${dataExpanded ? "transition ease-in-out duration-300 block" : "hidden transition ease-in-out duration-300"}`}>
+              <li className={`relative pl-14 py-3 ${slideShow === 2 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
+                {
+                  slideShow === 2 &&
+                    <span
+                      className="absolute inset-y-0 left-0 w-1 h-full bg-purple-600 rounded-tr-lg rounded-br-lg"
+                      aria-hidden="true"
+                    ></span>
+                }
+                <Link
+                  to={"/editorAddData"}
+                  className="inline-flex items-center w-full text-[16px] font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400"
+                >
+                  <span className="ml-3">Adicionar dados</span>
+                </Link>
+              </li>
+              <li className={`relative pl-14 py-3 ${slideShow === 4 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
+                {
+                  slideShow === 4 &&
+                    <span
+                      className="absolute inset-y-0 left-0 w-1 h-full bg-purple-600 rounded-tr-lg rounded-br-lg"
+                      aria-hidden="true"
+                    ></span>
+                }
+                <Link
+                  to={"/editorAddin"}
+                  className="inline-flex items-center w-full text-[16px] font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400"
+                >
+                  <span className="ml-3">Gerar novo</span>
+                </Link>
+              </li>
+            </ul>
           </ul>
           <ul>
             <li className={`relative px-6 py-3  ${slideShow===3 ? "bg-purple-100 rounded-lg":""}`} onClick={handleSlide}>

@@ -249,7 +249,7 @@ const GenerateDescription = () => {
     <main className="overflow relative">
       <div className="container xs:px-6">
         <h2 className="my-6 text-2xl text-left font-semibold text-gray-700">
-          Generate New Description
+          Gerar nova descrição
         </h2>
         <div className="w-full">
           <div className="flex justify-start py-2 gap-2">
@@ -301,7 +301,7 @@ const GenerateDescription = () => {
                   )}
                   {uploadingProgress !== 0 && uploadingProgress !== 100 && (
                     <div className="absolute left-0 bottom-0 w-full h-[3px] bg-slate-200 rounded-b-md">
-                      <div className="w-full h-full bg-blue-400 "></div>
+                      <div className="h-full bg-blue-400" style={{width: `${uploadingProgress}%`}}></div>
                     </div>
                   )}
                 </label>
@@ -335,12 +335,12 @@ const GenerateDescription = () => {
                           : "border-gray-200"
                       }`}
                       onClick={() => {
-                        setSelectedItemToView({
-                          image: image,
-                          text: descriptions[index],
-                        });
-                        setDetailViewShow(true);
                         if (succeedImages.includes(image)) {
+                          setSelectedItemToView({
+                            image: image,
+                            text: descriptions[index],
+                          });
+                          setDetailViewShow(true);
                           return;
                         }
                         let fetchedImages = [...selectedImages];

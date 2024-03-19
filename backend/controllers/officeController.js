@@ -89,7 +89,7 @@ const generateDescriptions = async (req, res) => {
 const closeDocument = async (req, res) => {
   const { documentPath, imagePath } = req.body;
 
-  fs.unlink(`images\\${documentPath}`, (err) => {
+  fs.rename(`images/${documentPath}`, (err) => {
     if (err) {
       console.log(err);
       res.status(500);
@@ -97,7 +97,7 @@ const closeDocument = async (req, res) => {
     }
   });
   imagePath.map((image) => {
-    fs.unlink(`images\\blog\\${image}`, (err) => {
+    fs.unlink(`images/blog/${image}`, (err) => {
       console.log(err);
       if (err) {
         console.log(err);
