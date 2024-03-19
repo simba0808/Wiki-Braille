@@ -126,7 +126,7 @@ const Sidebar = ({ handleSlide }) => {
                   to={"/adminAddData"}
                   className="inline-flex items-center w-full text-[16px] font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400"
                 >
-                  <span className="ml-4">Adicionar dados</span>
+                  <span className="ml-3">Adicionar dados</span>
                 </Link>
               </li>
               <li className={`relative pl-14 py-3 ${slideShow === 6 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
@@ -141,7 +141,7 @@ const Sidebar = ({ handleSlide }) => {
                   to={"/adminAddin"}
                   className="inline-flex items-center w-full text-[16px] font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400"
                 >
-                  <span className="ml-4">Generate New</span>
+                  <span className="ml-3">Gerar novo</span>
                 </Link>
               </li>
             </ul>
@@ -196,7 +196,7 @@ const Sidebar = ({ handleSlide }) => {
                   to={"/adminManage"}
                   className="inline-flex items-center w-full text-[16px] font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400"
                 >
-                  <span className="ml-4">Usuários</span>
+                  <span className="ml-3">Usuários</span>
                 </Link>
               </li>
               <li className={`relative pl-14 py-3 ${slideShow === 4 ? "bg-purple-100 rounded-lg" : ""}`} onClick={handleSlide}>
@@ -211,7 +211,7 @@ const Sidebar = ({ handleSlide }) => {
                   to={"/adminActivities"}
                   className="inline-flex items-center w-full text-[16px] font-semibold transition-colors duration-150 text-gray-800 hover:text-gray-400"
                 >
-                  <span className="ml-4">Atividades</span>
+                  <span className="ml-3">Atividades</span>
                 </Link>
               </li>
             </ul>
