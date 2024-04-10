@@ -89,23 +89,23 @@ const generateDescriptions = async (req, res) => {
 const closeDocument = async (req, res) => {
   const { documentPath, imagePath } = req.body;
 
-  fs.rename(`images/${documentPath}`, (err) => {
-    if (err) {
-      console.log(err);
-      res.status(500);
-      throw new Error("Failed to delete document");
-    }
-  });
-  imagePath.map((image) => {
-    fs.unlink(`images/blog/${image}`, (err) => {
-      console.log(err);
-      if (err) {
-        console.log(err);
-        res.status(500);
-        throw new Error("Failed to delete document");
-      }
-    })
-  });
+  // fs.rename(`images/${documentPath}`, (err) => {
+  //   if (err) {
+  //     console.log(err);
+  //     res.status(500);
+  //     throw new Error("Failed to delete document");
+  //   }
+  // });
+  // imagePath.map((image) => {
+  //   fs.unlink(`images/blog/${image}`, (err) => {
+  //     console.log(err);
+  //     if (err) {
+  //       console.log(err);
+  //       res.status(500);
+  //       throw new Error("Failed to delete document");
+  //     }
+  //   })
+  // });
 
   res.status(200).send("success");
 }

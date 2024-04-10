@@ -83,7 +83,7 @@ const DescriptionCard = ({ onClick, item, index, isPossibleDelete }) => {
         <img
           className="mx-auto h-[100%]"
           src={
-            item.image ? `http://localhost:3000/${item.image}` : NotExistIcon
+            item.image ? `${item.image}` : NotExistIcon
           }
         />
       </div>

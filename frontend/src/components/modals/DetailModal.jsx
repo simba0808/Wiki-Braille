@@ -303,7 +303,7 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
                         <TransformComponent>
                           <img
                             className="min-h-[150px] max-h-[240px] md:max-h-[450px] w-full mx-auto my-auto py-4"
-                            src={selectedImage === null ? (image ? `http://localhost:3000/${image}` : NotExistIcon) : URL.createObjectURL(selectedImage)}
+                            src={selectedImage === null ? (image ? `${image}` : NotExistIcon) : URL.createObjectURL(selectedImage)}
                           />
                         </TransformComponent>
                       </TransformWrapper>
