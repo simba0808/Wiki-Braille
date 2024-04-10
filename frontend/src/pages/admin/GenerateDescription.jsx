@@ -104,7 +104,7 @@ const GenerateDescription = () => {
         {
           path: "/webviewer/lib",
           enableOfficeEditing: "true",
-          initialDoc: `http://localhost:3000/${res.data.filename}`,
+          initialDoc: `${res.data.filename}`,
           licenseKey:
             "7f385de70300000000d398edfc4c9af6c0b00fdaf3642865f9aa601f7a", // sign up to get a free trial key at https://dev.apryse.com
         },
@@ -132,7 +132,7 @@ const GenerateDescription = () => {
       });
     };
     if (instance) {
-      instance.UI.loadDocument(`http://localhost:3000/${res.data.filename}`);
+      instance.UI.loadDocument(`${res.data.filename}`);
     } else {
       callView();
     }
@@ -354,7 +354,7 @@ const GenerateDescription = () => {
                     >
                       <img
                         className="max-w-[100px] max-h-[100px]"
-                        src={`http://localhost:3000/${image}`}
+                        src={`${image}`}
                       />
                       <div className="absolute right-0 top-0 h-6 w-6">
                         <div

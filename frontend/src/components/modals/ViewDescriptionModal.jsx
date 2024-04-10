@@ -51,7 +51,7 @@ const ViewDescriptionModal = ({imageUrl, description, closeClick}) => {
           <h2 className="pb-2 text-xl text-gray-800 font-bold">Inserir uma nova Descrição</h2>
           <div className="w-full flex gap-4">
             <div className="max-w-[50%]  flex items-center justify-center">
-              <img src={`http://localhost:3000/${imageUrl}`} alt="Product" />
+              <img src={`${imageUrl}`} alt="Product" />
             </div>
             <div className="w-full  text-gray-800">
               <div className="flex flex-col mb-4">
