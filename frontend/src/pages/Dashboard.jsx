@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useToast from "../hook/useToast";
@@ -99,48 +99,50 @@ const Dashboard = () => {
     }
   }, [updateDescription]);
 
-  const fetchFilteredData = async (
-    word,
-    advance,
-    searchin,
-    pageIndex,
-    numberPerPage,
-    sortMethod
-  ) => {
-    setFilteredData([]);
-    setLoading(true);
-    try {
-      const searcher = {
-        word,
-        advance,
-        searchin,
-        pageIndex: pageIndex,
-        numberPerPage,
-        sortMethod,
-        descending: isDescending[sortMethod ? 0 : 1],
-      };
+  const fetchFilteredData = useCallback(
+    async (
+      word,
+      advance,
+      searchin,
+      pageIndex,
+      numberPerPage,
+      sortMethod) => {
+      setFilteredData([]);
+      setLoading(true);
 
-      const response = await axios.post("/api/data/getdata", searcher);
-      dispatch(
-        setFilterGroup({
-          ...filterGroup,
+      try {
+        const searcher = {
           word,
           advance,
           searchin,
-          pageIndex,
+          pageIndex: pageIndex,
           numberPerPage,
-          filteredCount: response.data.count,
-        })
-      );
-      setNumberPerPage(numberPerPage);
-      setFilteredCount(response.data.count);
-      setFilteredData(response.data.data);
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      customToast("failed", "Falha ao buscar dados");
-    }
-  };
+          sortMethod,
+          descending: isDescending[sortMethod ? 0 : 1],
+        };
+
+        const response = await axios.post("/api/data/getdata", searcher);
+        dispatch(
+          setFilterGroup({
+            ...filterGroup,
+            word,
+            advance,
+            searchin,
+            pageIndex,
+            numberPerPage,
+            filteredCount: response.data.count,
+          })
+        );
+        setNumberPerPage(numberPerPage);
+        setFilteredCount(response.data.count);
+        setFilteredData(response.data.data);
+        setLoading(false);
+      } catch (err) {
+        setLoading(false);
+        customToast("failed", "Falha ao buscar dados");
+      }
+    }, [isDescending, filterGroup, customToast, dispatch]
+  );
 
   const handleClick = (index) => {
     setSelectedIndex(index);
@@ -224,7 +226,7 @@ const Dashboard = () => {
   const handleDeleteCancelClick = () => {
     setPossibleDelete(false);
     dispatch(setIndexesToDelete([]));
-    
+
     fetchFilteredData(
       searchWord,
       refAdvance.current.value,
@@ -341,11 +343,9 @@ const Dashboard = () => {
             <div className="flex items-center gap-2">
               <div className="bg-gray-200 text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">
                 <button
-                  className={`${
-                    !screenSize.isSmall ? "w-[100px]" : ""
-                  } px-2 relative inline-flex items-center justify-between transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full py-2 ${
-                    sortMethod ? "active" : ""
-                  }`}
+                  className={`${!screenSize.isSmall ? "w-[100px]" : ""
+                    } px-2 relative inline-flex items-center justify-between transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full py-2 ${sortMethod ? "active" : ""
+                    }`}
                   id="list"
                   onClick={() => {
                     if (sortMethod)
@@ -365,11 +365,9 @@ const Dashboard = () => {
                   )}
                 </button>
                 <button
-                  className={`${
-                    !screenSize.isSmall ? "w-[100px]" : ""
-                  } px-2 relative inline-flex items-center justify-between transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full  py-2 ${
-                    !sortMethod ? "active" : ""
-                  }`}
+                  className={`${!screenSize.isSmall ? "w-[100px]" : ""
+                    } px-2 relative inline-flex items-center justify-between transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full  py-2 ${!sortMethod ? "active" : ""
+                    }`}
                   id="grid"
                   onClick={() => {
                     if (!sortMethod)
@@ -391,9 +389,8 @@ const Dashboard = () => {
               </div>
               <div className="bg-gray-200 text-sm text-gray-500 leading-none border-2 border-gray-200 rounded-full inline-flex">
                 <button
-                  className={`inline-flex items-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full px-4 py-2 ${
-                    !viewMode ? "active" : ""
-                  }`}
+                  className={`inline-flex items-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-r-full px-4 py-2 ${!viewMode ? "active" : ""
+                    }`}
                   id="list"
                   onClick={() => {
                     setViewMode(false);
@@ -424,9 +421,8 @@ const Dashboard = () => {
                   <span>Lista</span>
                 </button>
                 <button
-                  className={`inline-flex items-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-l-full px-4 py-2 ${
-                    viewMode ? "active" : ""
-                  }`}
+                  className={`inline-flex items-center transition-colors duration-300 ease-in focus:outline-none hover:text-blue-400 focus:text-blue-400 rounded-l-full px-4 py-2 ${viewMode ? "active" : ""
+                    }`}
                   id="grid"
                   onClick={() => {
                     setViewMode(true);
@@ -520,12 +516,11 @@ const Dashboard = () => {
                 )}
                 <div className="flex gap-x-4">
                   <span className="text-left font-semibold">
-                    {`${(currentPageIndex - 1) * numberPerPage + 1}-${
-                      (currentPageIndex - 1) * numberPerPage + numberPerPage >
-                      filteredCount
+                    {`${(currentPageIndex - 1) * numberPerPage + 1}-${(currentPageIndex - 1) * numberPerPage + numberPerPage >
+                        filteredCount
                         ? filteredCount
                         : (currentPageIndex - 1) * numberPerPage + numberPerPage
-                    }`}
+                      }`}
                     &nbsp;DE&nbsp;
                     {filteredCount}
                   </span>
@@ -563,12 +558,12 @@ const Dashboard = () => {
             <Box sx={{ width: "100%", overflowY: "none", py: 2 }}>
               <ImageList
                 variant={screenSize.isSmall ? "masonry" : ""}
-                cols={ screenSize.isLarge ? 4 : (screenSize.isMedium ? 3 : 2)}
+                cols={screenSize.isLarge ? 4 : (screenSize.isMedium ? 3 : 2)}
                 gap={10}
               >
                 {filteredData.map((item, index) => {
                   return (
-                    <ImageCard 
+                    <ImageCard
                       onClick={handleClick}
                       item={item}
                       key={index}
@@ -581,11 +576,10 @@ const Dashboard = () => {
             </Box>
           ) : (
             <div
-              className={`p-2 pt-0 ${
-                filteredData.length
+              className={`p-2 pt-0 ${filteredData.length
                   ? `grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 grid-cols-1 rounded-b-xl`
                   : ""
-              }`}
+                }`}
             >
               {filteredData.length ? (
                 filteredData.map((item, index) => {

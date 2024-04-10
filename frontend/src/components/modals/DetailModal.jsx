@@ -133,8 +133,8 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
   };
 
   const handleKeyDown = (e) => {
-    if(e.keyCode === 13) {
-      if(newTag !== "") {
+    if (e.keyCode === 13) {
+      if (newTag !== "") {
         setNewTag(newTag + "," + newTagItem);
       } else {
         setNewTag(newTagItem);
@@ -144,7 +144,7 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
   }
 
   const handleTagDelete = (item, index) => {
-    setNewTag((prev) => index ? prev.replace(`,${item}`, ""):prev.replace((newTag.split(",").length===1?item:`${item},`), ""))
+    setNewTag((prev) => index ? prev.replace(`,${item}`, "") : prev.replace((newTag.split(",").length === 1 ? item : `${item},`), ""))
   }
 
   return (
@@ -181,52 +181,52 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
               <div className="relative inline-flex lg:text-lg text-md font-normal">
                 <span>Categoria:</span>&nbsp;
                 <div className="relative">
-                  <span 
-                    className={`font-medium ${editable?"underline underline-offset-4 decoration-purple-600 hover:cursor-pointer":""}`}
+                  <span
+                    className={`font-medium ${editable ? "underline underline-offset-4 decoration-purple-600 hover:cursor-pointer" : ""}`}
                     onClick={() => setCategoryClicked(!isCategoryClicked)}
                   >
                     {newCategory}
                   </span>
                   {
                     isCategoryClicked && editable &&
-                      <ul className="z-30 absolute left-0 min-w-[200px] px-2 py-2 bg-white border-2 lg:text-md text-sm divide-y-[1px] shadow-lg">
-                        <li 
-                          className="px-2 py-1 hover:bg-gray-200" 
-                          onClick={() => {
-                            setNewCategory("Descrição");
-                            setCategoryClicked(false);
-                          }}
-                        >
-                          Descrição
-                        </li>
-                        <li 
-                          className="px-2 py-1 hover:bg-gray-200" 
-                          onClick={() => {
-                            setNewCategory("Desenhos em braille");
-                            setCategoryClicked(false);
-                          }}
-                        >
-                          Desenhos em braille
-                        </li>
-                        <li 
-                          className="px-2 py-1 hover:bg-gray-200" 
-                          onClick={() => {
-                            setNewCategory("Grafias em braille");
-                            setCategoryClicked(false);
-                          }}
-                        >
-                          Grafias em braille
-                        </li>
-                        <li 
-                          className="px-2 py-1 hover:bg-gray-200" 
-                          onClick={() => {
-                            setNewCategory("Exemplos da grafia braille");
-                            setCategoryClicked(false);
-                          }}
-                        >
-                          Exemplos da grafia braille
-                        </li>
-                      </ul>
+                    <ul className="z-30 absolute left-0 min-w-[200px] px-2 py-2 bg-white border-2 lg:text-md text-sm divide-y-[1px] shadow-lg">
+                      <li
+                        className="px-2 py-1 hover:bg-gray-200"
+                        onClick={() => {
+                          setNewCategory("Descrição");
+                          setCategoryClicked(false);
+                        }}
+                      >
+                        Descrição
+                      </li>
+                      <li
+                        className="px-2 py-1 hover:bg-gray-200"
+                        onClick={() => {
+                          setNewCategory("Desenhos em braille");
+                          setCategoryClicked(false);
+                        }}
+                      >
+                        Desenhos em braille
+                      </li>
+                      <li
+                        className="px-2 py-1 hover:bg-gray-200"
+                        onClick={() => {
+                          setNewCategory("Grafias em braille");
+                          setCategoryClicked(false);
+                        }}
+                      >
+                        Grafias em braille
+                      </li>
+                      <li
+                        className="px-2 py-1 hover:bg-gray-200"
+                        onClick={() => {
+                          setNewCategory("Exemplos da grafia braille");
+                          setCategoryClicked(false);
+                        }}
+                      >
+                        Exemplos da grafia braille
+                      </li>
+                    </ul>
                   }
                 </div>
               </div>
@@ -252,47 +252,46 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
               </div>
             </div>
             {
-                catagory !== "Descrição" &&
-                  <div className={`relative w-full flex flex-wrap sm:w-auto p-1 sm:text-md text-sm font-normal outline-none ${editable ? "rounded-md border border-purple-300 ring-2 ring-purple-100 outline-none" : ""}`}>
-                    <div className={` inset-y-0 flex flex-wrap items-center gap-2`}>
-                      {
-                        newTag !== "" && newTag.split(",").map((item, index) => {
-                          return (
-                            <span key={index} className="flex gap-2 px-2 py-1 rounded-md bg-purple-500 text-white">
-                              {item}
-                              {
-                                editable &&
-                                  <button onClick={() => handleTagDelete(item, index)}>
-                                    <svg
-                                      className="fill-current w-4 h-4"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="18"
-                                      height="18"
-                                      viewBox="0 0 18 18"
-                                    >
-                                      <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
-                                    </svg>
-                                  </button>
-                              }
-                            </span>
-                          )
-                        })
-                      }
-                    </div>
-                    {
-                      editable && 
-                        <input
-                          type="text"
-                          className="grow  h-[30px] px-2 py-1 bg-white outline-none"
-                          disabled={editable ? false : true}
-                          value={newTagItem}
-                          onChange={handleTagChange}
-                          onKeyDown={handleKeyDown}
-                        />
-                    }
-                  </div>
-              }
-            
+              <div className={`relative w-full flex flex-wrap sm:w-auto p-1 sm:text-md text-sm font-normal outline-none ${editable ? "rounded-md border border-purple-300 ring-2 ring-purple-100 outline-none" : ""}`}>
+                <div className={` inset-y-0 flex flex-wrap items-center gap-2`}>
+                  {
+                    newTag !== "" && newTag.split(",").map((item, index) => {
+                      return (
+                        <span key={index} className="flex gap-2 px-2 py-1 rounded-md bg-purple-500 text-white">
+                          {item}
+                          {
+                            editable &&
+                            <button onClick={() => handleTagDelete(item, index)}>
+                              <svg
+                                className="fill-current w-4 h-4"
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="18"
+                                height="18"
+                                viewBox="0 0 18 18"
+                              >
+                                <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
+                              </svg>
+                            </button>
+                          }
+                        </span>
+                      )
+                    })
+                  }
+                </div>
+                {
+                  editable &&
+                  <input
+                    type="text"
+                    className="grow  h-[30px] px-2 py-1 bg-white outline-none"
+                    disabled={editable ? false : true}
+                    value={newTagItem}
+                    onChange={handleTagChange}
+                    onKeyDown={handleKeyDown}
+                  />
+                }
+              </div>
+            }
+
             <div className="grow flex xs:flex-row flex-col gap-1 mt-2">
               <div className="xs:basis-1/2 flex px-2 items-center justify-center hover:cursor-zoom-in">
                 {
@@ -329,103 +328,103 @@ const DetailModal = ({ descData, handleClick, updateHandle }) => {
             </div>
             {
               userInfo.role !== 0 &&
-                <div className="flex justify-between pt-2">
-                  { editable && <span></span>}
-                  {
-                    userInfo.role === 2 && !editable && 
-                      <button
-                        className="w-[90px] py-2 px-auto focus:outline-none bg-red-600 hover:bg-white border border-red-600 rounded-lg text-white hover:text-red-600 active:bg-red-700 active:text-white"
-                        onClick={() => setDeleteModalShow(true)}
-                      >
-                        Excluir
-                      </button>
-                  }
-                  <div>
-                    <button
-                      className="w-[90px] focus:outline-none modal-close px-auto py-2 rounded-lg text-purple-600 border border-purple-600 hover:bg-purple-600 hover:text-white active:bg-purple-700 active:text-white"
-                      onClick={() => {
-                        if (editable) {
-                          setSelectedImage(null);
-                          setCategoryClicked(false);
-                        }
-                        setEditable(editable ? false : true);
+              <div className="flex justify-between pt-2">
+                {editable && <span></span>}
+                {
+                  userInfo.role === 2 && !editable &&
+                  <button
+                    className="w-[90px] py-2 px-auto focus:outline-none bg-red-600 hover:bg-white border border-red-600 rounded-lg text-white hover:text-red-600 active:bg-red-700 active:text-white"
+                    onClick={() => setDeleteModalShow(true)}
+                  >
+                    Excluir
+                  </button>
+                }
+                <div>
+                  <button
+                    className="w-[90px] focus:outline-none modal-close px-auto py-2 rounded-lg text-purple-600 border border-purple-600 hover:bg-purple-600 hover:text-white active:bg-purple-700 active:text-white"
+                    onClick={() => {
+                      if (editable) {
+                        setSelectedImage(null);
+                        setCategoryClicked(false);
                       }
-                      }
-                    >
-                      {
-                        editable ? "Cancelar" : "Editar"
-                      }
-                    </button>
-                    {
-                      editable ?
-                        <button
-                          className="w-[90px]  py-2 px-auto ml-3 focus:outline-none rounded-lg bg-purple-600 hover:bg-white  text-white  hover:text-purple-600 border border-purple-600 active:bg-purple-700 active:text-white"
-                          onClick={editConfirm}
-                          disabled={editable ? false : true}
-                        >
-                          Confirmar
-                        </button> :
-                        <div className="inline-block group">
-                          <button
-                            className={`w-[90px] py-2 px-auto ml-3 focus:outline-none rounded-lg ${isCopy?"bg-purple-600 text-white":"bg-white text-purple-600"} border border-purple-600 active:bg-purple-700 active:text-white`}
-                            onClick={handleCopyToClipboard}
-                          >
-                            { isCopy ? "Copiado" : "Copiar" }
-                          </button>
-                          <div className="bg-purple-600 text-white text-sm rounded-md py-1 px-2 absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                            {isCopy ? "Copiado!" : "Copiar"}
-                          </div>
-                        </div>
+                      setEditable(editable ? false : true);
                     }
-                    
-                  </div>
+                    }
+                  >
+                    {
+                      editable ? "Cancelar" : "Editar"
+                    }
+                  </button>
+                  {
+                    editable ?
+                      <button
+                        className="w-[90px]  py-2 px-auto ml-3 focus:outline-none rounded-lg bg-purple-600 hover:bg-white  text-white  hover:text-purple-600 border border-purple-600 active:bg-purple-700 active:text-white"
+                        onClick={editConfirm}
+                        disabled={editable ? false : true}
+                      >
+                        Confirmar
+                      </button> :
+                      <div className="inline-block group">
+                        <button
+                          className={`w-[90px] py-2 px-auto ml-3 focus:outline-none rounded-lg ${isCopy ? "bg-purple-600 text-white" : "bg-white text-purple-600"} border border-purple-600 active:bg-purple-700 active:text-white`}
+                          onClick={handleCopyToClipboard}
+                        >
+                          {isCopy ? "Copiado" : "Copiar"}
+                        </button>
+                        <div className="bg-purple-600 text-white text-sm rounded-md py-1 px-2 absolute bottom-full left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                          {isCopy ? "Copiado!" : "Copiar"}
+                        </div>
+                      </div>
+                  }
+
                 </div>
-              
+              </div>
+
             }
           </div>
         </div>
       </div>
       {
         deleteModalShow &&
-          <div className="min-w-screen h-screen animated fadeIn faster  fixed  left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-none bg-no-repeat bg-center bg-cover" id="modal-id">
-            <div className="absolute bg-black opacity-80 inset-0 z-0"></div>
-            <div className="w-full  max-w-lg p-5 relative mx-auto my-auto rounded-xl shadow-lg  bg-white ">
-              <div className="">
-                <div className="text-center p-5 flex-auto justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 -m-1 flex items-center text-red-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                  </svg>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 flex items-center text-red-500 mx-auto" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                  <h2 className="text-2xl font-bold py-4 ">Tem certeza?</h2>
-                  <p className="text-md text-gray-700 px-8">Tem certeza de que deseja excluir esse conteúdo? Esse processo não pode ser desfeito</p>
-                </div>
-                <div className="p-3  mt-2 text-center space-x-4 md:block">
-                  <button
-                    className="mb-2 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100 active:bg-gray-900"
-                    onClick={() => setDeleteModalShow(false)}
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    className="mb-2 md:mb-0 bg-red-500 border border-red-500 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-full hover:shadow-lg hover:bg-red-600 active:bg-red-900"
-                    onClick={deleteDescription}
-                  >
-                    Excluir
-                  </button>
-                </div>
+        <div className="min-w-screen h-screen animated fadeIn faster  fixed  left-0 top-0 flex justify-center items-center inset-0 z-50 outline-none focus:outline-none bg-no-repeat bg-center bg-cover" id="modal-id">
+          <div className="absolute bg-black opacity-80 inset-0 z-0"></div>
+          <div className="w-full  max-w-lg p-5 relative mx-auto my-auto rounded-xl shadow-lg  bg-white ">
+            <div className="">
+              <div className="text-center p-5 flex-auto justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 -m-1 flex items-center text-red-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 flex items-center text-red-500 mx-auto" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                <h2 className="text-2xl font-bold py-4 ">Tem certeza?</h2>
+                <p className="text-md text-gray-700 px-8">Tem certeza de que deseja excluir esse conteúdo? Esse processo não pode ser desfeito</p>
+              </div>
+              <div className="p-3  mt-2 text-center space-x-4 md:block">
+                <button
+                  className="mb-2 md:mb-0 bg-white px-5 py-2 text-sm shadow-sm font-medium tracking-wider border text-gray-600 rounded-full hover:shadow-lg hover:bg-gray-100 active:bg-gray-900"
+                  onClick={() => setDeleteModalShow(false)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="mb-2 md:mb-0 bg-red-500 border border-red-500 px-5 py-2 text-sm shadow-sm font-medium tracking-wider text-white rounded-full hover:shadow-lg hover:bg-red-600 active:bg-red-900"
+                  onClick={deleteDescription}
+                >
+                  Excluir
+                </button>
               </div>
             </div>
           </div>
+        </div>
       }
       {
         ratingModalShow &&
-          <RatingModal onClick={setRatingModalShow} title_id={title_id} />
+        <RatingModal onClick={setRatingModalShow} title_id={title_id} />
       }
       {
         reviewModalShow &&
-          <ReviewModal data={descData} closeHandle={setReviewModalShow} userInfo={userInfo} />
+        <ReviewModal data={descData} closeHandle={setReviewModalShow} userInfo={userInfo} />
       }
     </>
   );
