@@ -15,11 +15,11 @@ const extractDataFromWord = async (req, res) => {
         const paragraphs = root.split(/(?=^Título:)/gm);
 
         paragraphs.forEach(async (paragraph, index) => {
-          let title = paragraph.match(/Título:(.+)/g);
+          let title = paragraph.match(/título:(.+)/gi);
           if(title !== null) {
             let catagory, tag, description;
-            catagory = paragraph.match(/Categoria:(.+)/g);
-            tag = paragraph.match(/Tag([\s\S]*?):(.+)/g);
+            catagory = paragraph.match(/categoria:(.+)/gi);
+            tag = paragraph.match(/tag([\s\S]*?):(.+)/gi);
 
             if(tag) {
               description = paragraph.replace(title, "").replace(catagory, "").replace(tag, "").trim();
